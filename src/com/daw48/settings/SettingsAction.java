@@ -8,6 +8,9 @@ import com.intellij.openapi.ui.Messages;
 
 public class SettingsAction extends AnAction {
 
+    private static final String MESSAGE = "Hello, %s!\nI am glad to see you.";
+    private static final String TITLE = "Information";
+
     @Override
     public void actionPerformed(AnActionEvent event) {
         final Project project = event.getData(PlatformDataKeys.PROJECT);
@@ -22,7 +25,9 @@ public class SettingsAction extends AnAction {
                     Messages.getQuestionIcon());
         }
 
-        Messages.showMessageDialog(project, "Hello, " + settings.name +
-                "!\n I am glad to see you.", "Information", Messages.getInformationIcon());
+        Messages.showMessageDialog(project,
+                String.format(MESSAGE, settings.name),
+                TITLE,
+                Messages.getInformationIcon());
     }
 }
