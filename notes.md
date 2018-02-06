@@ -31,6 +31,13 @@
 
 ## Server
 
+### Post-processing
+
+- Process data to check for different authors (i.e different author copy-paste)
+- Check timestamps to find anything odd (i.e coder is usually slow but changed
+speed so might be copying)
+- Possibly add some machine learning classification with supervised learning
+
 ### One-time upload
 
 - Upload a file containing keystroke data once completed

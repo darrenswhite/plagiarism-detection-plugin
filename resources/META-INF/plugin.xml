@@ -22,16 +22,24 @@
     <idea-version since-build="173.0"/>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectService serviceInterface="com.daw48.KSRSettingsState"
-                        serviceImplementation="com.daw48.KSRSettingsState"/>
-        <typedHandler implementation="com.daw48.KSREditorTypedHandler"/>
+        <projectService serviceImplementation="com.daw48.Settings"/>
     </extensions>
 
     <actions>
-        <group id="KSR.Main" text="Keystroke Recorder" description="Keystroke Recorder">
+        <group id="KSR.Main" text="Keystroke Recorder"
+               description="Keystroke Recorder">
             <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="KSR.Settings" class="com.daw48.KSRSettingsAction" text="Settings"
+            <action id="KSR.Settings" class="com.daw48.SettingsAction"
+                    text="Settings"
                     description="Keystroke Recorder Settings"/>
         </group>
     </actions>
+
+    <project-components>
+        <component>
+            <implementation-class>com.daw48.DocumentChangeTracker
+            </implementation-class>
+            <interface-class>com.daw48.DocumentChangeTracker</interface-class>
+        </component>
+    </project-components>
 </idea-plugin>

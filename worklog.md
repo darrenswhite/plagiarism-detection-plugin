@@ -16,3 +16,12 @@
 
 - Started the OPS (Outline Project Specification)
 - Prepared for OPS presentation
+- Found another detection method:
+  - Attach a DocumentListener to EditorFactory#EditorEventMulticaster
+  - This allows tracking Document changes which could be:
+    - Typed, copy-pasted, generated, external, etc.
+  - For now, using this instead of TypedHandler/Delegate.
+  - This will track all changes in each file without knowing where it came from
+- Added copy-paste detection by comparing the DocumentEvent fragment
+with the CopyPasteManager contents
+  - This doesn't seem to work well with external editors (i.e pasting in Vim)
