@@ -1,0 +1,37 @@
+<idea-plugin>
+    <id>com.daw48</id>
+    <name>Keystroke Recorder</name>
+    <version>0.1</version>
+    <vendor email="daw48@aber.ac.uk">daw48</vendor>
+
+    <description>
+        <![CDATA[
+        Keystroke Recorder
+        ]]>
+    </description>
+
+    <change-notes>
+        <![CDATA[
+        0.1:
+        <ul>
+          <li>Initial Keystroke Recorder implementation</li>
+        </ul>
+        ]]>
+    </change-notes>
+
+    <idea-version since-build="173.0"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceInterface="com.daw48.KSRSettingsState"
+                        serviceImplementation="com.daw48.KSRSettingsState"/>
+        <typedHandler implementation="com.daw48.KSREditorTypedHandler"/>
+    </extensions>
+
+    <actions>
+        <group id="KSR.Main" text="Keystroke Recorder" description="Keystroke Recorder">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <action id="KSR.Settings" class="com.daw48.KSRSettingsAction" text="Settings"
+                    description="Keystroke Recorder Settings"/>
+        </group>
+    </actions>
+</idea-plugin>
