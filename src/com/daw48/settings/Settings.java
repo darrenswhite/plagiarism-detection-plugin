@@ -1,4 +1,4 @@
-package com.daw48;
+package com.daw48.settings;
 
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
@@ -6,7 +6,8 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@State(name = "KSR", storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
+@State(name = "PlagiarismDetectionProjectComponent",
+        storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
 public class Settings implements PersistentStateComponent<Settings> {
     public String name = null;
 

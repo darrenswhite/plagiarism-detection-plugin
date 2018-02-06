@@ -24,4 +24,5 @@
   - This will track all changes in each file without knowing where it came from
 - Added copy-paste detection by comparing the DocumentEvent fragment
 with the CopyPasteManager contents
-  - This doesn't seem to work well with external editors (i.e pasting in Vim)
+  - This doesn't work well with external editors (i.e pasting in Vim) when the
+  project is closed

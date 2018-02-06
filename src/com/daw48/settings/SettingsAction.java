@@ -1,4 +1,4 @@
-package com.daw48;
+package com.daw48.settings;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
