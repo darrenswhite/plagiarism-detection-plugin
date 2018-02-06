@@ -1,1 +1,1 @@
-# IntelliJ IDEA Keystroke Recorder Plugin for Plagiarism Detection
+# IntelliJ Plugin to Aid With Plagiarism Detection
