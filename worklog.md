@@ -26,3 +26,13 @@
 with the CopyPasteManager contents
   - This doesn't work well with external editors (i.e pasting in Vim) when the
   project is closed
+- Tracking changes are now stored in the workspace.xml file. A change has the
+properties:
+  - Path: the file path that was changed
+  - Offset: where the change was made
+  - Old String: the String that was removed/replaced
+  - New String: the String that was inserted
+  - Source: the type of change (e.g. typed, copy-paste, etc.)
+  - Timestamp: when the change was made
+- Made Settings persistent with the application not per project - previously
+users had to enter their credentials per project
