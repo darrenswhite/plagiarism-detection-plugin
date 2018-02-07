@@ -36,3 +36,5 @@ properties:
   - Timestamp: when the change was made
 - Made Settings persistent with the application not per project - previously
 users had to enter their credentials per project
+- Added external change detection. These changes aren't saved yet as an
+algorithm will need to be written to check what has changed.
