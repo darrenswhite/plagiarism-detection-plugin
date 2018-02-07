@@ -1,4 +1,4 @@
-package com.daw48;
+package com.daw48.detector;
 
 import org.jetbrains.annotations.NotNull;
 

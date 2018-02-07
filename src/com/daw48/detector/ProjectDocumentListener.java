@@ -1,4 +1,4 @@
-package com.daw48;
+package com.daw48.detector;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;

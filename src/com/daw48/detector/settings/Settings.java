@@ -1,4 +1,4 @@
-package com.daw48.settings;
+package com.daw48.detector.settings;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;

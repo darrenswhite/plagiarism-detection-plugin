@@ -23,9 +23,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService
-                serviceImplementation="com.daw48.settings.Settings"/>
+                serviceImplementation="com.daw48.detector.settings.Settings"/>
         <projectService
-                serviceImplementation="com.daw48.ProjectTracker"/>
+                serviceImplementation="com.daw48.detector.ProjectTracker"/>
     </extensions>
 
     <actions>
@@ -33,7 +33,7 @@
                description="Plagiarism Detection">
             <add-to-group group-id="MainMenu" anchor="last"/>
             <action id="Plagiarism Detection.Settings"
-                    class="com.daw48.settings.SettingsAction"
+                    class="com.daw48.detector.settings.SettingsAction"
                     text="Settings"
                     description="Plagiarism Detection Settings"/>
         </group>
@@ -41,7 +41,7 @@
 
     <project-components>
         <component>
-            <implementation-class>com.daw48.ProjectDocumentListener
+            <implementation-class>com.daw48.detector.ProjectDocumentListener
             </implementation-class>
         </component>
     </project-components>
