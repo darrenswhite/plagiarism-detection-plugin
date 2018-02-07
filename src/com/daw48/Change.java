@@ -12,11 +12,6 @@ import java.util.Objects;
  */
 public class Change implements Serializable {
     /**
-     * The path of the file that was changed
-     */
-    public String path;
-
-    /**
      * The index where the changes start
      */
     public int offset;
@@ -50,17 +45,15 @@ public class Change implements Serializable {
     /**
      * Create a new Change
      *
-     * @param path      The path of the file that was changed
      * @param offset    The index where the changes start
      * @param oldString The old String that was removed or replaced
      * @param newString The new String that was inserted
      * @param source    The type of change
      * @param timestamp The timestamp of the Change
      */
-    public Change(@NotNull String path, int offset, @NotNull String oldString,
+    public Change(int offset, @NotNull String oldString,
                   @NotNull String newString, @NotNull Source source,
                   long timestamp) {
-        this.path = path;
         this.offset = offset;
         this.oldString = oldString;
         this.newString = newString;
@@ -78,7 +71,6 @@ public class Change implements Serializable {
         Change change = (Change) o;
         return offset == change.offset &&
                 timestamp == change.timestamp &&
-                Objects.equals(path, change.path) &&
                 Objects.equals(oldString, change.oldString) &&
                 Objects.equals(newString, change.newString) &&
                 source == change.source;
@@ -86,15 +78,13 @@ public class Change implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(path, offset, oldString, newString, source,
-                timestamp);
+        return Objects.hash(offset, oldString, newString, source, timestamp);
     }
 
     @Override
     public String toString() {
         return "Change{" +
-                "path=" + path +
-                ", offset=" + offset +
+                "offset=" + offset +
                 ", oldString=" + oldString +
                 ", newString=" + newString +
                 ", source=" + source +

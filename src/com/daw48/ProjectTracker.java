@@ -16,8 +16,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A class used to track changes for a Document. The changes are stored in
@@ -27,31 +27,38 @@ import java.util.List;
  */
 @State(name = "PlagiarismDetectorProjectComponent",
         storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
-public class ChangeTracker implements PersistentStateComponent<ChangeTracker> {
+public class ProjectTracker implements
+        PersistentStateComponent<ProjectTracker> {
     /**
      * The Logger for this class
      */
-    private static final Logger LOG = Logger.getInstance(ChangeTracker.class);
+    private static final Logger LOG = Logger.getInstance(ProjectTracker.class);
 
     /**
-     * The List of Changes for this Project
+     * The Map of FileChanges for this Project
+     * <p>
+     * The key is the file path
      * <p>
      * Keep public and non-final for serialisation
      */
-    public List<Change> changes = new LinkedList<>();
+    public Map<String, FileTracker> files = new HashMap<>();
 
     private void addChange(VirtualFile file, DocumentEvent event,
                            Change.Source source) {
         if (file == null || file.getCanonicalPath() == null) {
             return;
         }
-        Change change = new Change(file.getCanonicalPath(), event.getOffset(),
+        String path = file.getCanonicalPath();
+        Change change = new Change(event.getOffset(),
                 event.getOldFragment().toString(),
                 event.getNewFragment().toString(), source,
                 System.currentTimeMillis());
-        LOG.info("Adding change: " + change.toString());
-        changes.add(change);
-        LOG.info("Current change set: " + changes.toString());
+        FileTracker tracker = files.getOrDefault(path, new FileTracker(path));
+
+        LOG.info("File changed: " + path);
+
+        tracker.addChange(change, event.getDocument().getText());
+        files.put(path, tracker);
     }
 
     private boolean detectCopyPaste(DocumentEvent event) {
@@ -66,13 +73,13 @@ public class ChangeTracker implements PersistentStateComponent<ChangeTracker> {
         return false;
     }
 
-    public static ChangeTracker getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, ChangeTracker.class);
+    public static ProjectTracker getInstance(@NotNull Project project) {
+        return ServiceManager.getService(project, ProjectTracker.class);
     }
 
     @Nullable
     @Override
-    public ChangeTracker getState() {
+    public ProjectTracker getState() {
         return this;
     }
 
@@ -86,14 +93,14 @@ public class ChangeTracker implements PersistentStateComponent<ChangeTracker> {
     }
 
     @Override
-    public void loadState(@NotNull ChangeTracker state) {
+    public void loadState(@NotNull ProjectTracker state) {
         XmlSerializerUtil.copyBean(state, this);
     }
 
     public void processDocumentEvent(DocumentEvent event) {
-        final Document doc = event.getDocument();
-        final VirtualFile file = FileDocumentManager.getInstance().getFile(doc);
-        final Change.Source source;
+        Document doc = event.getDocument();
+        VirtualFile file = FileDocumentManager.getInstance().getFile(doc);
+        Change.Source source;
 
         assert file != null;
 
