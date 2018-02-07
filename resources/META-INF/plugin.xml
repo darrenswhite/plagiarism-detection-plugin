@@ -1,12 +1,12 @@
 <idea-plugin>
     <id>com.daw48</id>
-    <name>Keystroke Recorder</name>
+    <name>Plagiarism Detection</name>
     <version>0.1</version>
     <vendor email="daw48@aber.ac.uk">daw48</vendor>
 
     <description>
         <![CDATA[
-        Keystroke Recorder
+        Plagiarism Detection
         ]]>
     </description>
 
@@ -14,7 +14,7 @@
         <![CDATA[
         0.1:
         <ul>
-          <li>Initial Keystroke Recorder implementation</li>
+          <li>Initial implementation</li>
         </ul>
         ]]>
     </change-notes>
@@ -22,24 +22,27 @@
     <idea-version since-build="173.0"/>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectService serviceImplementation="com.daw48.settings.Settings"/>
+        <applicationService
+                serviceImplementation="com.daw48.settings.Settings"/>
+        <projectService
+                serviceImplementation="com.daw48.ChangeTracker"/>
     </extensions>
 
     <actions>
-        <group id="KSR.Main" text="Keystroke Recorder"
-               description="Keystroke Recorder">
+        <group id="PlagiarismDetection.Main" text="Plagiarism Detection"
+               description="Plagiarism Detection">
             <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="KSR.Settings" class="com.daw48.settings.SettingsAction"
+            <action id="Plagiarism Detection.Settings"
+                    class="com.daw48.settings.SettingsAction"
                     text="Settings"
-                    description="Keystroke Recorder Settings"/>
+                    description="Plagiarism Detection Settings"/>
         </group>
     </actions>
 
     <project-components>
         <component>
-            <implementation-class>com.daw48.DocumentChangeTracker
+            <implementation-class>com.daw48.ProjectDocumentListener
             </implementation-class>
-            <interface-class>com.daw48.DocumentChangeTracker</interface-class>
         </component>
     </project-components>
 </idea-plugin>
