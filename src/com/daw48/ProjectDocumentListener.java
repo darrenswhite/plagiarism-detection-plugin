@@ -103,9 +103,6 @@ public class ProjectDocumentListener implements DocumentListener,
                         LOG.info("Content changed externally: " + path);
                         // TODO Add external change to tracker
                     }
-
-                    LOG.info(entry.getValue().cache);
-                    LOG.info(content64);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
