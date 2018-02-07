@@ -49,6 +49,33 @@ public class ProjectDocumentListener implements DocumentListener,
         this.tracker = ProjectTracker.getInstance(project);
     }
 
+    private void checkCachedExternalChanges() {
+        for (Map.Entry<String, FileTracker> entry : tracker.files.entrySet()) {
+            String path = entry.getKey();
+            FileTracker tracker = entry.getValue();
+            VirtualFile file = LocalFileSystem.getInstance()
+                    .findFileByPath(path);
+
+            if (file == null) {
+                continue;
+            }
+
+            try {
+                file.refresh(false, false);
+
+                String content64 = Base64.getEncoder()
+                        .encodeToString(file.contentsToByteArray());
+
+                if (!Objects.equals(entry.getValue().cache, content64)) {
+                    LOG.warn("Content changed externally: " + path);
+                    // TODO Add external change to tracker
+                }
+            } catch (IOException e) {
+                LOG.warn("Unable to check external changes: " + path, e);
+            }
+        }
+    }
+
     @Override
     public void documentChanged(DocumentEvent event) {
         tracker.processDocumentEvent(event);
@@ -83,31 +110,7 @@ public class ProjectDocumentListener implements DocumentListener,
     @Override
     public void projectOpened() {
         ApplicationManager.getApplication().runReadAction(() -> {
-            for (Map.Entry<String, FileTracker> entry : tracker.files.entrySet()) {
-                String path = entry.getKey();
-                FileTracker tracker = entry.getValue();
-                VirtualFile file = LocalFileSystem.getInstance()
-                        .findFileByPath(path);
-
-                if (file == null) {
-                    continue;
-                }
-
-                try {
-                    file.refresh(false, false);
-
-                    String content64 = Base64.getEncoder()
-                            .encodeToString(file.contentsToByteArray());
-
-                    if (!Objects.equals(entry.getValue().cache, content64)) {
-                        LOG.info("Content changed externally: " + path);
-                        // TODO Add external change to tracker
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            checkCachedExternalChanges();
             EditorFactory.getInstance().getEventMulticaster()
                     .addDocumentListener(this, project);
         });
