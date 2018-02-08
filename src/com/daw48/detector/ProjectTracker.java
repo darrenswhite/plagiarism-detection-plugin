@@ -1,6 +1,9 @@
 package com.daw48.detector;
 
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.DocumentEvent;
@@ -53,10 +56,10 @@ public class ProjectTracker implements
      */
     private void addChange(VirtualFile file, DocumentEvent event,
                            Change.Source source) {
-        if (file == null || file.getCanonicalPath() == null) {
+        if (file == null || file.getParent() == null) {
             return;
         }
-        String path = file.getCanonicalPath();
+        String path = file.getPath();
         Change change = new Change(event.getOffset(),
                 event.getOldFragment().toString(),
                 event.getNewFragment().toString(), source,
