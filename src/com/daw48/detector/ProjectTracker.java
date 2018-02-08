@@ -1,13 +1,12 @@
 package com.daw48.detector;
 
+import com.daw48.detector.util.DocumentUtil;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -136,11 +135,12 @@ public class ProjectTracker implements
      * @param event The DocumentEvent to process
      */
     public void processDocumentEvent(DocumentEvent event) {
-        Document doc = event.getDocument();
-        VirtualFile file = FileDocumentManager.getInstance().getFile(doc);
+        VirtualFile file = DocumentUtil.getVirtualFile(event);
         Change.Source source;
 
-        assert file != null;
+        if (file == null) {
+            return;
+        }
 
         if (detectCopyPaste(event)) {
             source = Change.Source.CLIPBOARD;

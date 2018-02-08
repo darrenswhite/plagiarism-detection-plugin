@@ -1,5 +1,6 @@
 package com.daw48.detector;
 
+import com.daw48.detector.util.DocumentUtil;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
@@ -51,7 +52,7 @@ public class ProjectDocumentListener implements DocumentListener,
 
     /**
      * Checks if any of the tracked files were changed externally
-     *
+     * <p>
      * This works by comparing the base64 encoded cache for each file against
      * its current base64 encoded content
      */
@@ -84,8 +85,12 @@ public class ProjectDocumentListener implements DocumentListener,
 
     @Override
     public void documentChanged(DocumentEvent event) {
-        // Track the change
-        tracker.processDocumentEvent(event);
+        VirtualFile file = DocumentUtil.getVirtualFile(event);
+        // Don't track .idea directory
+        if (!file.getPath().contains(".idea/")) {
+            // Track the change
+            tracker.processDocumentEvent(event);
+        }
     }
 
     @Override
