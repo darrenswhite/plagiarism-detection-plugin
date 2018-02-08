@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.apache.commons.compress.utils.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -70,8 +71,8 @@ public class ProjectDocumentListener implements DocumentListener,
             try {
                 file.refresh(false, false);
 
-                String content64 = Base64.getEncoder()
-                        .encodeToString(file.contentsToByteArray());
+                byte[] data = IOUtils.toByteArray(file.getInputStream());
+                String content64 = Base64.getEncoder().encodeToString(data);
 
                 if (!Objects.equals(entry.getValue().cache, content64)) {
                     LOG.warn("Content changed externally: " + path);
