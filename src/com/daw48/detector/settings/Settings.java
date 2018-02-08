@@ -18,14 +18,19 @@ import org.jetbrains.annotations.Nullable;
 public class Settings implements PersistentStateComponent<Settings> {
     public String name;
 
+    /**
+     * Gets the current instance for this class
+     *
+     * @return A Settings instance
+     */
+    public static Settings getInstance() {
+        return ServiceManager.getService(Settings.class);
+    }
+
     @Nullable
     @Override
     public Settings getState() {
         return this;
-    }
-
-    public static Settings getInstance() {
-        return ServiceManager.getService(Settings.class);
     }
 
     @Override

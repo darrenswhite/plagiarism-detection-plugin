@@ -1,6 +1,9 @@
 package com.daw48.detector;
 
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.DocumentEvent;
@@ -26,7 +29,7 @@ import java.util.Map;
  * @author Darren S. White
  */
 @State(name = "PlagiarismDetectorProjectComponent",
-        storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
+        storages = @Storage("plagiarism_detection.xml"))
 public class ProjectTracker implements
         PersistentStateComponent<ProjectTracker> {
     /**
@@ -43,6 +46,14 @@ public class ProjectTracker implements
      */
     public Map<String, FileTracker> files = new HashMap<>();
 
+    /**
+     * Add a change with a given Source from a DocumentEvent for a particular
+     * file
+     *
+     * @param file   The file which changed
+     * @param event  The DocumentEvent that was fired
+     * @param source The Source of the change
+     */
     private void addChange(VirtualFile file, DocumentEvent event,
                            Change.Source source) {
         if (file == null || file.getCanonicalPath() == null) {
@@ -57,12 +68,20 @@ public class ProjectTracker implements
 
         LOG.info("File changed: " + path);
 
-        tracker.addChange(change, event.getDocument().getText());
+        tracker.addChange(change, event.getDocument().getText().getBytes());
         files.put(path, tracker);
     }
 
+    /**
+     * Checks if a DocumentEvent was actually copy-paste
+     *
+     * @param event The DocumentEvent to check
+     * @return <tt>true</tt> if the DocumentEvent was copy-paste; <tt>false</tt>
+     * otherwise
+     */
     private boolean detectCopyPaste(DocumentEvent event) {
         String newFragment = event.getNewFragment().toString().trim();
+        // Compare the fragment with all clipboard contents
         for (Transferable t : CopyPasteManager.getInstance().getAllContents()) {
             String content = getTransferableString(t);
             if (content != null && newFragment.equals(content.trim())) {
@@ -73,6 +92,12 @@ public class ProjectTracker implements
         return false;
     }
 
+    /**
+     * Gets the current instance for this class for a given Project
+     *
+     * @param project The current Project
+     * @return A ProjectTracker instance
+     */
     public static ProjectTracker getInstance(@NotNull Project project) {
         return ServiceManager.getService(project, ProjectTracker.class);
     }
@@ -83,6 +108,12 @@ public class ProjectTracker implements
         return this;
     }
 
+    /**
+     * Gets the String representation for a Transferable object
+     *
+     * @param content The Transferable object to convert to a String
+     * @return A String representation for the given Transferable
+     */
     private static String getTransferableString(Transferable content) {
         try {
             return content == null ? null :
@@ -97,6 +128,13 @@ public class ProjectTracker implements
         XmlSerializerUtil.copyBean(state, this);
     }
 
+    /**
+     * Process a DocumentEvent that was fired from a DocumentListener
+     * <p>
+     * This will detect the source of the event and track the change
+     *
+     * @param event The DocumentEvent to process
+     */
     public void processDocumentEvent(DocumentEvent event) {
         Document doc = event.getDocument();
         VirtualFile file = FileDocumentManager.getInstance().getFile(doc);

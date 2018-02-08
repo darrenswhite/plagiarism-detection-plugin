@@ -98,6 +98,8 @@ public class Change implements Serializable {
      * @author Darren S. White
      */
     public enum Source {
-        CLIPBOARD, OTHER,
+        CLIPBOARD,
+        EXTERNAL,
+        OTHER,
     }
 }

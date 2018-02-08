@@ -49,6 +49,12 @@ public class ProjectDocumentListener implements DocumentListener,
         this.tracker = ProjectTracker.getInstance(project);
     }
 
+    /**
+     * Checks if any of the tracked files were changed externally
+     *
+     * This works by comparing the base64 encoded cache for each file against
+     * its current base64 encoded content
+     */
     private void checkCachedExternalChanges() {
         for (Map.Entry<String, FileTracker> entry : tracker.files.entrySet()) {
             String path = entry.getKey();
@@ -78,6 +84,7 @@ public class ProjectDocumentListener implements DocumentListener,
 
     @Override
     public void documentChanged(DocumentEvent event) {
+        // Track the change
         tracker.processDocumentEvent(event);
     }
 
@@ -85,26 +92,6 @@ public class ProjectDocumentListener implements DocumentListener,
     public void projectClosed() {
         EditorFactory.getInstance().getEventMulticaster()
                 .removeDocumentListener(this);
-
-        for (String path : tracker.files.keySet()) {
-            VirtualFile file = LocalFileSystem.getInstance()
-                    .refreshAndFindFileByPath(path);
-
-            if (file == null) {
-                continue;
-            }
-
-            try {
-                FileTracker fileTracker = tracker.files.get(path);
-
-                fileTracker.cache = Base64.getEncoder()
-                        .encodeToString(file.contentsToByteArray());
-
-                tracker.files.put(path, fileTracker);
-            } catch (IOException e) {
-                LOG.warn("Unable to update file cache: " + path, e);
-            }
-        }
     }
 
     @Override

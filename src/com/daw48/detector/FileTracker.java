@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This class is used to track the changes for a particular file
+ *
  * @author Darren S. White
  */
 public class FileTracker implements Serializable {
@@ -53,11 +55,12 @@ public class FileTracker implements Serializable {
      * <p>
      * Also updates the cached contents
      *
-     * @param c The change to track
+     * @param c     The change to track
+     * @param cache The latest byte[] content of the file
      */
-    public void addChange(Change c, String cache) {
+    public void addChange(Change c, byte[] cache) {
         LOG.info("Adding change: " + c.toString());
         changes.add(c);
-        this.cache = Base64.getEncoder().encodeToString(cache.getBytes());
+        this.cache = Base64.getEncoder().encodeToString(cache);
     }
 }
