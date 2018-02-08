@@ -76,11 +76,11 @@ public class ProjectDocumentListener implements DocumentListener,
                     String content64 = Base64.getEncoder().encodeToString(data);
 
                     if (!Objects.equals(entry.getValue().cache, content64)) {
-                        LOG.warn("Content changed externally: " + path);
+                        LOG.warn("File changed externally: " + path);
                         // TODO Add external change to tracker
                     }
                 } else {
-                    LOG.warn("File has been removed: " + path);
+                    LOG.warn("File removed externally: " + path);
                     // TODO Add external change to tracker
                 }
             } catch (IOException e) {
