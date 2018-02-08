@@ -71,11 +71,16 @@ public class ProjectDocumentListener implements DocumentListener,
             try {
                 file.refresh(false, false);
 
-                byte[] data = IOUtils.toByteArray(file.getInputStream());
-                String content64 = Base64.getEncoder().encodeToString(data);
+                if (file.exists()) {
+                    byte[] data = IOUtils.toByteArray(file.getInputStream());
+                    String content64 = Base64.getEncoder().encodeToString(data);
 
-                if (!Objects.equals(entry.getValue().cache, content64)) {
-                    LOG.warn("Content changed externally: " + path);
+                    if (!Objects.equals(entry.getValue().cache, content64)) {
+                        LOG.warn("Content changed externally: " + path);
+                        // TODO Add external change to tracker
+                    }
+                } else {
+                    LOG.warn("File has been removed: " + path);
                     // TODO Add external change to tracker
                 }
             } catch (IOException e) {
