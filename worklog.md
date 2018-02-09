@@ -38,3 +38,5 @@ properties:
 users had to enter their credentials per project
 - Added external change detection. These changes aren't saved yet as an
 algorithm will need to be written to check what has changed.
+- External change detects when files are deleted
+- .idea directory is ignored when tracking changes
