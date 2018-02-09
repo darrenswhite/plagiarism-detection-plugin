@@ -14,9 +14,7 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * This class listens for changes in a Document per Project
@@ -69,19 +67,30 @@ public class ProjectDocumentListener implements DocumentListener,
             }
 
             try {
+                String cachedContent = new String(Base64.getDecoder()
+                        .decode(entry.getValue().cache));
+
                 file.refresh(false, false);
 
                 if (file.exists()) {
-                    byte[] data = IOUtils.toByteArray(file.getInputStream());
-                    String content64 = Base64.getEncoder().encodeToString(data);
+                    String newContent = new String(IOUtils.toByteArray(
+                            file.getInputStream()));
 
-                    if (!Objects.equals(entry.getValue().cache, content64)) {
+                    if (!Objects.equals(cachedContent, newContent)) {
                         LOG.warn("File changed externally: " + path);
-                        // TODO Add external change to tracker
+                        List<Change> changes = getChanges(cachedContent,
+                                newContent);
+                        for (Change c : changes) {
+                            tracker.addChange(c, newContent.getBytes());
+                        }
                     }
                 } else {
                     LOG.warn("File removed externally: " + path);
-                    // TODO Add external change to tracker
+                    Change change = new Change(0, cachedContent, "",
+                            Change.Source.EXTERNAL,
+                            System.currentTimeMillis());
+                    // File was removed so cache is null
+                    tracker.addChange(change, null);
                 }
             } catch (IOException e) {
                 LOG.warn("Unable to check external changes: " + path, e);
@@ -97,6 +106,12 @@ public class ProjectDocumentListener implements DocumentListener,
             // Track the change
             tracker.processDocumentEvent(event);
         }
+    }
+
+    private List<Change> getChanges(String cachedContent, String newContent) {
+        List<Change> changes = new ArrayList<>();
+        // TODO Write algorithm to find changes between cached and new content
+        return changes;
     }
 
     @Override

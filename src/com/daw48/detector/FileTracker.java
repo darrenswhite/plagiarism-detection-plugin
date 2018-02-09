@@ -61,6 +61,10 @@ public class FileTracker implements Serializable {
     public void addChange(Change c, byte[] cache) {
         LOG.info("Adding change: " + c.toString());
         changes.add(c);
-        this.cache = Base64.getEncoder().encodeToString(cache);
+        if (cache != null) {
+            this.cache = Base64.getEncoder().encodeToString(cache);
+        } else {
+            this.cache = null;
+        }
     }
 }
