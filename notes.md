@@ -67,3 +67,11 @@ speed so might be copying)
 
 - Will hard copies be required for submission?
   - No
+
+# Flow
+
+1. Plugin records data
+2. Student clicks submit menu button
+3. Browser opens and is directed to the server URL
+4. User is prompted to authenticate with Shibboleth (Aber)
+5. Plugin sends recorded data to server along with authentication data
