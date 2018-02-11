@@ -40,3 +40,8 @@ users had to enter their credentials per project
 algorithm will need to be written to check what has changed.
 - External change detects when files are deleted
 - .idea directory is ignored when tracking changes
+
+## 12/02 - 18/02
+
+- Added algorithm to detect external file changes
+  - This uses the IntelliJ SDK for diffs (com.intellij.diff)
