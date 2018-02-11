@@ -1,12 +1,16 @@
 package com.daw48.detector;
 
 import com.daw48.detector.util.DocumentUtil;
+import com.intellij.diff.comparison.ComparisonManagerImpl;
+import com.intellij.diff.comparison.ComparisonPolicy;
+import com.intellij.diff.fragments.DiffFragment;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.openapi.progress.util.ProgressIndicatorBase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -110,7 +114,24 @@ public class ProjectDocumentListener implements DocumentListener,
 
     private List<Change> getChanges(String cachedContent, String newContent) {
         List<Change> changes = new ArrayList<>();
-        // TODO Write algorithm to find changes between cached and new content
+        // Get the list of diffs
+        List<DiffFragment> fragments = ComparisonManagerImpl.getInstanceImpl()
+                .compareChars(cachedContent, newContent,
+                        ComparisonPolicy.DEFAULT, new ProgressIndicatorBase());
+
+        // Convert diffs to changes
+        for (DiffFragment f : fragments) {
+            if (f.getStartOffset1() != f.getStartOffset2()) {
+                LOG.warn("DiffFragment has different start offsets: " +
+                        f.toString());
+            }
+            int offset = f.getStartOffset1();
+            String oldString = cachedContent.substring(f.getStartOffset1(), f.getEndOffset1());
+            String newString = newContent.substring(f.getStartOffset2(), f.getEndOffset2());
+            changes.add(new Change(offset, oldString, newString,
+                    Change.Source.EXTERNAL, System.currentTimeMillis()));
+        }
+
         return changes;
     }
 
