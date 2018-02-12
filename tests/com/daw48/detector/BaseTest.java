@@ -53,8 +53,7 @@ public abstract class BaseTest extends LightPlatformCodeInsightFixtureTestCase {
      * @return A List of changes
      */
     public List<Change> changesForFile(String path) {
-        ProjectTracker tracker = ProjectTracker
-                .getInstance(myFixture.getProject());
+        ProjectTracker tracker = ProjectTracker.getInstance(getProject());
         if (tracker.files.containsKey(path)) {
             return tracker.files.get(path).changes;
         } else {
