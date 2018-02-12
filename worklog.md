@@ -47,3 +47,4 @@ algorithm will need to be written to check what has changed.
   - This uses the IntelliJ SDK for diffs (com.intellij.diff)
 - Added copy-test test
 - Contacted Alun Jones (auj@aber.ac.uk) about LDAP for Aber server auth
+- Added external change detection test
