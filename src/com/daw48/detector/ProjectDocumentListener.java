@@ -135,6 +135,15 @@ public class ProjectDocumentListener implements DocumentListener,
         return changes;
     }
 
+    /**
+     * Gets the current instance for this class
+     *
+     * @return A ProjectDocumentListener instance
+     */
+    public static ProjectDocumentListener getInstance(@NotNull Project project) {
+        return project.getComponent(ProjectDocumentListener.class);
+    }
+
     @Override
     public void projectClosed() {
         EditorFactory.getInstance().getEventMulticaster()
