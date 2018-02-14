@@ -1,43 +1,48 @@
+#!/usr/bin/python3
+
+import argparse
+import getpass
 import logging
 
-from ldap3 import Connection, Server
-from ldap3.core.exceptions import LDAPBindError
-
-LDAP_PORT = 636
-LDAP_SERVER = 'ldap.dcs.aber.ac.uk'
+import ldap
 
 log = logging.getLogger(__name__)
 
 
 def main():
-    setup_logging()
+    args = parse_args()
 
-    server = ldap_server()
+    setup_logging(args.debug)
 
-    try:
-        with ldap_connection(server, 'daw48', 'password') as conn:
-            if conn.bind():
-                log.info('Authentication successful')
-                log.debug(conn)
-                log.debug(conn.extend.standard.who_am_i())
-            else:
-                log.info('Authentication failed')
-    except LDAPBindError as e:
-        log.error(e)
+    log.debug('args: %s', args)
+
+    if args.command == 'auth':
+        do_auth()
 
 
-def ldap_server():
-    return Server(LDAP_SERVER, port=LDAP_PORT, use_ssl=True)
+def do_auth():
+    user = input('User: ')
+    password = getpass.getpass()
+    ldap.auth(user, password)
 
 
-def ldap_connection(server, uid, password):
-    return Connection(server,
-                      'uid=%s,ou=People,dc=dcs,dc=aber,dc=ac,dc=uk'.format(uid),
-                      password)
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--command', help='Command to run', required=True)
+    parser.add_argument('-d', '--debug', action='store_true',
+                        help='Enable debug logging')
+    return parser.parse_args()
 
 
-def setup_logging():
-    logging.basicConfig(level=logging.DEBUG)
+def setup_logging(debug):
+    log_level = logging.INFO
+
+    if debug:
+        log_level = logging.DEBUG
+
+    logging.basicConfig(format='%(levelname)-8s %(asctime)s: %(name)20s '
+                               '[%(filename)20s:%(lineno)-4s %(funcName)-20s] '
+                               '%(message)s', level=log_level)
 
 
 if __name__ == '__main__':
