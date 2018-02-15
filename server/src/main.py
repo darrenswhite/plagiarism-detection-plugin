@@ -4,6 +4,7 @@ import argparse
 import getpass
 import logging
 
+import db
 import ldap
 
 log = logging.getLogger(__name__)
@@ -18,12 +19,18 @@ def main():
 
     if args.command == 'auth':
         do_auth()
+    elif args.command == 'db':
+        do_db()
 
 
 def do_auth():
     user = input('User: ')
     password = getpass.getpass()
     ldap.auth(user, password)
+
+
+def do_db():
+    db.test()
 
 
 def parse_args():
