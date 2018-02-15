@@ -2,10 +2,12 @@
 
 import argparse
 import getpass
+import json
 import logging
 
 import db
 import ldap
+import xml_parser
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +23,8 @@ def main():
         do_auth()
     elif args.command == 'db':
         do_db()
+    elif args.command == 'xml':
+        do_xml(args.filename)
 
 
 def do_auth():
@@ -36,9 +40,15 @@ def do_db():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--command', help='Command to run', required=True)
+    parser.add_argument('-f', '--filename', help='Filename for XML')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Enable debug logging')
     return parser.parse_args()
+
+
+def do_xml(filename):
+    data = xml_parser.parse(filename)
+    log.debug('Parsed XML: %s', json.dumps(data))
 
 
 def setup_logging(debug):
