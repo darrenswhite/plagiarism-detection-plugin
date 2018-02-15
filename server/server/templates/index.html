@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Signin template from: https://v4-alpha.getbootstrap.com/examples/signin/signin.css -->
+<form class="form-signin" method="post">
+    <h2 class="form-signin-heading">Please sign in</h2>
+    <label for="inputUid" class="sr-only">User ID</label>
+    <input type="text" id="inputUid" class="form-control"
+           placeholder="User ID" name="uid" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control"
+           placeholder="Password" name="password" required>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" value="remember-me" name="remember-me">
+            Remember me
+        </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in
+    </button>
+</form>
+
+{% endblock %}

@@ -2,9 +2,9 @@ import getpass
 import json
 import logging
 
-from .db import SubmissionCollection, get_plagiarism_db
-from .ldap import auth
-from .xml_parser import parse
+from server.db import SubmissionCollection, get_plagiarism_db
+from server.ldap import auth
+from server.xml_parser import parse
 
 
 class Submission:

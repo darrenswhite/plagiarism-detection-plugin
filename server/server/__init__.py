@@ -1,17 +1,36 @@
 import logging
 import os
 
-from .web import start
+from flask import Flask
+from flask_login import LoginManager
 
-log = logging.getLogger(__name__)
+from server.dashboard.views import dashboard
+from server.db import SubmissionCollection, get_plagiarism_db
+
+HOST = '0.0.0.0'
+PORT = 8000
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'plagiarismdetectiondaw48'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = '/'
+
+from server.auth.views import auth
+
+app.register_blueprint(auth)
+app.register_blueprint(dashboard)
+
+submissions = SubmissionCollection(get_plagiarism_db())
 
 
 def _real_main():
-    debug = os.environ['PDS_DEBUG']
+    debug = os.environ.get('PDS_DEBUG', False)
 
     setup_logging(debug)
 
-    start(debug)
+    app.run(host=HOST, port=PORT, debug=debug)
 
 
 def main():
