@@ -1,5 +1,5 @@
 import logging
-import xml.etree.ElementTree as et
+import xml.etree.ElementTree as eT
 
 DEFAULT_SQUASH_ELEMENTS = [
     'component',
@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 
 def parse(filename):
     log.debug('Parsing XML file: %s', filename)
-    return __parse(et.parse(filename).getroot())
+    return __parse(eT.parse(filename).getroot())
 
 
 def __parse(element, squash=None):
