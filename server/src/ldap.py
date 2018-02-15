@@ -9,13 +9,13 @@ LDAP_SERVER = 'ldap.dcs.aber.ac.uk'
 log = logging.getLogger(__name__)
 
 
-def auth(user, password):
-    log.info('Attempting authentication for %s', user)
+def auth(uid, password):
+    log.info('Attempting authentication for: %s', uid)
 
     server = ldap_server()
 
     try:
-        with ldap_connection(server, user, password) as conn:
+        with ldap_connection(server, uid, password) as conn:
             if conn.bind():
                 log.info('Authentication successful')
                 log.debug('Connection: %s', conn)

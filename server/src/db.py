@@ -2,38 +2,20 @@ import logging
 
 from pymongo import MongoClient
 
+MONGODB_HOST = 'localhost'
+MONGODB_PORT = 27017
+
+DB_PLAGIARISM = 'plagiarism'
+
 log = logging.getLogger(__name__)
 
 
-def test():
-    client = MongoClient('mongodb://localhost:27017')
-    db = client.plagiarism
-    db.command("dropDatabase")
-    submissions = SubmissionCollection(db)
+def get_client():
+    return MongoClient(MONGODB_HOST, MONGODB_PORT)
 
-    submissions.insert_one('daw48', 'My Submission', 'CS404040')
 
-    daw48_submissions = submissions.find({'uid': 'daw48'})
-
-    log.info('daw48 submissions:')
-    for s in daw48_submissions:
-        log.info(s)
-
-    submissions.insert_one('dab14', 'Test Submission', 'CS404040',
-                           processed=True)
-    submissions.insert_one('daw48', 'My 2nd Submission', 'CS505050')
-
-    daw48_submissions = submissions.find({'uid': 'daw48'})
-
-    log.info('daw48 submissions:')
-    for s in daw48_submissions:
-        log.info(s)
-
-    cs505050_submissions = submissions.find_by_module('CS505050')
-
-    log.info('CS505050 submissions:')
-    for s in cs505050_submissions:
-        log.info(s)
+def get_plagiarism_db():
+    return get_client()[DB_PLAGIARISM]
 
 
 class SubmissionCollection:
