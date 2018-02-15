@@ -48,3 +48,10 @@ algorithm will need to be written to check what has changed.
 - Added copy-test test
 - Contacted Alun Jones (auj@aber.ac.uk) about LDAP for Aber server auth
 - Added external change detection test
+- Created a small Python script to test the following:
+  - LDAP auth with Aber
+  - Parse XML recorded data
+  - Store submissions with MongoDB
+- This sprint was completed halfway through the week. I will need to
+re-evaluate my velocity for the next sprint. For now I will add new stories
+to this sprint
