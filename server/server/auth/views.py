@@ -1,7 +1,7 @@
 import logging
 
 from flask import request, render_template, flash, redirect, \
-    url_for, Blueprint, g
+    url_for, Blueprint
 from flask_login import current_user, login_user, \
     logout_user, login_required
 
@@ -12,14 +12,6 @@ from server.ldap import try_bind
 auth = Blueprint('auth', __name__)
 
 log = logging.getLogger(__name__)
-
-
-@auth.before_request
-def get_current_user():
-    """
-    Set the current user before each request
-    """
-    g.user = current_user
 
 
 @auth.route('/', methods=['GET', 'POST'])

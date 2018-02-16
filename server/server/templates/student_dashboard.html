@@ -3,6 +3,7 @@
 {% block content %}
 
     <h1>Welcome, {{ current_user.full_name }}</h1>
+    <h2>Student Dashboard</h2>
     <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
 
 {% endblock %}
