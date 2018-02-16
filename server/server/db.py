@@ -2,6 +2,7 @@ import logging
 
 from pymongo import MongoClient
 
+# MongoDB options
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 
@@ -11,28 +12,66 @@ log = logging.getLogger(__name__)
 
 
 def get_client():
+    """
+    Get the MongoDB client
+    :return: A MongoClient
+    """
     return MongoClient(MONGODB_HOST, MONGODB_PORT)
 
 
 def get_plagiarism_db():
+    """
+    Get the plagiarism database
+    :return: The plagiarism Database
+    """
     return get_client()[DB_PLAGIARISM]
 
 
 class SubmissionCollection:
+    """
+    A wrapper for the submissions collection
+    """
+
+    # The collection name
     NAME = 'submissions'
 
-    def __init__(self, client) -> None:
+    def __init__(self, db) -> None:
+        """
+        Create a new SubmissionCollection within a given database
+        :param db: The database which contains the collection
+        """
         super().__init__()
         self.log = logging.getLogger(type(self).__name__)
-        self.db = client[SubmissionCollection.NAME]
+        self.submissions = db[SubmissionCollection.NAME]
+
+    @staticmethod
+    def __convert_keys(data):
+        """
+        Convert $ (dollar sign) and . (dot) in the keys to __
+        (double underscore)
+        :param data: The data to convert the keys
+        :return: The data with the converted keys
+        """
+        converted = {}
+        for key in data.keys():
+            converted[key.replace('$', '__').replace('.', '__')] = data[key]
+        return converted
 
     def find(self, *args, **kwargs):
+        """
+        Query a submission. See pymongo.collection.find()
+        """
         self.log.debug('Find submission: %s, %s', args, kwargs)
-        return self.db.find(*args, **kwargs)
+        return self.submissions.find(*args, **kwargs)
 
     def find_by_module(self, module):
+        """
+        Finds all user submissions for the given module
+        :param module: The module to filter by
+        :return: All user submissions for the module
+        """
         self.log.debug('Aggregate module: %s', module)
-        return self.db.aggregate([
+        return self.submissions.aggregate([
             {
                 '$match': {
                     'submissions.module': module
@@ -55,28 +94,54 @@ class SubmissionCollection:
             }
         ])
 
+    def find_user(self, uid):
+        """
+        Find a users' submissions by uid
+        :param uid: The user id
+        :return: The users' submissions
+        """
+        self.log.debug('Find user: %s', uid)
+        return self.submissions.find_one({'uid': uid})
+
     def insert_one(self, uid, title, module, files=None, processed=False):
+        """
+        Add a new submission for a user
+        :param uid: The user id
+        :param title: The submission title
+        :param module: The submission module
+        :param files: The submission file data
+        :param processed: True if the data has been processed; False otherwise
+        :return: An instance of :class:`~pymongo.results.InsertOneResult` or
+        :class:`~pymongo.results.UpdateResult` depending if the user has
+        existing submissions
+        """
         if files is None:
             files = {}
 
-        user = self.db.find_one({'uid': uid})
+        # Find the user submissions, if any
+        user = self.submissions.find_one({'uid': uid})
+        # The submission data
         submission = {
             'title': title,
             'module': module,
-            'files': convert_keys(files),
+            # Must convert keys for file data incase of $ of . in keys
+            'files': SubmissionCollection.__convert_keys(files),
             'processed': processed
         }
 
         self.log.debug(
             'Insert submission: uid={}, submission={}'.format(uid, submission))
 
+        # If the user doesn't have previous submissions, then insert new
+        # user submissions, otherwise update the user submissions and push
+        # the new submission data
         if user is None:
             self.log.debug('Inserting a new submission')
             data = {
                 'uid': uid,
                 'submissions': [submission]
             }
-            res = self.db.insert_one(data)
+            res = self.submissions.insert_one(data)
             log.debug('Submission result: id=%s', res.inserted_id)
             return res
         else:
@@ -89,14 +154,7 @@ class SubmissionCollection:
                     'submissions': submission
                 }
             }
-            res = self.db.update_one(uid_filter, data)
+            res = self.submissions.update_one(uid_filter, data)
             log.debug('Submission result: matched=%s, modified=%s',
                       res.matched_count, res.modified_count)
             return res
-
-
-def convert_keys(data):
-    converted = {}
-    for key in data.keys():
-        converted[key.replace('$', '__').replace('.', '__')] = data[key]
-    return converted

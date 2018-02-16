@@ -6,24 +6,38 @@ from flask_login import current_user, login_user, \
 from server import login_manager
 from server.auth.user import User
 
+# The auth blueprint for the Flask app
 auth = Blueprint('auth', __name__)
 
 
 @login_manager.user_loader
 def load_user(uid):
+    """
+    Create a User given a uid
+    :param uid: The User uid
+    :return: A User object for the uid
+    """
     return User(uid)
 
 
 @auth.before_request
 def get_current_user():
+    """
+    Set the current user before each request
+    """
     g.user = current_user
 
 
 @auth.route('/', methods=['GET', 'POST'])
 def index():
+    """
+    The index page to allow users to login
+    :return:
+    """
     if current_user.is_authenticated:
         return redirect(url_for('dashboard.index'))
 
+    # Try and login with the POST form
     if request.method == 'POST':
         uid = request.form.get('uid')
         password = request.form.get('password')
@@ -45,5 +59,8 @@ def index():
 @auth.route('/logout')
 @login_required
 def logout():
+    """
+    Logout the current user
+    """
     logout_user()
     return redirect(url_for('auth.index'))

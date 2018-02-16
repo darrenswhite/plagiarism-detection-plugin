@@ -1,3 +1,4 @@
+# This file is used for executing the module when using "python -m server"
 import sys
 
 if __package__ is None and not hasattr(sys, 'frozen'):
