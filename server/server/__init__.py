@@ -12,6 +12,8 @@ HOST = '0.0.0.0'
 PORT = 8000
 
 app = Flask(__name__)
+# Secret key used for session data
+app.config['SECRET_KEY'] = 'plagiarismdetectiondaw48'
 
 # Setup Flask LoginManager
 login_manager = LoginManager()
