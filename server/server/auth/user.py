@@ -20,3 +20,8 @@ class User:
 
     def get_id(self):
         return self.uid
+
+    def __str__(self) -> str:
+        return 'User{{uid={},full_name={},user_type={}}}'.format(self.uid,
+                                                                 self.full_name,
+                                                                 self.user_type)

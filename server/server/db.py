@@ -156,7 +156,7 @@ class SubmissionCollection:
             }
         }
 
-        self.log.debug('Insert user: uid=%s', user)
+        self.log.debug('Insert user: %s', user)
 
         if stored_user is None:
             res = self.submissions.insert_one(user_data)
