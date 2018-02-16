@@ -55,3 +55,5 @@ algorithm will need to be written to check what has changed.
 - This sprint was completed halfway through the week. I will need to
 re-evaluate my velocity for the next sprint. For now I will add new stories
 to this sprint
+- Added Flask to the server for web pages. I'm using flask-login and ldap3
+for user authentication. I used a bootstrap template for the login page
