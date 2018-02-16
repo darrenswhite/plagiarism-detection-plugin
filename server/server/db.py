@@ -3,7 +3,7 @@ import logging
 from pymongo import MongoClient
 
 # MongoDB options
-MONGODB_HOST = 'localhost'
+MONGODB_HOST = 'mongodb'
 MONGODB_PORT = 27017
 
 DB_PLAGIARISM = 'plagiarism'
@@ -118,43 +118,50 @@ class SubmissionCollection:
         if files is None:
             files = {}
 
-        # Find the user submissions, if any
-        user = self.submissions.find_one({'uid': uid})
-        # The submission data
-        submission = {
-            'title': title,
-            'module': module,
-            # Must convert keys for file data incase of $ of . in keys
-            'files': SubmissionCollection.__convert_keys(files),
-            'processed': processed
+        uid_filter = {
+            'uid': uid
+        }
+        data = {
+            '$push': {
+                'submissions': {
+                    'title': title,
+                    'module': module,
+                    # Must convert keys for file data incase of $ of . in keys
+                    'files': SubmissionCollection.__convert_keys(files),
+                    'processed': processed
+                }
+            }
         }
 
         self.log.debug(
-            'Insert submission: uid={}, submission={}'.format(uid, submission))
+            'Insert submission: uid={}, submission={}'.format(uid, data))
 
-        # If the user doesn't have previous submissions, then insert new
-        # user submissions, otherwise update the user submissions and push
-        # the new submission data
-        if user is None:
-            self.log.debug('Inserting a new submission')
-            data = {
-                'uid': uid,
-                'submissions': [submission]
-            }
-            res = self.submissions.insert_one(data)
+        res = self.submissions.update_one(uid_filter, data)
+        log.debug('Submission result: matched=%s, modified=%s',
+                  res.matched_count, res.modified_count)
+        return res
+
+    def insert_user(self, user):
+        # Find the user submissions, if any
+        stored_user = self.submissions.find_one({'uid': user.uid})
+        uid_filter = {
+            'uid': user.uid
+        }
+        user_data = {
+            'uid': user.uid,
+            'full_name': user.full_name,
+            'user_type': user.user_type,
+            'submissions': []
+        }
+
+        self.log.debug('Insert user: uid=%s', user)
+
+        if stored_user is None:
+            res = self.submissions.insert_one(user_data)
             log.debug('Submission result: id=%s', res.inserted_id)
             return res
         else:
-            self.log.debug('Updating submission')
-            uid_filter = {
-                'uid': uid
-            }
-            data = {
-                '$push': {
-                    'submissions': submission
-                }
-            }
-            res = self.submissions.update_one(uid_filter, data)
+            res = self.submissions.update_one(uid_filter, user_data)
             log.debug('Submission result: matched=%s, modified=%s',
                       res.matched_count, res.modified_count)
             return res

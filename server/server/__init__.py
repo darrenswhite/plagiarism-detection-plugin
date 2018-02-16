@@ -4,7 +4,7 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 
-from server.dashboard.views import dashboard
+from server.auth.user import User
 from server.db import SubmissionCollection, get_plagiarism_db
 
 # Flask application options
@@ -21,14 +21,6 @@ login_manager.init_app(app)
 # The index page will be the login view
 login_manager.login_view = '/'
 
-# This import is here because login_manager must exist first
-from server.auth.views import auth
-
-# Register the auth for logging in/out via LDAP
-app.register_blueprint(auth)
-# Register the dashboard for logged in users
-app.register_blueprint(dashboard)
-
 # Submissions collection for the plagiarism database
 submissions = SubmissionCollection(get_plagiarism_db())
 
@@ -43,7 +35,28 @@ def _real_main():
 
     setup_logging(debug)
 
+    from server.auth.views import auth
+    # Register the auth for logging in/out via LDAP
+    app.register_blueprint(auth)
+    from server.dashboard.views import dashboard
+    # Register the dashboard for logged in users
+    app.register_blueprint(dashboard)
+
     app.run(host=HOST, port=PORT, debug=debug)
+
+
+@login_manager.user_loader
+def load_user(uid):
+    """
+    Create a User given a uid
+    :param uid: The User uid
+    :return: A User object for the uid
+    """
+    user = submissions.find_user(uid)
+    if user is None:
+        return None
+    else:
+        return User(user['uid'], user['full_name'], user['user_type'])
 
 
 def main():

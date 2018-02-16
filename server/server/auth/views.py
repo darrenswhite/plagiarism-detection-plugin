@@ -1,23 +1,17 @@
+import logging
+
 from flask import request, render_template, flash, redirect, \
     url_for, Blueprint, g
 from flask_login import current_user, login_user, \
     logout_user, login_required
 
-from server import login_manager
-from server.auth.user import User
+from server import submissions
+from server.ldap import try_bind
 
 # The auth blueprint for the Flask app
 auth = Blueprint('auth', __name__)
 
-
-@login_manager.user_loader
-def load_user(uid):
-    """
-    Create a User given a uid
-    :param uid: The User uid
-    :return: A User object for the uid
-    """
-    return User(uid)
+log = logging.getLogger(__name__)
 
 
 @auth.before_request
@@ -43,12 +37,15 @@ def index():
         password = request.form.get('password')
         remember = request.form.get('remember-me') is not None
 
-        if not User.try_login(uid, password):
+        user = try_bind(uid, password)
+
+        if user is None:
             flash('Invalid username or password. Please try again.',
                   'danger')
             return render_template('index.html')
 
-        user = load_user(uid)
+        log.debug('Current user: %s', user)
+        submissions.insert_user(user)
         login_user(user, remember=remember)
         flash('You have successfully logged in.', 'success')
         return redirect(url_for('dashboard.index'))
