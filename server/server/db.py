@@ -148,10 +148,12 @@ class SubmissionCollection:
             'uid': user.uid
         }
         user_data = {
-            'uid': user.uid,
-            'full_name': user.full_name,
-            'user_type': user.user_type,
-            'submissions': []
+            '$set': {
+                'uid': user.uid,
+                'full_name': user.full_name,
+                'user_type': user.user_type,
+                'submissions': []
+            }
         }
 
         self.log.debug('Insert user: uid=%s', user)
