@@ -61,3 +61,5 @@ for user authentication. I used a bootstrap template for the login page
 - Added Docker container for the Python server and MongoDB. Docker compose is
 used to deploy each of the containers. A Bash script is used to run the docker
 compose commands easily
+
+## 19/02 - 25/02
