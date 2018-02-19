@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block extra_head %}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='styles/dashboard.css') }}">
+{% endblock %}
+
 {% block content %}
 
     <!-- Template from: https://getbootstrap.com/docs/3.3/examples/dashboard/ -->
