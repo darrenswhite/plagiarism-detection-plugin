@@ -8,6 +8,11 @@ body {
     padding-top: 50px;
 }
 
+/* Move alerts down */
+.alert {
+    margin-top: 20px;
+}
+
 /*
  * Global add-ons
  */
