@@ -58,3 +58,6 @@ to this sprint
 - Added Flask to the server for web pages. I'm using flask-login and ldap3
 for user authentication. I used a bootstrap template for the login page
 - Implemented bootstrap dashboard for staff and students
+- Added Docker container for the Python server and MongoDB. Docker compose is
+used to deploy each of the containers. A Bash script is used to run the docker
+compose commands easily
