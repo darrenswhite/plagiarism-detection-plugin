@@ -20,8 +20,16 @@
                     <span class="icon-bar"></span>
                 </button>
                 <span class="navbar-brand">Plagiarism Detection</span>
+
             </div>
             <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-left">
+                    <li>
+                        <a href="{{ url_for('dashboard.overview') }}">Overview</a>
+                    </li>
+                    <li><a href="{{ url_for('dashboard.submit') }}">Submit</a>
+                    </li>
+                </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a>{{ current_user.full_name }}</a></li>
                     <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
@@ -30,32 +38,6 @@
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-8 col-sm-offset-2 col-md-10 col-md-offset-1 main">
-                <h1 class="page-header">Submissions</h1>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Title</th>
-                            <th>Module</th>
-                            <th>Files</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>-1</td>
-                            <td>Placeholder title</td>
-                            <td>Placeholder module</td>
-                            <td>{}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% block dashboard_content %}{% endblock %}
 
 {% endblock %}

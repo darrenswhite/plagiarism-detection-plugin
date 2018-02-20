@@ -7,12 +7,20 @@ dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
 @dashboard.route('/')
 @login_required
-def index():
+def overview():
     """
     The dashboard index route for logged in users
     """
-    print(current_user.get_card_type())
     if current_user.is_staff():
-        return render_template('staff_dashboard.html')
+        return render_template('dashboard/staff.html')
     else:
-        return render_template('student_dashboard.html')
+        return render_template('dashboard/student.html')
+
+
+@dashboard.route('/submit')
+@login_required
+def submit():
+    if current_user.is_staff():
+        pass
+    else:
+        return render_template('dashboard/submit.html')
