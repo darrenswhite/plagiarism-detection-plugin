@@ -21,7 +21,7 @@ def index():
     :return:
     """
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard.index'))
+        return redirect(url_for('dashboard.overview'))
 
     # Try and login with the POST form
     if request.method == 'POST':
@@ -40,7 +40,7 @@ def index():
         submissions.insert_user(user)
         login_user(user, remember=remember)
         flash('You have successfully logged in.', 'success')
-        return redirect(url_for('dashboard.index'))
+        return redirect(url_for('dashboard.overview'))
 
     return render_template('index.html')
 

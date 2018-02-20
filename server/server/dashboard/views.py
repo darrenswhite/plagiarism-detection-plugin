@@ -17,7 +17,7 @@ def overview():
         return render_template('dashboard/student.html')
 
 
-@dashboard.route('/submit')
+@dashboard.route('/submit', methods=['GET', 'POST'])
 @login_required
 def submit():
     if current_user.is_staff():
