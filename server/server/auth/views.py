@@ -32,6 +32,7 @@ def index():
         user = try_bind(uid, password)
 
         if user is None:
+            # TODO Add more specific error messages
             flash('Invalid username or password. Please try again.',
                   'danger')
             return render_template('index.html')
