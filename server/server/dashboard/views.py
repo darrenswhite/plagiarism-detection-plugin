@@ -38,5 +38,6 @@ def submit():
     else:
         # Try and submit the POST form submission
         if request.method == 'POST':
+            log.debug(request.files)
             log.debug(request.form)
         return render_template('dashboard/submit.html')
