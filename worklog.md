@@ -64,5 +64,7 @@ compose commands easily
 
 ## 19/02 - 25/02
 
-- Added basic boostrap form for submitting new submissions. The form post is
+- Added basic boostrap form for posting new submissions. The form post is
 currently a no-op.
+- Added initial submission implementation in the Python server. The following
+tutorial was used: http://flask.pocoo.org/docs/0.12/patterns/fileuploads/. 
