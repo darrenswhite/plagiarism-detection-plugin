@@ -7,7 +7,8 @@
             <div class="col-sm-8 col-sm-offset-2 col-md-10 col-md-offset-1 main">
                 <h1 class="page-header">Submissions</h1>
                 <div class="table-responsive">
-                    <table class="table table-striped" style="table-layout: fixed;">
+                    <table class="table table-striped"
+                           style="table-layout: fixed;">
                         <thead>
                         <tr>
                             <th class="col-sm-1">Title</th>
@@ -21,9 +22,8 @@
                                 <td>{{ submission.title }}</td>
                                 <td>{{ submission.module }}</td>
                                 <td>
-                                    <pre lang="json" style="max-height: 250px;">
-                                        {{ submission.files | tojson(indent=2, sort_keys=True) }}
-                                    </pre>
+                                    <pre lang="json"
+                                         style="max-height: 250px;">{{ submission.files | tojson(indent=2, sort_keys=True) }}</pre>
                                 </td>
                             </tr>
                         {% endfor %}
