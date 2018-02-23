@@ -29,7 +29,12 @@ def overview():
     if current_user.is_staff():
         return render_template('dashboard/staff.html')
     else:
-        return render_template('dashboard/student.html')
+        # Find all of the current users' submissions
+        user_data = submissions.find(
+            {'uid': current_user.uid}).next()
+        user_submissions = user_data['submissions'] if user_data else []
+        return render_template('dashboard/student.html',
+                               submissions=user_submissions)
 
 
 @dashboard.route('/submit', methods=['GET', 'POST'])

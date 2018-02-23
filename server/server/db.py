@@ -148,12 +148,10 @@ class SubmissionCollection:
             'uid': user.uid
         }
         user_data = {
-            '$set': {
-                'uid': user.uid,
-                'full_name': user.full_name,
-                'user_type': user.user_type,
-                'submissions': []
-            }
+            'uid': user.uid,
+            'full_name': user.full_name,
+            'user_type': user.user_type,
+            'submissions': []
         }
 
         self.log.debug('Insert user: %s', user)
@@ -163,7 +161,7 @@ class SubmissionCollection:
             log.debug('Submission result: id=%s', res.inserted_id)
             return res
         else:
-            res = self.submissions.update_one(uid_filter, user_data)
+            res = self.submissions.update_one(uid_filter, {'$set': user_data})
             log.debug('Submission result: matched=%s, modified=%s',
                       res.matched_count, res.modified_count)
             return res
