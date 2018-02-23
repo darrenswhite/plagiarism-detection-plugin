@@ -1,11 +1,9 @@
 import logging
-import os
 
 from flask import Blueprint, abort, render_template, request, flash, redirect
 from flask_login import login_required, current_user
-from werkzeug.utils import secure_filename
 
-from server import app
+from server import app, submissions, xml_parser
 
 # The dashboard blueprint, the index will be at /dashboard
 dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -56,11 +54,13 @@ def submit():
 
         # Check file extensions
         if file and valid_filename(file.filename):
-            # Check filename before saving it
-            filename = secure_filename(file.filename)
-            # TODO Upload file to MongoDB - for now just save the file
-            file.save(os.path.join('/plagiarism_detection/server', filename))
-            flash('Submission file saved successfully.', 'success')
+            title = request.form.get('title')
+            module = request.form.get('module')
+            data = xml_parser.parse(file)
+            # TODO Check if submission transaction was successful
+            submissions.insert_one(current_user.uid, title, module, data,
+                                   processed=False)
+            flash('Submission saved successfully.', 'success')
         else:
             flash('Invalid file. File type must be xml.', 'danger')
 
