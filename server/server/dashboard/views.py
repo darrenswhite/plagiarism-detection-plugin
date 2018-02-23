@@ -27,7 +27,11 @@ def overview():
     The dashboard index route for logged in users
     """
     if current_user.is_staff():
-        return render_template('dashboard/staff.html')
+        # Find all of the current users' submissions
+        user_data = submissions.find().next()
+        all_submissions = user_data['submissions'] if user_data else []
+        return render_template('dashboard/staff.html',
+                               submissions=all_submissions)
     else:
         # Find all of the current users' submissions
         user_data = submissions.find(
