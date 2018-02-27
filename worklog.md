@@ -67,4 +67,19 @@ compose commands easily
 - Added basic boostrap form for posting new submissions. The form post is
 currently a no-op.
 - Added initial submission implementation in the Python server. The following
-tutorial was used: http://flask.pocoo.org/docs/0.12/patterns/fileuploads/. 
+tutorial was used: http://flask.pocoo.org/docs/0.12/patterns/fileuploads/.
+- Submissions are now saved in the database but do not currently use
+transactions. This should be addressed in the future but for now it should be
+fine.
+- Submissions are displayed on the student dashboard for the currently logged
+in user.
+- The sprint goal was reached but not all stories were completed. I caught the
+flu and could not work much during the last half of the sprint. The remaining
+stories will be moved into the next sprint. This sprint velocity is dramatically
+low due to this.
+
+## 26/02 - 04/03
+
+- The previous sprint stories have been moved into this sprint and I will
+continue to work on these for the rest of this sprint. I had to cancel my weekly
+meeting on 26th due to the flu.
