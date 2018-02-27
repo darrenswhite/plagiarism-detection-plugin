@@ -37,6 +37,7 @@ def index():
                   'danger')
             return render_template('index.html')
 
+        print(user)
         log.debug('Current user: %s', user)
         submissions.insert_user(user)
         login_user(user, remember=remember)

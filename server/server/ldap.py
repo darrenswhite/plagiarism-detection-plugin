@@ -35,7 +35,7 @@ def try_bind(uid, password):
                                '(uid={})'.format(uid), attributes=['gecos']):
                     gecos = conn.entries[0]['gecos'].value
                     gecos_parts = gecos.split(',')
-                    log.debug(gecos_parts)
+                    log.debug('gecos: %s', gecos_parts)
                     return User(uid, gecos_parts[GECOS_FULL_NAME],
                                 gecos_parts[GECOS_USER_TYPE])
             else:

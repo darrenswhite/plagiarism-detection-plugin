@@ -25,13 +25,16 @@ login_manager.login_view = '/'
 submissions = SubmissionCollection(get_plagiarism_db())
 
 
-def _real_main():
+def real_main(force_debug=False, run=True):
     """
     Set up logging and start the Flask application
+    :param force_debug: Set to True to force enable debug logging
+    :param run: Set to False to disable running the Flask application
     """
     # Set PDS_DEBUG in the environment to enable debug
     # Use env instead of args because we are using Docker
-    debug = 'PDS_DEBUG' in os.environ
+    # Set force_debug to True to override this
+    debug = 'PDS_DEBUG' in os.environ or force_debug
 
     setup_logging(debug)
 
@@ -42,7 +45,8 @@ def _real_main():
     # Register the dashboard for logged in users
     app.register_blueprint(dashboard)
 
-    app.run(host=HOST, port=PORT, debug=debug)
+    if run:
+        app.run(host=HOST, port=PORT, debug=debug)
 
 
 @login_manager.user_loader
@@ -64,7 +68,7 @@ def main():
     Wrapper for the main function
     """
     try:
-        _real_main()
+        real_main()
     except KeyboardInterrupt:
         pass
 
