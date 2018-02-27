@@ -83,3 +83,6 @@ low due to this.
 - The previous sprint stories have been moved into this sprint and I will
 continue to work on these for the rest of this sprint. I had to cancel my weekly
 meeting on 26th due to the flu.
+- Began initial work on the Python server unit tests (nose). The LDAP3
+authentication was mocked to "bypass" logging in as a user. The next problem to
+tackle is the mock or fake the MongoDB.
