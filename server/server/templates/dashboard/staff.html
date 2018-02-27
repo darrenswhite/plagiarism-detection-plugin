@@ -5,24 +5,28 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-8 col-sm-offset-2 col-md-10 col-md-offset-1 main">
-                <h1 class="page-header">Submissions</h1>
+                <h1 class="page-header">All submissions</h1>
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped"
+                           style="table-layout: fixed;">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Title</th>
-                            <th>Module</th>
-                            <th>Files</th>
+                            <th class="col-sm-1">Title</th>
+                            <th class="col-sm-1">Module</th>
+                            <th class="col-sm-3">Files</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>-1</td>
-                            <td>Placeholder title</td>
-                            <td>Placeholder module</td>
-                            <td>{}</td>
-                        </tr>
+                        {% for submission in submissions %}
+                            <tr>
+                                <td>{{ submission.title }}</td>
+                                <td>{{ submission.module }}</td>
+                                <td>
+                                    <pre lang="json"
+                                         style="max-height: 250px;">{{ submission.files | tojson(indent=2, sort_keys=True) }}</pre>
+                                </td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>

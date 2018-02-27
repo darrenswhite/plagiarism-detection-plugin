@@ -29,7 +29,9 @@ def overview():
     if current_user.is_staff():
         # Find all of the current users' submissions
         user_data = submissions.find().next()
+        log.debug(user_data)
         all_submissions = user_data['submissions'] if user_data else []
+        log.debug(all_submissions)
         return render_template('dashboard/staff.html',
                                submissions=all_submissions)
     else:
