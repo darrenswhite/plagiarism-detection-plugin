@@ -86,3 +86,6 @@ meeting on 26th due to the flu.
 - Began initial work on the Python server unit tests (nose). The LDAP3
 authentication was mocked to "bypass" logging in as a user. The next problem to
 tackle is the mock or fake the MongoDB.
+- Caught an ear infection this week and work has slowed to a halt. The flu has
+passed so progress has resumed. This only allows for 2 days in this sprint and
+may have to move the stories to next sprint again.
