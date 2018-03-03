@@ -1,6 +1,7 @@
 import logging
 import unittest
 
+from flask import url_for
 from mock import patch
 from mockupdb import go, Command
 
@@ -43,6 +44,7 @@ class TestSignin(unittest.TestCase):
         request.ok(cursor={'id': 0, 'firstBatch': [None]})
         request = self.mockdb.receives(
             Command('insert', 'submissions'))
+        request.ok()
 
         documents = request['documents']
 
@@ -54,3 +56,10 @@ class TestSignin(unittest.TestCase):
         self.assertEqual('jos1', doc['uid'])
         self.assertEqual('ABUG', doc['user_type'])
         self.assertEqual(0, len(doc['submissions']))
+
+        response = future()
+
+        self.assertEqual(response.status_code, 302)
+        with server.app.test_request_context():
+            self.assertEqual(response.location,
+                             url_for('dashboard.overview', _external=True))
