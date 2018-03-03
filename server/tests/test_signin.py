@@ -7,7 +7,7 @@ from mockupdb import go, Command
 from server import server
 
 
-class Signin(unittest.TestCase):
+class TestSignin(unittest.TestCase):
     def setUp(self):
         self.mockdb = server.mockdb()
         server.run(force_debug=True, run=False)
@@ -52,5 +52,5 @@ class Signin(unittest.TestCase):
 
         self.assertEqual('John Smith', doc['full_name'])
         self.assertEqual('jos1', doc['uid'])
-        self.assertEqual('[ABUG]', doc['user_type'])
+        self.assertEqual('ABUG', doc['user_type'])
         self.assertEqual(0, len(doc['submissions']))
