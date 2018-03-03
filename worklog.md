@@ -89,3 +89,14 @@ tackle is the mock or fake the MongoDB.
 - Caught an ear infection this week and work has slowed to a halt. The flu has
 passed so progress has resumed. This only allows for 2 days in this sprint and
 may have to move the stories to next sprint again.
+- Started using mockupdb today. Took a few hours to get used to using but I
+managed to make a signin test for a user that has not signed in before. I had
+to refactor some of the server code to allow for mocking the MongoDB (or so
+I thought). Initially I thought I had to have a separate Server instance for
+production and test environments (instance in \__init\__ for production) and
+create another in each test setUp function. But the existing code relied
+on importing and accessing the production instance so the tests would fail. I
+solved this by making the tests mock the existing server instance - which is
+the new mockdb method in server. The test will send a POST to the server to
+signin (in a new thread) and mockupdb is then used to mock the database. Each
+requested is retrieved and replied to while making assertions.

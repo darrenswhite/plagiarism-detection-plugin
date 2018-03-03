@@ -28,12 +28,6 @@ class Server:
         # Submissions collection for the plagiarism database
         self.submissions = SubmissionCollection()
 
-    def mockdb(self):
-        mockdb = MockupDB(auto_ismaster=True)
-        mockdb.run()
-        self.submissions = SubmissionCollection(uri=mockdb.uri)
-        return mockdb
-
     def load_user(self, uid):
         """
         Loads the User for given a uid
@@ -45,6 +39,12 @@ class Server:
             return None
         else:
             return User(user['uid'], user['full_name'], user['user_type'])
+
+    def mockdb(self):
+        mockdb = MockupDB(auto_ismaster=True)
+        mockdb.run()
+        self.submissions = SubmissionCollection(uri=mockdb.uri)
+        return mockdb
 
     def run(self, force_debug=False, run=True):
         """
