@@ -36,8 +36,10 @@ def try_bind(uid, password):
                     gecos = conn.entries[0]['gecos'].value
                     gecos_parts = gecos.split(',')
                     log.debug('gecos: %s', gecos_parts)
-                    return User(uid, gecos_parts[GECOS_FULL_NAME],
-                                gecos_parts[GECOS_USER_TYPE])
+                    full_name = gecos_parts[GECOS_FULL_NAME]
+                    user_type = gecos_parts[GECOS_USER_TYPE] \
+                        .replace('[', '').replace(']', '')
+                    return User(uid, full_name, user_type)
             else:
                 log.warning('Authentication failed: failed to bind connection')
                 return None
