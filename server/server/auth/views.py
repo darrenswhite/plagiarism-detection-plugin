@@ -5,7 +5,7 @@ from flask import request, render_template, flash, redirect, \
 from flask_login import current_user, login_user, \
     logout_user, login_required
 
-from server import submissions
+from server import server
 from server.ldap import try_bind
 
 # The auth blueprint for the Flask app
@@ -37,9 +37,8 @@ def index():
                   'danger')
             return render_template('index.html')
 
-        print(user)
         log.debug('Current user: %s', user)
-        submissions.insert_user(user)
+        server.submissions.insert_user(user)
         login_user(user, remember=remember)
         flash('You have successfully logged in.', 'success')
         return redirect(url_for('dashboard.overview'))

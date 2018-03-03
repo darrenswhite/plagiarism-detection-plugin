@@ -2,29 +2,12 @@ import logging
 
 from pymongo import MongoClient
 
-# MongoDB options
-MONGODB_HOST = 'mongodb'
-MONGODB_PORT = 27017
-
-DB_PLAGIARISM = 'plagiarism'
-
 log = logging.getLogger(__name__)
 
-
-def get_client():
-    """
-    Get the MongoDB client
-    :return: A MongoClient
-    """
-    return MongoClient(MONGODB_HOST, MONGODB_PORT)
-
-
-def get_plagiarism_db():
-    """
-    Get the plagiarism database
-    :return: The plagiarism Database
-    """
-    return get_client()[DB_PLAGIARISM]
+# MongoDB options
+MONGODB_URI = 'mongodb://mongodb:27017'
+DB_PLAGIARISM = 'plagiarism'
+COLL_SUBMISSIONS = 'submissions'
 
 
 class SubmissionCollection:
@@ -32,17 +15,14 @@ class SubmissionCollection:
     A wrapper for the submissions collection
     """
 
-    # The collection name
-    NAME = 'submissions'
-
-    def __init__(self, db) -> None:
+    def __init__(self, uri=MONGODB_URI) -> None:
         """
         Create a new SubmissionCollection within a given database
-        :param db: The database which contains the collection
+        :param uri: The MongoDB connection uri
         """
         super().__init__()
         self.log = logging.getLogger(type(self).__name__)
-        self.submissions = db[SubmissionCollection.NAME]
+        self.submissions = MongoClient(uri)[DB_PLAGIARISM][COLL_SUBMISSIONS]
 
     @staticmethod
     def __convert_keys(data):

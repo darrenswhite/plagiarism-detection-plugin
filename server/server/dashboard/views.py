@@ -3,7 +3,7 @@ import logging
 from flask import Blueprint, abort, render_template, request, flash, redirect
 from flask_login import login_required, current_user
 
-from server import app, submissions, xml_parser
+from server import server, xml_parser
 
 # The dashboard blueprint, the index will be at /dashboard
 dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 ALLOWED_EXTENSIONS = ['xml']
 
 
-@app.errorhandler(403)
+@dashboard.errorhandler(403)
 def forbidden(error):
     log.error(error)
     return render_template('dashboard/403.html',
@@ -28,7 +28,7 @@ def overview():
     """
     if current_user.is_staff():
         # Find all of the current users' submissions
-        user_data = submissions.find().next()
+        user_data = server.submissions.find().next()
         log.debug(user_data)
         all_submissions = user_data['submissions'] if user_data else []
         log.debug(all_submissions)
@@ -36,7 +36,7 @@ def overview():
                                submissions=all_submissions)
     else:
         # Find all of the current users' submissions
-        user_data = submissions.find(
+        user_data = server.submissions.find(
             {'uid': current_user.uid}).next()
         user_submissions = user_data['submissions'] if user_data else []
         return render_template('dashboard/student.html',
@@ -69,8 +69,8 @@ def submit():
             module = request.form.get('module')
             data = xml_parser.parse(file)
             # TODO Check if submission transaction was successful
-            submissions.insert_one(current_user.uid, title, module, data,
-                                   processed=False)
+            server.submissions.insert_one(current_user.uid, title, module, data,
+                                          processed=False)
             flash('Submission saved successfully.', 'success')
         else:
             flash('Invalid file. File type must be xml.', 'danger')
