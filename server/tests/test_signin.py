@@ -19,18 +19,24 @@ class TestSignin(BaseTest):
     @patch('ldap3.core.connection.Connection.search')
     @patch('ldap3.core.connection.Connection.bind')
     def test_first_time_signin(self, mock_bind, mock_search, mock_entries):
+        full_name = 'John Smith'
+        user_type = 'ABUG'
+        gecos = '{},ADN,,,[{}]'.format(full_name, user_type)
+        uid = 'jos1'
+        password = 'abc123'
+
         mock_bind.return_value = True
         mock_search.side_effect = self.search
         mock_entries.__getitem__.return_value.__getitem__.return_value.value = \
-            'John Smith,ADN,,,[ABUG]'
+            gecos
 
         future = go(self.app.post, '/', data={
-            'uid': 'jos1',
-            'password': 'abc123',
+            'uid': uid,
+            'password': password,
         })
 
         request = self.mockdb.receives(
-            Command('find', 'submissions', filter={'uid': 'jos1'}))
+            Command('find', 'submissions', filter={'uid': uid}))
         request.ok(cursor={'id': 0, 'firstBatch': [None]})
         request = self.mockdb.receives(
             Command('insert', 'submissions'))
@@ -42,9 +48,9 @@ class TestSignin(BaseTest):
 
         doc = documents[0]
 
-        self.assertEqual('John Smith', doc['full_name'])
-        self.assertEqual('jos1', doc['uid'])
-        self.assertEqual('ABUG', doc['user_type'])
+        self.assertEqual(full_name, doc['full_name'])
+        self.assertEqual(uid, doc['uid'])
+        self.assertEqual(user_type, doc['user_type'])
         self.assertEqual(0, len(doc['submissions']))
 
         response = future()
@@ -58,30 +64,36 @@ class TestSignin(BaseTest):
     @patch('ldap3.core.connection.Connection.search')
     @patch('ldap3.core.connection.Connection.bind')
     def test_existing_signin(self, mock_bind, mock_search, mock_entries):
+        full_name = 'John Smith'
+        user_type = 'ABUG'
+        gecos = '{},ADN,,,[{}]'.format(full_name, user_type)
+        uid = 'jos1'
+        password = 'abc123'
+
         mock_bind.return_value = True
         mock_search.side_effect = self.search
         mock_entries.__getitem__.return_value.__getitem__.return_value.value = \
-            'John Smith,ADN,,,[ABUG]'
+            gecos
 
         future = go(self.app.post, '/', data={
-            'uid': 'jos1',
-            'password': 'abc123',
+            'uid': uid,
+            'password': password,
         })
 
         request = self.mockdb.receives(
-            Command('find', 'submissions', filter={'uid': 'jos1'}))
-        request.ok(cursor={'id': 0, 'firstBatch': [{'uid': 'jos1'}]})
+            Command('find', 'submissions', filter={'uid': uid}))
+        request.ok(cursor={'id': 0, 'firstBatch': [{'uid': uid}]})
         request = self.mockdb.receives(
             Command('update', 'submissions', updates=[{
                 'q': {
-                    'uid': 'jos1'
+                    'uid': uid
                 },
                 'u': {
                     '$set': {
                         'submissions': [],
-                        'full_name': 'John Smith',
-                        'uid': 'jos1',
-                        'user_type': 'ABUG'
+                        'full_name': full_name,
+                        'uid': uid,
+                        'user_type': user_type
                     }
                 },
                 'multi': False,
