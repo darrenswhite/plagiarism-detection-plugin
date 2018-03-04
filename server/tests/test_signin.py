@@ -1,3 +1,5 @@
+import functools
+
 from flask import url_for
 from mock import patch
 from mockupdb import go, Command
@@ -6,37 +8,49 @@ from server import server
 from tests.base import BaseTest
 
 
-class TestSignin(BaseTest):
-    def search(*args, **kwargs):
-        if 'BASE' not in args \
-                and 'attributes' in kwargs \
-                and 'gecos' in kwargs['attributes']:
-            return True
-        else:
-            return False
+def patch_connection(f=None, gecos=None):
+    if f is None:
+        return functools.partial(patch_connection, gecos=gecos)
 
     @patch('ldap3.core.connection.Connection.entries')
     @patch('ldap3.core.connection.Connection.search')
     @patch('ldap3.core.connection.Connection.bind')
-    def test_first_time_signin(self, mock_bind, mock_search, mock_entries):
-        full_name = 'John Smith'
-        user_type = 'ABUG'
-        gecos = '{},ADN,,,[{}]'.format(full_name, user_type)
-        uid = 'jos1'
-        password = 'abc123'
-
+    @functools.wraps(f)
+    def wrapper(self, mock_bind, mock_search, mock_entries):
         mock_bind.return_value = True
-        mock_search.side_effect = self.search
+        mock_search.side_effect = search
         mock_entries.__getitem__.return_value.__getitem__.return_value.value = \
             gecos
+        return f(self)
 
+    return wrapper
+
+
+def search(*args, **kwargs):
+    if 'BASE' not in args \
+            and 'attributes' in kwargs \
+            and 'gecos' in kwargs['attributes']:
+        return True
+    else:
+        return False
+
+
+class TestSignin(BaseTest):
+    FULL_NAME = 'John Smith'
+    USER_TYPE = 'ABUG'
+    GECOS = '{},ADN,,,[{}]'.format(FULL_NAME, USER_TYPE)
+    UID = 'jos1'
+    PASSWORD = 'abc123'
+
+    @patch_connection(gecos=GECOS)
+    def test_first_time_signin(self):
         future = go(self.app.post, '/', data={
-            'uid': uid,
-            'password': password,
+            'uid': self.UID,
+            'password': self.PASSWORD,
         })
 
         request = self.mockdb.receives(
-            Command('find', 'submissions', filter={'uid': uid}))
+            Command('find', 'submissions', filter={'uid': self.UID}))
         request.ok(cursor={'id': 0, 'firstBatch': [None]})
         request = self.mockdb.receives(
             Command('insert', 'submissions'))
@@ -48,9 +62,9 @@ class TestSignin(BaseTest):
 
         doc = documents[0]
 
-        self.assertEqual(full_name, doc['full_name'])
-        self.assertEqual(uid, doc['uid'])
-        self.assertEqual(user_type, doc['user_type'])
+        self.assertEqual(self.FULL_NAME, doc['full_name'])
+        self.assertEqual(self.UID, doc['uid'])
+        self.assertEqual(self.USER_TYPE, doc['user_type'])
         self.assertEqual(0, len(doc['submissions']))
 
         response = future()
@@ -60,40 +74,27 @@ class TestSignin(BaseTest):
             self.assertEqual(response.location,
                              url_for('dashboard.overview', _external=True))
 
-    @patch('ldap3.core.connection.Connection.entries')
-    @patch('ldap3.core.connection.Connection.search')
-    @patch('ldap3.core.connection.Connection.bind')
-    def test_existing_signin(self, mock_bind, mock_search, mock_entries):
-        full_name = 'John Smith'
-        user_type = 'ABUG'
-        gecos = '{},ADN,,,[{}]'.format(full_name, user_type)
-        uid = 'jos1'
-        password = 'abc123'
-
-        mock_bind.return_value = True
-        mock_search.side_effect = self.search
-        mock_entries.__getitem__.return_value.__getitem__.return_value.value = \
-            gecos
-
+    @patch_connection(gecos=GECOS)
+    def test_existing_signin(self):
         future = go(self.app.post, '/', data={
-            'uid': uid,
-            'password': password,
+            'uid': self.UID,
+            'password': self.PASSWORD,
         })
 
         request = self.mockdb.receives(
-            Command('find', 'submissions', filter={'uid': uid}))
-        request.ok(cursor={'id': 0, 'firstBatch': [{'uid': uid}]})
+            Command('find', 'submissions', filter={'uid': self.UID}))
+        request.ok(cursor={'id': 0, 'firstBatch': [{'uid': self.UID}]})
         request = self.mockdb.receives(
             Command('update', 'submissions', updates=[{
                 'q': {
-                    'uid': uid
+                    'uid': self.UID
                 },
                 'u': {
                     '$set': {
                         'submissions': [],
-                        'full_name': full_name,
-                        'uid': uid,
-                        'user_type': user_type
+                        'full_name': self.FULL_NAME,
+                        'uid': self.UID,
+                        'user_type': self.USER_TYPE
                     }
                 },
                 'multi': False,
