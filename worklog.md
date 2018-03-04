@@ -99,4 +99,8 @@ on importing and accessing the production instance so the tests would fail. I
 solved this by making the tests mock the existing server instance - which is
 the new mockdb method in server. The test will send a POST to the server to
 signin (in a new thread) and mockupdb is then used to mock the database. Each
-requested is retrieved and replied to while making assertions.
+requested is retrieved and replied to while making assertions. The following
+webpage proved very useful:
+https://emptysqua.re/blog/test-mongodb-failures-mockupdb/.
+- After creating the first signin test, it was very easy to add more. After
+adding a second test it was time to refactor.
