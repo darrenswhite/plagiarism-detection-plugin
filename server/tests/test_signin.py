@@ -91,7 +91,6 @@ class TestSignin(BaseTest):
                 },
                 'u': {
                     '$set': {
-                        'submissions': [],
                         'full_name': self.FULL_NAME,
                         'uid': self.UID,
                         'user_type': self.USER_TYPE

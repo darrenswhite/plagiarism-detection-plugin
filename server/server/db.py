@@ -131,12 +131,12 @@ class SubmissionCollection:
             'uid': user.uid,
             'full_name': user.full_name,
             'user_type': user.user_type,
-            'submissions': []
         }
 
         self.log.debug('Insert user: %s', user)
 
         if stored_user is None:
+            user_data['submissions'] = []
             res = self.submissions.insert_one(user_data)
             log.debug('Submission result: id=%s', res.inserted_id)
             return res
