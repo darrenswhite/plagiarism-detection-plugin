@@ -104,3 +104,8 @@ webpage proved very useful:
 https://emptysqua.re/blog/test-mongodb-failures-mockupdb/.
 - After creating the first signin test, it was very easy to add more. After
 adding a second test it was time to refactor.
+
+## 05/03 - 11/03
+
+- This week I will work primarily on adding more tests, creating design
+documents, and preparing for the mid-project demonstration.
