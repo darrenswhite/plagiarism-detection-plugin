@@ -22,22 +22,9 @@
     <idea-version since-build="173.0"/>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService
-                serviceImplementation="com.daw48.detector.settings.Settings"/>
         <projectService
                 serviceImplementation="com.daw48.detector.ProjectTracker"/>
     </extensions>
-
-    <actions>
-        <group id="PlagiarismDetection.Main" text="Plagiarism Detection"
-               description="Plagiarism Detection">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="Plagiarism Detection.Settings"
-                    class="com.daw48.detector.settings.SettingsAction"
-                    text="Settings"
-                    description="Plagiarism Detection Settings"/>
-        </group>
-    </actions>
 
     <project-components>
         <component>
