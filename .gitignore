@@ -1,6 +1,7 @@
-.idea/
+**/.idea/tasks.iml
+**/.idea/workspace.xml
 out/
-data/db/
+data/
 __pycache__/
 *.pyc
 .coverage
