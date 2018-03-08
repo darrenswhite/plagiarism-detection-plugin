@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/plugin/plagiarism-detection-plugin.iml" filepath="$PROJECT_DIR$/plugin/plagiarism-detection-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugin/plugin.iml" filepath="$PROJECT_DIR$/plugin/plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plagiarism.main.iml" filepath="$PROJECT_DIR$/plagiarism.main.iml" group="plagiarism" />
+      <module fileurl="file://$PROJECT_DIR$/mongodb/plagiarism.mongodb.iml" filepath="$PROJECT_DIR$/mongodb/plagiarism.mongodb.iml" group="plagiarism" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/plagiarism.plugin.iml" filepath="$PROJECT_DIR$/plugin/plagiarism.plugin.iml" group="plagiarism" />
+      <module fileurl="file://$PROJECT_DIR$/server/plagiarism.server.iml" filepath="$PROJECT_DIR$/server/plagiarism.server.iml" group="plagiarism" />
     </modules>
   </component>
 </project>
