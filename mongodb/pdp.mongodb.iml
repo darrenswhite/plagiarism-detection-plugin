@@ -5,8 +5,5 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="plagiarism.mongodb" />
-    <orderEntry type="module" module-name="plagiarism.plugin" />
-    <orderEntry type="module" module-name="plagiarism.server" />
   </component>
 </module>
