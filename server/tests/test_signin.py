@@ -1,4 +1,5 @@
 import functools
+import re
 
 from flask import url_for
 from mock import patch
@@ -8,16 +9,16 @@ from server import server
 from tests.base import BaseTest
 
 
-def patch_connection(f=None, gecos=None):
+def patch_connection(f=None, gecos=None, bind=True):
     if f is None:
-        return functools.partial(patch_connection, gecos=gecos)
+        return functools.partial(patch_connection, gecos=gecos, bind=bind)
 
     @patch('ldap3.core.connection.Connection.entries')
     @patch('ldap3.core.connection.Connection.search')
     @patch('ldap3.core.connection.Connection.bind')
     @functools.wraps(f)
     def wrapper(self, mock_bind, mock_search, mock_entries):
-        mock_bind.return_value = True
+        mock_bind.return_value = bind
         mock_search.side_effect = search
         mock_entries.__getitem__.return_value.__getitem__.return_value.value = \
             gecos
@@ -70,6 +71,7 @@ class TestSignin(BaseTest):
         response = future()
 
         self.assertEqual(response.status_code, 302)
+
         with server.app.test_request_context():
             self.assertEqual(response.location,
                              url_for('dashboard.overview', _external=True))
@@ -104,6 +106,20 @@ class TestSignin(BaseTest):
         response = future()
 
         self.assertEqual(response.status_code, 302)
+
         with server.app.test_request_context():
             self.assertEqual(response.location,
                              url_for('dashboard.overview', _external=True))
+
+    @patch_connection(bind=False)
+    def test_invalid_signin(self):
+        response = self.app.post('/', data={
+            'uid': self.UID,
+            'password': self.PASSWORD,
+        })
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTrue(
+            re.search('Invalid username or password. Please try again.',
+                      response.get_data(as_text=True)))
