@@ -109,3 +109,11 @@ adding a second test it was time to refactor.
 
 - This week I will work primarily on adding more tests, creating design
 documents, and preparing for the mid-project demonstration.
+- I have added a complete mid-project demonstration documentation file
+containing notes on what will be presented.
+- I have produced a basic architecture diagram should each of the components.
+I have also created a detailed sequence diagram showing how a student interacts
+with each component and how the components interact with each other.
+- Did some minor refactoring, grouping all of the modules together and adding
+appropriate iml and idea files to Git. Documentation files were moved from
+the root into the docs directory.
