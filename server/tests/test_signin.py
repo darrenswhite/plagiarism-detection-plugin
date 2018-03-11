@@ -6,6 +6,7 @@ from mock import patch
 from mockupdb import go, Command
 
 from server import server
+from server.auth.user import User
 from tests.base import BaseTest
 
 
@@ -38,7 +39,9 @@ def search(*args, **kwargs):
 
 class TestSignin(BaseTest):
     FULL_NAME = 'John Smith'
-    USER_TYPE = 'ABUG'
+    CAMPUS = 'AB'
+    CARD_TYPE = 'AU'
+    USER_TYPE = CAMPUS + CARD_TYPE
     GECOS = '{},ADN,,,[{}]'.format(FULL_NAME, USER_TYPE)
     UID = 'jos1'
     PASSWORD = 'abc123'
@@ -123,3 +126,10 @@ class TestSignin(BaseTest):
         self.assertTrue(
             re.search('Invalid username or password. Please try again.',
                       response.get_data(as_text=True)))
+
+    def test_user_student(self):
+        user = User(self.UID, self.FULL_NAME, self.USER_TYPE)
+
+        self.assertEqual(user.get_card_type(), self.CARD_TYPE)
+        self.assertEqual(user.get_id(), self.UID)
+        self.assertEqual(user.is_staff(), False)
