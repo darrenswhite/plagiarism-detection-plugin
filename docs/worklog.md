@@ -120,3 +120,5 @@ the root into the docs directory.
 - Added basic tests for the User class to ensure the class works as intended.
 - Completed the goal for this milestone and created the milestone for the next
 sprint.
+
+## 12/03 - 18/03
