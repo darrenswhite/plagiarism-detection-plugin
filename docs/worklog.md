@@ -117,3 +117,6 @@ with each component and how the components interact with each other.
 - Did some minor refactoring, grouping all of the modules together and adding
 appropriate iml and idea files to Git. Documentation files were moved from
 the root into the docs directory.
+- Added basic tests for the User class to ensure the class works as intended.
+- Completed the goal for this milestone and created the milestone for the next
+sprint.
