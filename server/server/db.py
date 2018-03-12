@@ -5,7 +5,7 @@ from pymongo import MongoClient
 log = logging.getLogger(__name__)
 
 # MongoDB options
-MONGODB_URI = 'mongodb://mongodb:27017'
+MONGODB_URI = 'mongodb://mongodb:27017/'
 DB_PLAGIARISM = 'plagiarism'
 COLL_SUBMISSIONS = 'submissions'
 
@@ -22,7 +22,9 @@ class SubmissionCollection:
         """
         super().__init__()
         self.log = logging.getLogger(type(self).__name__)
-        self.submissions = MongoClient(uri)[DB_PLAGIARISM][COLL_SUBMISSIONS]
+        self.client = MongoClient(uri)
+        self.database = self.client[DB_PLAGIARISM]
+        self.submissions = self.database[COLL_SUBMISSIONS]
 
     @staticmethod
     def __convert_keys(data):

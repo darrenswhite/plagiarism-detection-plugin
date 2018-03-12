@@ -1,11 +1,19 @@
 import logging
-
 import os
+
+from postprocessor.db import SubmissionCollection
 
 
 class PostProcessor:
     def __init__(self) -> None:
         super().__init__()
+        self.log = logging.getLogger(type(self).__name__)
+
+        # Submissions collection for the plagiarism database
+        self.submissions = SubmissionCollection()
+
+    def process(self, submission):
+        self.log.info('Processing submission: {}'.format(submission))
 
     def run(self):
         """
@@ -16,6 +24,7 @@ class PostProcessor:
         debug = 'PDP_DEBUG' in os.environ
 
         self.setup_logging(debug)
+        self.watch()
 
     @staticmethod
     def setup_logging(debug):
@@ -27,3 +36,8 @@ class PostProcessor:
         logging.basicConfig(format='%(levelname)-8s %(asctime)s: %(name)20s '
                                    '[%(filename)20s:%(lineno)-4s %(funcName)-20s] '
                                    '%(message)s', level=log_level)
+
+    def watch(self):
+        with self.submissions.watch() as stream:
+            for change in stream:
+                self.process(change)

@@ -2,10 +2,17 @@ version: '2'
 services:
   mongodb:
     build: ./mongodb
-    environment:
-      - MONGO_DATA_DIR=/data/db
+    hostname: mongodb
+    ports:
+      - 27017:27107
     volumes:
       - ./data/db:/data/db
+  postprocessor:
+    build: ./postprocessor
+    depends_on:
+      - mongodb
+    environment:
+      - PDP_DEBUG=${PDP_DEBUG}
   server:
     build: ./server
     depends_on:
@@ -14,6 +21,5 @@ services:
       - PDP_DEBUG=${PDP_DEBUG}
     ports:
       - 8000:8000
-    privileged: true
     volumes:
       - ./server:/plagiarism_detection/server
