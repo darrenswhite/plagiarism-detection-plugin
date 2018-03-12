@@ -11,7 +11,7 @@ services:
     depends_on:
       - mongodb
     environment:
-      - PDS_DEBUG=${PDS_DEBUG}
+      - PDP_DEBUG=${PDP_DEBUG}
     ports:
       - 8000:8000
     privileged: true

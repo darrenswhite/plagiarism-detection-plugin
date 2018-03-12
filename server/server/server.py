@@ -52,10 +52,10 @@ class Server:
         :param force_debug: Set to True to force enable debug logging
         :param run: Set to False to disable running the Flask application
         """
-        # Set PDS_DEBUG in the environment to enable debug
+        # Set PDP_DEBUG in the environment to enable debug
         # Use env instead of args because we are using Docker
         # Set force_debug to True to override this
-        debug = 'PDS_DEBUG' in os.environ or force_debug
+        debug = 'PDP_DEBUG' in os.environ or force_debug
 
         self.setup_logging(debug)
 
