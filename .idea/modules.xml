@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/pdp.main.iml" filepath="$PROJECT_DIR$/pdp.main.iml" group="plagiarism" />
       <module fileurl="file://$PROJECT_DIR$/mongodb/pdp.mongodb.iml" filepath="$PROJECT_DIR$/mongodb/pdp.mongodb.iml" group="plagiarism" />
       <module fileurl="file://$PROJECT_DIR$/plugin/pdp.plugin.iml" filepath="$PROJECT_DIR$/plugin/pdp.plugin.iml" group="plagiarism" />
+      <module fileurl="file://$PROJECT_DIR$/postprocessor/pdp.postprocessor.iml" filepath="$PROJECT_DIR$/postprocessor/pdp.postprocessor.iml" group="plagiarism" />
       <module fileurl="file://$PROJECT_DIR$/server/pdp.server.iml" filepath="$PROJECT_DIR$/server/pdp.server.iml" group="plagiarism" />
     </modules>
   </component>
