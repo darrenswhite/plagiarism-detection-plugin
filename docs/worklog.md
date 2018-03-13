@@ -122,3 +122,22 @@ the root into the docs directory.
 sprint.
 
 ## 12/03 - 18/03
+
+- Added initial Python files for the post processor module. The base files
+were taken from the server module. The Dockerfile used was also taken from the
+server. To add a watch mechanism for the post processor proved more difficult
+than expected. First, the database needed to be upgraded to MongoDB 3.6. This,
+was the easy part. Next, the database was required to be a replica set for
+watch to work. Looking through lots of guides, there was lots of manual work,
+let alone only a few Docker tutorials. At first I thought I would have to add
+redundancy to the database (i.e. 3 nodes instead of 1). This proved difficult
+with the networking configuration. After the network issues were solved, more
+problems were faced with not being able to vote for a master node. I then
+decided to remove the 2 other nodes but the same problem was occurring. It
+turned out to be that the master/primary node had to be initialized to setup
+the replica set (only one time). It worked after initialization. But that was
+manual initialization of the primary node. To automate this I wrote a bash
+script which would check if its not initialized, and then initialize it. The
+final issue was that, deploying the application a 2nd time would cause the
+replica state to fail. It turns out the hostname would change each time, so the
+fix was to change the hostname in the docker-compose.yml file.
