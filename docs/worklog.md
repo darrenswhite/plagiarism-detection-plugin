@@ -141,3 +141,9 @@ script which would check if its not initialized, and then initialize it. The
 final issue was that, deploying the application a 2nd time would cause the
 replica state to fail. It turns out the hostname would change each time, so the
 fix was to change the hostname in the docker-compose.yml file.
+- Trying to find how to identify code generation within the editor for the
+plugin. The ActionManager provides a listener which could be used to identify
+the menu action that was performed. It would be difficult to then identify the
+following editor changes that were executed from that action. Another option
+is to get the previous/last action performed when detecting editor changes. This
+has a similar problem, when does the action end?
