@@ -2,6 +2,7 @@ package com.daw48.detector;
 
 import com.daw48.detector.util.CipherUtil;
 import com.daw48.detector.util.DocumentUtil;
+import com.intellij.openapi.actionSystem.ex.ActionManagerEx;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -70,7 +71,7 @@ public class ProjectTracker implements
                 System.currentTimeMillis());
         FileTracker tracker = files.getOrDefault(path, new FileTracker(path));
 
-        LOG.info("File changed: " + path);
+        LOG.debug("File changed: " + path);
 
         tracker.addChange(change, event.getDocument().getText().getBytes());
         files.put(path, tracker);
@@ -93,6 +94,12 @@ public class ProjectTracker implements
                 return true;
             }
         }
+        return false;
+    }
+
+    private boolean detectCodeGeneration() {
+        LOG.info("LastActionId: " + ActionManagerEx.getInstanceEx().getLastPreformedActionId());
+        LOG.info("PrevActionId: " + ActionManagerEx.getInstanceEx().getPrevPreformedActionId());
         return false;
     }
 
@@ -155,6 +162,8 @@ public class ProjectTracker implements
 
         if (detectCopyPaste(event)) {
             source = Change.Source.CLIPBOARD;
+        } else if (detectCodeGeneration()) {
+            source = Change.Source.CODE_GENERATION;
         } else {
             source = Change.Source.OTHER;
         }

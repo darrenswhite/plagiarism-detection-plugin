@@ -4,6 +4,11 @@ import com.daw48.detector.util.DocumentUtil;
 import com.intellij.diff.comparison.ComparisonManagerImpl;
 import com.intellij.diff.comparison.ComparisonPolicy;
 import com.intellij.diff.fragments.DiffFragment;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.ex.ActionManagerEx;
+import com.intellij.openapi.actionSystem.ex.AnActionListener;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
@@ -25,7 +30,7 @@ import java.util.*;
  *
  * @author Darren S. White
  */
-public class ProjectDocumentListener implements DocumentListener,
+public class ProjectDocumentListener implements AnActionListener, DocumentListener,
         ProjectComponent {
     /**
      * The Logger for this class
@@ -51,6 +56,13 @@ public class ProjectDocumentListener implements DocumentListener,
     public ProjectDocumentListener(@NotNull Project project) {
         this.project = project;
         this.tracker = ProjectTracker.getInstance(project);
+    }
+
+    @Override
+    public void beforeActionPerformed(AnAction anAction,
+                                      DataContext dataContext,
+                                      AnActionEvent anActionEvent) {
+        LOG.info("ActionPerformed: " + anAction.getTemplatePresentation().toString());
     }
 
     /**
@@ -155,5 +167,6 @@ public class ProjectDocumentListener implements DocumentListener,
         ApplicationManager.getApplication().runReadAction(this::checkCachedExternalChanges);
         EditorFactory.getInstance().getEventMulticaster()
                 .addDocumentListener(this, project);
+        ActionManagerEx.getInstanceEx().addAnActionListener(this, project);
     }
 }

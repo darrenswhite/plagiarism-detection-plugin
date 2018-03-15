@@ -99,6 +99,7 @@ public class Change implements Serializable {
      */
     public enum Source {
         CLIPBOARD,
+        CODE_GENERATION,
         EXTERNAL,
         OTHER,
     }
