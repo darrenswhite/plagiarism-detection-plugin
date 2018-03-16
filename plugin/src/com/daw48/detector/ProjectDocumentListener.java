@@ -152,10 +152,8 @@ public class ProjectDocumentListener implements DocumentListener,
 
     @Override
     public void projectOpened() {
-        ApplicationManager.getApplication().runReadAction(() -> {
-            checkCachedExternalChanges();
-            EditorFactory.getInstance().getEventMulticaster()
-                    .addDocumentListener(this, project);
-        });
+        ApplicationManager.getApplication().runReadAction(this::checkCachedExternalChanges);
+        EditorFactory.getInstance().getEventMulticaster()
+                .addDocumentListener(this, project);
     }
 }
