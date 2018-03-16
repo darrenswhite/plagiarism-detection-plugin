@@ -1,6 +1,7 @@
 package com.daw48.detector;
 
 import com.daw48.detector.util.DocumentUtil;
+import com.daw48.detector.util.RefactoringData;
 import com.intellij.diff.comparison.ComparisonManagerImpl;
 import com.intellij.diff.comparison.ComparisonPolicy;
 import com.intellij.diff.fragments.DiffFragment;
@@ -14,8 +15,11 @@ import com.intellij.openapi.progress.util.ProgressIndicatorBase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.refactoring.listeners.RefactoringEventData;
+import com.intellij.refactoring.listeners.RefactoringEventListener;
 import org.apache.commons.compress.utils.IOUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.*;
@@ -26,7 +30,7 @@ import java.util.*;
  * @author Darren S. White
  */
 public class ProjectDocumentListener implements DocumentListener,
-        ProjectComponent {
+        ProjectComponent, RefactoringEventListener {
     /**
      * The Logger for this class
      */
@@ -42,6 +46,11 @@ public class ProjectDocumentListener implements DocumentListener,
      * The tracker for all of the Changes
      */
     private final ProjectTracker tracker;
+
+    /**
+     * The current/last refactoring data
+     */
+    private RefactoringData refactoringData;
 
     /**
      * Create a new ProjectDocumentListener
@@ -155,5 +164,40 @@ public class ProjectDocumentListener implements DocumentListener,
         ApplicationManager.getApplication().runReadAction(this::checkCachedExternalChanges);
         EditorFactory.getInstance().getEventMulticaster()
                 .addDocumentListener(this, project);
+        project.getMessageBus().connect().subscribe(RefactoringEventListener.REFACTORING_EVENT_TOPIC, this);
+    }
+
+    @Override
+    public void refactoringStarted(@NotNull String refactoringId, @Nullable RefactoringEventData beforeData) {
+        LOG.info("Refactoring started: " + refactoringId);
+
+        refactoringData = new RefactoringData(refactoringId);
+
+        if (beforeData != null) {
+            refactoringData.setBeforeData(beforeData);
+        }
+    }
+
+    @Override
+    public void refactoringDone(@NotNull String refactoringId, @Nullable RefactoringEventData afterData) {
+        LOG.info("Refactoring done: " + refactoringId);
+        if (afterData != null && refactoringData != null) {
+            refactoringData.setAfterData(afterData);
+            refactoringData.execute(tracker);
+        }
+    }
+
+    @Override
+    public void conflictsDetected(@NotNull String refactoringId, @NotNull RefactoringEventData conflictsData) {
+        LOG.info("Refactoring conflictsData detection: " + refactoringId);
+        if (refactoringData != null) {
+            refactoringData.setConflictsData(conflictsData);
+        }
+    }
+
+    @Override
+    public void undoRefactoring(@NotNull String refactoringId) {
+        LOG.info("Undo refactoring: " + refactoringId);
+        refactoringData.undo(tracker);
     }
 }
