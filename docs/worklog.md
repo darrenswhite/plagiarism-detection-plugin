@@ -147,3 +147,12 @@ the menu action that was performed. It would be difficult to then identify the
 following editor changes that were executed from that action. Another option
 is to get the previous/last action performed when detecting editor changes. This
 has a similar problem, when does the action end?
+- Still haven't found a reasonable solution for detecting automatic code
+generation. I have to ask myself, how much time should I spend trying to find
+a solution? Can I continue without discrete identifications of source code?
+On the other hand, while trying to find a solution for automatic code
+generation, I did found a potential solution for detecting refactoring. I think
+if I can detect renaming files and code then that would be enough for the
+plugin. My primary focus should then shift toward the post-processor. This
+week I have also been working on preparing for the mid-project demonstration. I
+opted to use Google Slides to create a small presentation to aid with the demo.
