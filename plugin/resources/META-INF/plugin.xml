@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.daw48.detector</id>
     <name>Plagiarism Detection</name>
-    <version>0.1</version>
+    <version>0.2</version>
     <vendor email="daw48@aber.ac.uk">daw48</vendor>
 
     <description>
