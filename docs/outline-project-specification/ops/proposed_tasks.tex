@@ -1,0 +1,49 @@
+\section{Proposed tasks}
+
+\begin{itemize}
+  \item \textbf{Research and investigation}
+  \begin{itemize}
+    \item \textbf{Research existing plagiarism detection tools}\\Tools exist for detecting plagiarism in education. These tools may offer insight into different detection algorithms.
+    \item \textbf{Research machine learning techniques for plagiarism}\\Applying machine learning on the server-side may improve plagiarism detection by analysing student patterns such as typing speeds.
+    \item \textbf{Investigate IntelliJ Platform Plugin SDK}\\Explore the SDK and become familiar with the code concepts. Possibly looking at existing plugins to begin. The main concepts needed will most likely be:
+    \begin{itemize}
+      \item Detecting the origin of written code (e.g. typing or copy/paste).
+      \item Storing data (student identification and recorded data)
+    \end{itemize}
+    \item \textbf{Investigate data structure for storing data}\\The data that is recorded must be stored in an adequate and efficient data structure. A Tree or Map implementation may be suitable.
+    \item \textbf{Investigate data submission method}\\Recorded data could be sent to the server continuously (real-time) or just once. Consider the advantages and disadvantages of both to find a suitable solution.
+    \item \textbf{Investigate back-end server software}\\Investigate and identify the software to be used for the server. This will need to handle multiple functions: authentication for lecturers, submission of recorded data (from the plugin), post-processing of recorded data (plagiarism detection), and viewing possible cases of plagiarism. A server-side language will need to be chosen as well as a database storage mechanism.
+  \end{itemize}
+  \item \textbf{Development}
+  \begin{itemize}
+    \item \textbf{IntelliJ Platform Plugin}
+    \begin{itemize}
+      \item Implementation of source code detection methods:
+      \begin{itemize}
+        \item Keyboard events
+        \item Copy/paste
+        \item Code generation
+        \item Code auto-completion
+        \item Refactoring
+        \item External changes (using a different editor)
+      \end{itemize}
+      \item Settings GUI (for student identification information)
+      \item Storing recorded data in a data structure 
+      \item Storing recorded data to file
+      \item Encrypt stored data (optional)
+    \end{itemize}
+    \item \textbf{Back-end server}
+    \begin{itemize}
+      \item Post-processing of students recorded data
+      \item Add database storage
+      \item Authentication for lecturers
+      \item Docker support for quick deployment (optional)
+      \item Mechanism to submit recorded student data
+    \end{itemize}
+    \item \textbf{Front-end application}\\An application for lecturers to use. This will display student data. Possible cases of plagiarism should be shown with adequate evidence.
+  \end{itemize}
+  \item \textbf{Weekly meeting and work log}\\Meetings will occur on a weekly basis and a work log will be maintained with entries for each week. The work log will be kept in the VCS.
+  \item \textbf{Project demonstration preparations}\\The mid and final project demonstrations both require preparation. The mid-project demonstration will be a showcase of the IntelliJ plugin and possibly the back-end server processing the stored data. The individual components may not be interacting at this point. The final demonstration should showcase the plugin, back-end server, and front-end application all working together.
+  \item \textbf{Story tasks}\\Create a set of stories to reflect the work to be done throughout the project. The stories should be recorded and assigned priorities (or points). GitHub issues could be used and labels could be added for priorities (or points).
+  \item \textbf{User testing}\\Test the plugin and detection algorithms with colleagues and other students. Testing could also be performed with a workshop for real world testing results.
+\end{itemize}

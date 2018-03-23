@@ -1,0 +1,89 @@
+\documentclass{article}
+
+% Include tables in word count
+% %TC:group table 1 1
+
+\usepackage[english]{babel}
+\usepackage[sorting=none,style=ieee]{biblatex}
+\usepackage{courier}
+\usepackage{csquotes}
+\usepackage{float}
+\usepackage[paper=a4paper,
+	inner=2.5cm,
+	outer=3.8cm,
+	bindingoffset=.5cm,
+	top=1.5cm,
+	bottom=1.5cm,
+]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{nameref}
+\usepackage{tabularx}
+\usepackage{verbatim}
+
+\addbibresource{refs.bib}
+
+% Centre table heading vertically
+\renewcommand\tabularxcolumn[1]{m{#1}}
+% Create tabular Y column. Centres horizontally and allows first word to be hyphenated
+\newcolumntype{Y}{>{\hspace{0pt}\centering\arraybackslash}X}
+
+% Show TeXcount
+\newcommand{\texcount}{
+	\immediate\write18{texcount \jobname.tex -merge -out=\jobname.sum -sum}
+    \verbatiminput{\jobname.sum}
+}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{.06\textheight}
+    {\scshape\LARGE Aberystwyth University\par}\vspace{1.5cm}
+    \textsc{\Large Outline Project Specification}\\[0.5cm]
+
+    \rule{.9\linewidth}{.6pt} \\[0.4cm]
+    {\huge \bfseries IntelliJ Plugin to Aid With Plagiarism Detection\par}\vspace{0.4cm}
+    \rule{.9\linewidth}{.6pt} \\[1.5cm]
+
+    \begin{minipage}[t]{0.4\textwidth}
+    \begin{flushleft} \large
+    \emph{Author:}\\
+    Darren S. \textsc{White} (daw48)
+    \end{flushleft}
+    \end{minipage}
+    \begin{minipage}[t]{0.4\textwidth}
+    \begin{flushright} \large
+    \emph{Supervisor:} \\
+    Chris \textsc{Loftus} (cwl)
+    \end{flushright}
+    \end{minipage}\\[3cm]
+
+    \vfill
+
+    \large \today\\[0.3cm]
+    Version: 1.3 (release)\\[4cm]
+    
+    \vfill
+
+    \large \textit{Degree scheme: Computer Science}\\[0.3cm]
+    \textit{Degree scheme code: G401}\\[0.4cm]
+    \textit{Module code: CS39440}\\[2cm]
+
+    \vfill
+  \end{center}
+\end{titlepage}
+
+\pagebreak
+
+\input{ops/project_description}
+\input{ops/proposed_tasks}
+\input{ops/project_deliverables}
+
+\pagebreak
+
+\nocite{*}
+\printbibliography
+
+\end{document}

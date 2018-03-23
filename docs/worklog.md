@@ -156,3 +156,17 @@ if I can detect renaming files and code then that would be enough for the
 plugin. My primary focus should then shift toward the post-processor. This
 week I have also been working on preparing for the mid-project demonstration. I
 opted to use Google Slides to create a small presentation to aid with the demo.
+
+## 19/03 - 25/03
+
+- I have been researching machine learning techniques used to identify
+plagiarism in source code. I have read many articles and have added them to
+my references bibliography. I have added the latex files for the project report
+to the `docs` directory. The front cover is complete and references have been
+added (some still need annotations added). I aim to complete to abstract by
+the end of this sprint.
+- In terms of the post-processed data structure I will gather an XML file to
+use as a working template (I will write a small project for this). I will
+then generate template graphs that will be used on the staff dashboard. From
+these graphs I will find what data will need to be stored in the database in
+order to display these graphs.
