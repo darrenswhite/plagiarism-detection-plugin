@@ -135,6 +135,7 @@ public class ProjectTracker implements
     public void loadState(@NotNull CipherState state) {
         files.clear();
         files.putAll(CipherUtil.decipher(state.files, FileTracker.class));
+        LOG.info("Loaded state: " + files);
     }
 
     /**

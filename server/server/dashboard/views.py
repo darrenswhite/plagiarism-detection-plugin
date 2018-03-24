@@ -3,9 +3,8 @@ import logging
 from flask import Blueprint, abort, render_template, request, flash, redirect
 from flask_login import login_required, current_user
 
-from cipher import AESCipher
+from server.cipher import AESCipher
 from server import server, xml_parser
-from xml_parser import parsestring
 
 # The dashboard blueprint, the index will be at /dashboard
 dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -51,7 +50,7 @@ def __parsexmlfile(file):
     encrypted = xml_parser.parse(file)
     decrypted = {}
     for key, value in encrypted.items():
-        decrypted[key] = parsestring(cipher.decrypt(value))
+        decrypted[key] = xml_parser.parsestring(cipher.decrypt(value))
     return decrypted
 
 
