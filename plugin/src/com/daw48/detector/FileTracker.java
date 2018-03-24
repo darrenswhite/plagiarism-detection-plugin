@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is used to track the changes for a particular file
@@ -66,5 +67,33 @@ public class FileTracker implements Serializable {
         } else {
             this.cache = null;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FileTracker that = (FileTracker) o;
+        return Objects.equals(path, that.path) &&
+                Objects.equals(changes, that.changes) &&
+                Objects.equals(cache, that.cache);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path, changes, cache);
+    }
+
+    @Override
+    public String toString() {
+        return "FileTracker{" +
+                "path='" + path + '\'' +
+                ", changes=" + changes +
+                ", cache='" + cache + '\'' +
+                '}';
     }
 }

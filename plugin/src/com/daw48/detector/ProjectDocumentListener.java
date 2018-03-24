@@ -106,7 +106,7 @@ public class ProjectDocumentListener implements DocumentListener,
     public void documentChanged(DocumentEvent event) {
         VirtualFile file = DocumentUtil.getVirtualFile(event);
         // Don't track .idea directory
-        if (!file.getPath().contains(".idea/")) {
+        if (file != null && !file.getPath().contains(".idea/")) {
             // Track the change
             tracker.processDocumentEvent(event);
         }

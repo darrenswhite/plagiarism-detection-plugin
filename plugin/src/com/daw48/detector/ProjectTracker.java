@@ -1,5 +1,6 @@
 package com.daw48.detector;
 
+import com.daw48.detector.util.CipherUtil;
 import com.daw48.detector.util.DocumentUtil;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -10,7 +11,6 @@ import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,12 @@ import java.util.Map;
 @State(name = "PlagiarismDetectorProjectComponent",
         storages = @Storage("plagiarism_detection.xml"))
 public class ProjectTracker implements
-        PersistentStateComponent<ProjectTracker> {
+        PersistentStateComponent<ProjectTracker.CipherState> {
+
+    static class CipherState {
+        public Map<String, String> cipherMap = new HashMap<>();
+    }
+
     /**
      * The Logger for this class
      */
@@ -43,7 +48,7 @@ public class ProjectTracker implements
      * <p>
      * Keep public and non-final for serialisation
      */
-    public Map<String, FileTracker> files = new HashMap<>();
+    public final Map<String, FileTracker> files = new HashMap<>();
 
     /**
      * Add a change with a given Source from a DocumentEvent for a particular
@@ -103,8 +108,12 @@ public class ProjectTracker implements
 
     @Nullable
     @Override
-    public ProjectTracker getState() {
-        return this;
+    public CipherState getState() {
+        CipherState state = new CipherState();
+
+        state.cipherMap.putAll(CipherUtil.cipher(files));
+
+        return state;
     }
 
     /**
@@ -123,8 +132,9 @@ public class ProjectTracker implements
     }
 
     @Override
-    public void loadState(@NotNull ProjectTracker state) {
-        XmlSerializerUtil.copyBean(state, this);
+    public void loadState(@NotNull CipherState state) {
+        files.clear();
+        files.putAll(CipherUtil.decipher(state.cipherMap, FileTracker.class));
     }
 
     /**
