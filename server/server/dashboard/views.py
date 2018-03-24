@@ -3,10 +3,14 @@ import logging
 from flask import Blueprint, abort, render_template, request, flash, redirect
 from flask_login import login_required, current_user
 
+from cipher import AESCipher
 from server import server, xml_parser
+from xml_parser import parsestring
 
 # The dashboard blueprint, the index will be at /dashboard
 dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
+
+cipher = AESCipher('plagiarismplugin')
 
 log = logging.getLogger(__name__)
 
@@ -43,6 +47,14 @@ def overview():
                                submissions=user_submissions)
 
 
+def __parsexmlfile(file):
+    encrypted = xml_parser.parse(file)
+    decrypted = {}
+    for key, value in encrypted.items():
+        decrypted[key] = parsestring(cipher.decrypt(value))
+    return decrypted
+
+
 @dashboard.route('/submit', methods=['GET', 'POST'])
 @login_required
 def submit():
@@ -67,7 +79,7 @@ def submit():
         if file and valid_filename(file.filename):
             title = request.form.get('title')
             module = request.form.get('module')
-            data = xml_parser.parse(file)
+            data = __parsexmlfile(file)
             # TODO Check if submission transaction was successful
             server.submissions.insert_one(current_user.uid, title, module, data,
                                           processed=False)

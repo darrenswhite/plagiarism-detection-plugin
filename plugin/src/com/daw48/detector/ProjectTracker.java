@@ -33,7 +33,7 @@ public class ProjectTracker implements
         PersistentStateComponent<ProjectTracker.CipherState> {
 
     static class CipherState {
-        public Map<String, String> cipherMap = new HashMap<>();
+        public Map<String, String> files = new HashMap<>();
     }
 
     /**
@@ -111,7 +111,7 @@ public class ProjectTracker implements
     public CipherState getState() {
         CipherState state = new CipherState();
 
-        state.cipherMap.putAll(CipherUtil.cipher(files));
+        state.files.putAll(CipherUtil.cipher(files));
 
         return state;
     }
@@ -134,7 +134,7 @@ public class ProjectTracker implements
     @Override
     public void loadState(@NotNull CipherState state) {
         files.clear();
-        files.putAll(CipherUtil.decipher(state.cipherMap, FileTracker.class));
+        files.putAll(CipherUtil.decipher(state.files, FileTracker.class));
     }
 
     /**

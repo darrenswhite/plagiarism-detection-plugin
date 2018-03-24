@@ -23,6 +23,15 @@ def parse(filename):
     return __parse(eT.parse(filename).getroot())
 
 
+def parsestring(s):
+    """
+    Parse an XML string
+    :param s: The XML string
+    :return: The parsed XML data
+    """
+    return __parse(eT.fromstring(s))
+
+
 def __parse(element, squash=None):
     """
     Parse an XML element into a dict
@@ -54,7 +63,8 @@ def __parse(element, squash=None):
             map_data = data if squash_child else {}
 
             for entry in child.find('map'):
-                map_data[entry.attrib['key']] = __parse(entry)
+                map_data[entry.attrib['key']] = __parse(entry) if len(
+                    entry) > 0 else entry.attrib['value']
 
             if not squash_child:
                 data[child.attrib['name']] = map_data
