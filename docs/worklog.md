@@ -170,3 +170,18 @@ use as a working template (I will write a small project for this). I will
 then generate template graphs that will be used on the staff dashboard. From
 these graphs I will find what data will need to be stored in the database in
 order to display these graphs.
+- I've only thought about students being able to generate a fake XML file but
+it has only now occurred to me that the XML could be modified before submission.
+For example, replace source=CLIPBOARD with source=OTHER. The obvious way to
+prevent this is encryption. Previously I had thought it was unnecessary. I
+attempted to implement encryption (or to at least obfuscate the XML data). I
+tried many methods. First, I tried obfuscating the file paths (the map keys).
+This was successful and one way to expand on this would be to manually
+obfuscate each value in the map. I played around with the code for a bit and
+delved into the SDK source code. I found the XmlSerializer file. This file
+handles serialising objects into an XML structure. Utilising this class I was
+able to serialise the map into an XML string, then perform 128-bit AES
+encryption on the XML string, then apply base64 encoding. The base64 is so that
+it can be stored as a string. This string can then be saved as usual and will be
+used for the persistent state. Upon loading the state, the process is simply
+reversed. This prevents students from modifying the XML data.
