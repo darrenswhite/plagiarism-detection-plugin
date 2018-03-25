@@ -1,17 +1,30 @@
 <idea-plugin>
     <id>com.daw48.detector</id>
-    <name>Plagiarism Detection</name>
-    <version>0.2</version>
+    <name>Plagiarism Detection Plugin</name>
+    <version>1.0</version>
     <vendor email="daw48@aber.ac.uk">daw48</vendor>
 
     <description>
         <![CDATA[
-        Plagiarism Detection
+        Plagiarism Detection Plugin
+
+        Features:
+
+        <ul>
+          <li>Tracks file changes in the editor</li>
+          <li>Saves changes to XML file (.idea/plagiarism_detection.xml)</li>
+          <li>Tracked data is encrypted using AES-128</li>
+        </ul>
         ]]>
     </description>
 
     <change-notes>
         <![CDATA[
+        1.0:
+        <ul>
+          <li>Added encryption</li>
+        </ul>
+
         0.1:
         <ul>
           <li>Initial implementation</li>
