@@ -195,3 +195,9 @@ also write simple Java applications (the same one but in different ways) to
 get a range of XML files.
 
 ## 26/03 - 01/04
+
+- The plugin should be fully complete. This does not include any extra features.
+I will document these missing/wanted features in my report instead. If I had
+more time I would definitely implement more features.
+- The final addition to the plugin was file renaming detection which has been
+implemented.
