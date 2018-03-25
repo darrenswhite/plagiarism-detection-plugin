@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.daw48.detector</id>
     <name>Plagiarism Detection Plugin</name>
-    <version>1.0</version>
+    <version>1.01</version>
     <vendor email="daw48@aber.ac.uk">daw48</vendor>
 
     <description>
@@ -20,6 +20,11 @@
 
     <change-notes>
         <![CDATA[
+        1.01:
+        <ul>
+          <li>Added refactoring detection (currently only file/class renaming)</li>
+        </ul>
+
         1.0:
         <ul>
           <li>Added encryption</li>
