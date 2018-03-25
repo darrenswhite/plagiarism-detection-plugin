@@ -185,3 +185,13 @@ encryption on the XML string, then apply base64 encoding. The base64 is so that
 it can be stored as a string. This string can then be saved as usual and will be
 used for the persistent state. Upon loading the state, the process is simply
 reversed. This prevents students from modifying the XML data.
+- Due to implementing encryption at the end of this sprint, I was unable to
+create the post-processed data structure. Instead I have moved this to next
+sprint. To help create the data structure I will gather sample XML files from
+other students writing a basic Java application. They will have the option
+to "cheat" or plagiarise. I will ask them if they did so that I can identify
+this in the recorded data. Aside from other students testing the plugin, I will
+also write simple Java applications (the same one but in different ways) to
+get a range of XML files.
+
+## 26/03 - 01/04
