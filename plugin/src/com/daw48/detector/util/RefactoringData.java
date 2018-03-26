@@ -2,7 +2,6 @@ package com.daw48.detector.util;
 
 import com.daw48.detector.FileTracker;
 import com.daw48.detector.ProjectTracker;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.listeners.RefactoringEventData;
@@ -42,8 +41,9 @@ public class RefactoringData {
         }
     }
 
-    public VirtualFile getFile(RefactoringEventData data) {
-        return getPsiElement(data).getContainingFile().getVirtualFile();
+    public String getPath(RefactoringEventData data) {
+        PsiElement element = getPsiElement(data);
+        return element != null ? element.getContainingFile().getVirtualFile().getPath() : null;
     }
 
     public PsiElement getPsiElement(RefactoringEventData data) {
@@ -52,12 +52,12 @@ public class RefactoringData {
 
     public void setAfterData(RefactoringEventData afterData) {
         this.afterData = afterData;
-        afterPath = getFile(afterData).getPath();
+        afterPath = getPath(afterData);
     }
 
     public void setBeforeData(RefactoringEventData beforeData) {
         this.beforeData = beforeData;
-        beforePath = getFile(beforeData).getPath();
+        beforePath = getPath(beforeData);
     }
 
     public void setConflictsData(RefactoringEventData conflictsData) {

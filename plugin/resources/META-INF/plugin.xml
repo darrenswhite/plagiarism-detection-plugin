@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.daw48.detector</id>
     <name>Plagiarism Detection Plugin</name>
-    <version>1.01</version>
+    <version>1.02</version>
     <vendor email="daw48@aber.ac.uk">daw48</vendor>
 
     <description>
@@ -20,6 +20,11 @@
 
     <change-notes>
         <![CDATA[
+        1.02
+        <ul>
+          <li>Fix NPE when deleting a file</li>
+        </ul>
+
         1.01:
         <ul>
           <li>Added refactoring detection (currently only file/class renaming)</li>
