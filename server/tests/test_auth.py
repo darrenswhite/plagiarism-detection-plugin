@@ -1,8 +1,6 @@
-import functools
 import re
 
 from flask import url_for
-from mock import patch
 from mockupdb import go, Command
 
 from server import server
@@ -11,35 +9,8 @@ from tests.base import BaseTest
 from .test_data import AberUndergrad, AberStaff
 
 
-def patch_connection(f=None, gecos=None, bind=True):
-    if f is None:
-        return functools.partial(patch_connection, gecos=gecos, bind=bind)
-
-    @patch('ldap3.core.connection.Connection.entries')
-    @patch('ldap3.core.connection.Connection.search')
-    @patch('ldap3.core.connection.Connection.bind')
-    @functools.wraps(f)
-    def wrapper(self, mock_bind, mock_search, mock_entries):
-        mock_bind.return_value = bind
-        mock_search.side_effect = search
-        mock_entries.__getitem__.return_value.__getitem__.return_value.value = \
-            gecos
-        return f(self)
-
-    return wrapper
-
-
-def search(*args, **kwargs):
-    if 'BASE' not in args \
-            and 'attributes' in kwargs \
-            and 'gecos' in kwargs['attributes']:
-        return True
-    else:
-        return False
-
-
 class TestSignin(BaseTest):
-    @patch_connection(gecos=AberUndergrad.GECOS)
+    @BaseTest.patch_connection(gecos=AberUndergrad.GECOS)
     def test_existing_signin(self):
         future = go(self.app.post, '/', data={
             'uid': AberUndergrad.UID,
@@ -48,7 +19,13 @@ class TestSignin(BaseTest):
 
         request = self.mockdb.receives(
             Command('find', 'submissions', filter={'uid': AberUndergrad.UID}))
-        request.ok(cursor={'id': 0, 'firstBatch': [{'uid': AberUndergrad.UID}]})
+        request.ok(cursor={'id': 0, 'firstBatch': [
+            {
+                'uid': AberUndergrad.UID,
+                'full_name': AberUndergrad.FULL_NAME,
+                'user_type': AberUndergrad.USER_TYPE
+            }
+        ]})
         request = self.mockdb.receives(
             Command('update', 'submissions', updates=[{
                 'q': {
@@ -74,7 +51,7 @@ class TestSignin(BaseTest):
             self.assertEqual(response.location,
                              url_for('dashboard.overview', _external=True))
 
-    @patch_connection(gecos=AberUndergrad.GECOS)
+    @BaseTest.patch_connection(gecos=AberUndergrad.GECOS)
     def test_first_time_signin(self):
         future = go(self.app.post, '/', data={
             'uid': AberUndergrad.UID,
@@ -107,7 +84,7 @@ class TestSignin(BaseTest):
             self.assertEqual(response.location,
                              url_for('dashboard.overview', _external=True))
 
-    @patch_connection(bind=False)
+    @BaseTest.patch_connection(bind=False)
     def test_invalid_signin(self):
         response = self.app.post('/', data={
             'uid': AberUndergrad.UID,
