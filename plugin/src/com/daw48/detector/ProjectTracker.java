@@ -10,6 +10,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,12 @@ public class ProjectTracker implements
 
     static class CipherState {
         public Map<String, String> files = new HashMap<>();
+    }
+
+    private final Project project;
+
+    public ProjectTracker(Project project) {
+        this.project = project;
     }
 
     /**
@@ -63,7 +70,8 @@ public class ProjectTracker implements
         if (file == null || file.getParent() == null) {
             return;
         }
-        String path = file.getPath();
+
+        String path = VfsUtil.getRelativePath(file, project.getBaseDir());
         Change change = new Change(event.getOffset(),
                 event.getOldFragment().toString(),
                 event.getNewFragment().toString(), source,
