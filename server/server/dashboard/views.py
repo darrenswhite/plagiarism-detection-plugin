@@ -3,8 +3,8 @@ import logging
 from flask import Blueprint, abort, render_template, request, flash, redirect
 from flask_login import login_required, current_user
 
-from server.cipher import AESCipher
 from server import server, xml_parser
+from server.cipher import AESCipher
 
 # The dashboard blueprint, the index will be at /dashboard
 dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -30,13 +30,24 @@ def overview():
     The dashboard index route for logged in users
     """
     if current_user.is_staff():
-        # Find all of the current users' submissions
-        user_data = server.submissions.find().next()
-        log.debug(user_data)
-        all_submissions = user_data['submissions'] if user_data else []
-        log.debug(all_submissions)
+        # Find all users' submissions
+        all_user_data = list(server.submissions.find())
+        all_user_submissions = []
+
+        for user in all_user_data:
+            submissions = user['submissions']
+            for s in submissions:
+                s['full_name'] = user['full_name']
+            all_user_submissions.append(submissions)
+
+        squashed_submissions = []
+
+        for user_submissions in all_user_submissions:
+            for s in user_submissions:
+                squashed_submissions.append(s)
+
         return render_template('dashboard/staff.html',
-                               submissions=all_submissions)
+                               submissions=squashed_submissions)
     else:
         # Find all of the current users' submissions
         user_data = server.submissions.find(

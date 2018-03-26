@@ -11,6 +11,7 @@
                            style="table-layout: fixed;">
                         <thead>
                         <tr>
+                            <th class="col-sm-1">Full Name</th>
                             <th class="col-sm-1">Title</th>
                             <th class="col-sm-1">Module</th>
                             <th class="col-sm-3">Files</th>
@@ -19,6 +20,7 @@
                         <tbody>
                         {% for submission in submissions %}
                             <tr>
+                                <td>{{ submission.full_name }}</td>
                                 <td>{{ submission.title }}</td>
                                 <td>{{ submission.module }}</td>
                                 <td>
