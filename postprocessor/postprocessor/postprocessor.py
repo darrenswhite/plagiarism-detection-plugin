@@ -2,6 +2,7 @@ import logging
 import os
 
 from postprocessor.db import SubmissionCollection
+from postprocessor.fileprocessor import FileProcessor
 from postprocessor.xml_parser import cipherparse
 
 
@@ -15,6 +16,9 @@ class PostProcessor:
 
     def process(self, submission):
         self.log.info('Processing submission: {}'.format(submission))
+
+        for path, data in submission.items():
+            FileProcessor(path, data).process()
 
     def run(self, filename=None):
         """

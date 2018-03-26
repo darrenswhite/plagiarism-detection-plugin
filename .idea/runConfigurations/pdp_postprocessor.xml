@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="pdp.postprocessor" type="PythonConfigurationType" factoryName="Python" singleton="true">
+    <output_file path="$PROJECT_DIR$/postprocessor/console.log" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
@@ -14,7 +15,7 @@
     <module name="pdp.postprocessor" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="postprocessor" />
-    <option name="PARAMETERS" value="$PROJECT_DIR$/samples/bingo_01.xml" />
+    <option name="PARAMETERS" value="$PROJECT_DIR$/samples/bingo_04.xml" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="true" />
