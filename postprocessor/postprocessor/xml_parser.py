@@ -1,7 +1,7 @@
 import logging
 import xml.etree.ElementTree as eT
 
-from server.cipher import AESCipher
+from postprocessor.cipher import AESCipher
 
 # AES cipher to decrypt XML data
 cipher = AESCipher('plagiarismplugin')

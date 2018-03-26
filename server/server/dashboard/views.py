@@ -57,14 +57,6 @@ def overview():
                                submissions=user_submissions)
 
 
-def __parsexmlfile(file):
-    encrypted = xml_parser.parse(file)
-    decrypted = {}
-    for key, value in encrypted.items():
-        decrypted[key] = xml_parser.parsestring(cipher.decrypt(value))
-    return decrypted
-
-
 @dashboard.route('/submit', methods=['GET', 'POST'])
 @login_required
 def submit():
@@ -89,7 +81,7 @@ def submit():
         if file and valid_filename(file.filename):
             title = request.form.get('title')
             module = request.form.get('module')
-            data = __parsexmlfile(file)
+            data = xml_parser.cipherparse(file)
             # TODO Check if submission transaction was successful
             server.submissions.insert_one(current_user.uid, title, module, data,
                                           processed=False)

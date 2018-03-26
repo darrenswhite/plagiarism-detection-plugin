@@ -2,6 +2,7 @@ import logging
 import os
 
 from postprocessor.db import SubmissionCollection
+from postprocessor.xml_parser import cipherparse
 
 
 class PostProcessor:
@@ -15,7 +16,7 @@ class PostProcessor:
     def process(self, submission):
         self.log.info('Processing submission: {}'.format(submission))
 
-    def run(self):
+    def run(self, filename=None):
         """
         Set up logging and start the post processor
         """
@@ -24,7 +25,11 @@ class PostProcessor:
         debug = 'PDP_DEBUG' in os.environ
 
         self.setup_logging(debug)
-        self.watch()
+
+        if filename is None:
+            self.watch()
+        else:
+            self.process(cipherparse(filename))
 
     @staticmethod
     def setup_logging(debug):
