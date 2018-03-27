@@ -17,8 +17,6 @@ class FileProcessor:
         sorted_changes = sorted(self.changes,
                                 key=lambda ch: int(ch['timestamp']))
 
-        self.log.info(sorted_changes)
-
         for c in sorted_changes:
             # get change data
             old_str = c['oldString']
