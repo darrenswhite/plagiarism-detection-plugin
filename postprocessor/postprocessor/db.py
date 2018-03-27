@@ -32,4 +32,4 @@ class SubmissionCollection:
             self.database.create_collection(COLL_SUBMISSIONS)
 
         self.log.info('Watching submission collection')
-        return self.submissions.watch()
+        return self.submissions.__watch()
