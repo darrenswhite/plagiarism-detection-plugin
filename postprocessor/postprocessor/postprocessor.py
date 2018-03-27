@@ -1,10 +1,9 @@
 import base64
 import logging
 import os
-from difflib import SequenceMatcher
 
-from postprocessor.changeprocessor import ChangeProcessor
 from postprocessor.db import SubmissionCollection
+from postprocessor.fileprocessor import FileProcessor
 from postprocessor.xml_parser import cipherparse
 
 
@@ -16,51 +15,17 @@ class PostProcessor:
         # Submissions collection for the plagiarism database
         self.submissions = SubmissionCollection()
 
-    @staticmethod
-    def __build_document(changes):
-        document = ''
-
-        for c in changes:
-            # get change data
-            old_str = c['oldString']
-            new_str = c['newString']
-            offset = int(c['offset'])
-
-            # Get the start and end of the document which shouldn't be modified
-            start = document[:offset] if len(document) > 0 else ''
-            end = document[offset + len(old_str):] if len(document) > 0 else ''
-
-            # Insert the new value into the document
-            document = start + new_str + end
-
-        return document
-
     def __process(self, submission):
         self.log.info('Processing submission: {}'.format(submission))
 
-        all_changes = []
-        document_diff_ratios = {}
+        result = {}
 
         for path, data in submission.items():
-            changes = data['changes']
             # Ensure changes are sorted by timestamp
-            data['changes'] = self.__sort_changes(changes)
-            all_changes += changes
-
-            # Deocde the document cache
+            changes = self.__sort_changes(data['changes'])
+            # Decode the document cache
             cache = base64.b64decode(data['cache']).decode('utf-8')
-            # Reconstruct the document from the list of changes
-            built = self.__build_document(changes)
-            # Get the diff ratio between the cache and reconstructed document
-            ratio = SequenceMatcher(None, cache, built).ratio()
-
-            document_diff_ratios[path] = ratio
-
-        # Sort all changes again
-        all_changes = self.__sort_changes(all_changes)
-        result = ChangeProcessor(all_changes, self.plot).process()
-        # Add the document diff ratios to the final result
-        result['document_diff_ratios'] = document_diff_ratios
+            result[path] = FileProcessor(cache, changes, self.plot).process()
 
         self.log.info('Result: {}'.format(result))
 

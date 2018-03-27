@@ -1,4 +1,5 @@
 import logging
+from difflib import SequenceMatcher
 from textwrap import wrap
 
 import matplotlib.pyplot as plt
@@ -6,10 +7,11 @@ import matplotlib.pyplot as plt
 _SOURCES = {'CLIPBOARD': 'r', 'EXTERNAL': 'b', 'OTHER': 'k'}
 
 
-class ChangeProcessor:
-    def __init__(self, changes, plot=False) -> None:
+class FileProcessor:
+    def __init__(self, cache, changes, plot=False) -> None:
         super().__init__()
         self.log = logging.getLogger(type(self).__name__)
+        self.cache = cache
         self.changes = changes
         self.plot = plot
 
@@ -31,6 +33,24 @@ class ChangeProcessor:
 
         return rows
 
+    def __build_document(self):
+        document = ''
+
+        for c in self.changes:
+            # get change data
+            old_str = c['oldString']
+            new_str = c['newString']
+            offset = int(c['offset'])
+
+            # Get the start and end of the document which shouldn't be modified
+            start = document[:offset] if len(document) > 0 else ''
+            end = document[offset + len(old_str):] if len(document) > 0 else ''
+
+            # Insert the new value into the document
+            document = start + new_str + end
+
+        return document
+
     def __build_frequency(self, source=None):
         total = 0
 
@@ -39,6 +59,12 @@ class ChangeProcessor:
                 total += len(c['newString']) - len(c['oldString'])
 
         return total
+
+    def __get_diff_ratio(self):
+        # Reconstruct the document from the list of changes
+        built = self.__build_document()
+        # Get the diff ratio between the cache and reconstructed document
+        return SequenceMatcher(None, self.cache, built).ratio()
 
     def __plot(self):
         f_graph = self.__build_character_frequency_time_data()
@@ -66,8 +92,10 @@ class ChangeProcessor:
         total_f = self.__build_frequency()
         clipboard_f = self.__build_frequency('CLIPBOARD')
         external_f = self.__build_frequency('EXTERNAL')
+        diff_ratio = self.__get_diff_ratio()
 
         return {
+            'diff_ratio': diff_ratio,
             'frequency_total': total_f,
             'frequency_clipboard': clipboard_f,
             'frequency_external': external_f
