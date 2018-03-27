@@ -3,7 +3,7 @@ FROM python:3.6.4-slim
 WORKDIR /plagiarism_detection/postprocessor
 
 RUN apt-get update && \
-    apt-get install -y gcc
+    apt-get install -y gcc tk
 
 ADD entrypoint.sh ./
 RUN set -ex && \
