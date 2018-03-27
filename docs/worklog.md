@@ -213,4 +213,15 @@ algorithm to reconstruct each of the files using the list of changes. This works
 perfectly (aside from missing `public class ... { }`). The fix was simple. It
 works by first checking if the file is not already being tracked. Then it will
 get the contents (before the change currently being made) and if the contents
-are not empty it will add the change as external. 
+are not empty it will add the change as external.
+- Started development on the post-processor. Using matplotlib to easily
+create graphs from the XML data. The only graph which is currently being
+created is _Code Frequency vs. Time_. One graph is created per submission.
+This graph will show the character additions/deletions over time. This allows
+easy visualisation for larger chunks of code being added (i.e large copy/paste).
+Other metrics which are being generated are; total frequency (character count),
+clipboard frequency, external frequency, and diff ratios. The frequencies
+are simply the character for a source. The diff ratios is comparing the file
+cache to the reconstructed document (1.0 is perfect match). Currently these
+are not being inserted back into the database and therefore not being shown
+on the dashboard.
