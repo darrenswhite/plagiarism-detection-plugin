@@ -80,6 +80,17 @@ public class ProjectTracker implements
 
         LOG.info("File changed: " + path);
 
+        if (!files.containsKey(path)) {
+            String content = event.getDocument().getText();
+            content = content.substring(0, event.getOffset()) +
+                    content.substring(event.getOffset() + event.getNewLength());
+            if (!content.isEmpty()) {
+                LOG.info("Previous content detected: " + content);
+                tracker.addChange(new Change(0, "", content, Change.Source.EXTERNAL,
+                        System.currentTimeMillis()), content.getBytes());
+            }
+        }
+
         tracker.addChange(change, event.getDocument().getText().getBytes());
         files.put(path, tracker);
     }
