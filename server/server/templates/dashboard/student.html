@@ -13,6 +13,7 @@
                         <tr>
                             <th class="col-sm-1">Title</th>
                             <th class="col-sm-1">Module</th>
+                            <th class="col-sm-1">Submitted On</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -20,6 +21,15 @@
                             <tr>
                                 <td>{{ submission.title }}</td>
                                 <td>{{ submission.module }}</td>
+                                {% if submission._id %}
+                                    <td>
+                                        <script>
+                                            document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm"));
+                                        </script>
+                                    </td>
+                                {% else %}
+                                    <td>Unknown</td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>
