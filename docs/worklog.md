@@ -225,3 +225,9 @@ are simply the character for a source. The diff ratios is comparing the file
 cache to the reconstructed document (1.0 is perfect match). Currently these
 are not being inserted back into the database and therefore not being shown
 on the dashboard.
+- Starting to develop the dashboards for staff and students. Removed the XML
+files from the student dashboard and added submission timestamps (moment.js)
+to both dashboards (small database changes by adding _id to each submission).
+Merged the plots for each file when using matplotlib so only one plot is shown
+per submission instead of per file. The Post Processor now watches and process
+submissions correctly but does not update the database just yet.
