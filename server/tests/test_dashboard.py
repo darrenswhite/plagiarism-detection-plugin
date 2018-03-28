@@ -9,7 +9,7 @@ from .test_data import AberUndergrad, AberStaff, AberUndergrad2
 
 
 class TestDashboard(BaseTest):
-    STUDENT_SUBMISSION_REGEX = '<tr>\s*<td>{}<\/td>\s*<td>{}<\/td>\s*<td>'
+    STUDENT_SUBMISSION_REGEX = '<tr>\s*<td>{}<\/td>\s*<td>{}<\/td>'
     STAFF_SUBMISSION_REGEX = '<td>{}<\/td>\s*<td>{}<\/td>\s*<td>'
 
     @BaseTest.patch_connection(gecos=AberUndergrad.GECOS)
