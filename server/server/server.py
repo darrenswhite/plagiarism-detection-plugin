@@ -78,5 +78,6 @@ class Server:
         """
         log_level = logging.DEBUG if debug else logging.INFO
         logging.basicConfig(format='%(levelname)-8s %(asctime)s: %(name)20s '
-                                   '[%(filename)20s:%(lineno)-4s %(funcName)-20s] '
-                                   '%(message)s', level=log_level)
+                                   '[%(filename)20s:%(lineno)-4s '
+                                   '%(funcName)-20s] %(message)s',
+                            level=log_level)

@@ -47,29 +47,27 @@ class PostProcessor:
         # Process each file in the submission
         for path, data in submission.items():
             # Ensure changes are sorted by timestamp
-            changes = self.__sort_changes(data['changes'])
+            changes = sorted(data['changes'], key=lambda c: int(c['timestamp']))
             # Decode the document cache
             cache = base64.b64decode(data['cache']).decode('utf-8')
             result[path] = FileProcessor(cache, changes, self.plot).process()
 
-        fts_data = []
+        merged_fts_data = []
 
         # Merge all fts data from each file to make one data set
         for p, r in result.items():
-            fts_data += r['frequency_time_source_data']
-            del r['frequency_time_source_data']
+            merged_fts_data += r['frequency_time_source_data']
 
         # Sort fts data by time
-        fts_data = sorted(fts_data, key=lambda d: int(d['t']))
+        merged_fts_data = sorted(merged_fts_data, key=lambda d: int(d['t']))
 
-        # Store fts data set in result
-        result['frequency_time_source_data'] = fts_data
-
-        # Use matplotlib to plot fts graph
+        # Use matplotlib to plot merged fts graph
         if self.plot:
-            self.__plot_frequency_time_source(fts_data)
+            self.__plot_frequency_time_source(merged_fts_data)
 
         self.log.info('Result: {}'.format(result))
+
+        return result
 
     def run(self, filename=None, ):
         """
@@ -94,14 +92,16 @@ class PostProcessor:
         """
         log_level = logging.DEBUG if debug else logging.INFO
         logging.basicConfig(format='%(levelname)-8s %(asctime)s: %(name)20s '
-                                   '[%(filename)20s:%(lineno)-4s %(funcName)-20s] '
-                                   '%(message)s', level=log_level)
-
-    @staticmethod
-    def __sort_changes(changes):
-        return sorted(changes, key=lambda c: int(c['timestamp']))
+                                   '[%(filename)20s:%(lineno)-4s '
+                                   '%(funcName)-20s] %(message)s',
+                            level=log_level)
 
     def __watch(self):
         with self.submissions.watch() as stream:
             for change in stream:
-                self.__process(change)
+                if 'updateDescription' in change:
+                    upd_desc = change['updateDescription']
+                    if 'updatedFields' in upd_desc:
+                        for submission in upd_desc['updatedFields'].values():
+                            if 'files' in submission:
+                                self.__process(submission['files'])
