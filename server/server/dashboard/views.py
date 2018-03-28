@@ -83,8 +83,7 @@ def submit():
             module = request.form.get('module')
             data = xml_parser.cipherparse(file)
             # TODO Check if submission transaction was successful
-            server.submissions.insert_one(current_user.uid, title, module, data,
-                                          processed=False)
+            server.submissions.insert_one(current_user.uid, title, module, data)
             flash('Submission saved successfully.', 'success')
         else:
             flash('Invalid file. File type must be xml.', 'danger')
