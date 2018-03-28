@@ -85,14 +85,13 @@ class SubmissionCollection:
         self.log.debug('Find user: %s', uid)
         return self.submissions.find_one({'uid': uid})
 
-    def insert_one(self, uid, title, module, files=None, processed=False):
+    def insert_one(self, uid, title, module, files=None):
         """
         Add a new submission for a user
         :param uid: The user id
         :param title: The submission title
         :param module: The submission module
         :param files: The submission file data
-        :param processed: True if the data has been processed; False otherwise
         :return: An instance of :class:`~pymongo.results.InsertOneResult` or
         :class:`~pymongo.results.UpdateResult` depending if the user has
         existing submissions
@@ -109,8 +108,7 @@ class SubmissionCollection:
                     'title': title,
                     'module': module,
                     # Must convert keys for file data incase of $ of . in keys
-                    'files': SubmissionCollection.__convert_keys(files),
-                    'processed': processed
+                    'files': SubmissionCollection.__convert_keys(files)
                 }
             }
         }
