@@ -1,10 +1,5 @@
 import logging
 from difflib import SequenceMatcher
-from textwrap import wrap
-
-import matplotlib.pyplot as plt
-
-_SOURCES = {'CLIPBOARD': 'r', 'EXTERNAL': 'b', 'OTHER': 'k'}
 
 
 class FileProcessor:
@@ -15,7 +10,7 @@ class FileProcessor:
         self.changes = changes
         self.plot = plot
 
-    def __build_character_frequency_time_data(self):
+    def __build_frequency_time_source_data(self):
         rows = []
         initial_t = int(self.changes[0]['timestamp']) if len(
             self.changes) > 0 else 0
@@ -66,29 +61,8 @@ class FileProcessor:
         # Get the diff ratio between the cache and reconstructed document
         return SequenceMatcher(None, self.cache, built).ratio()
 
-    def __plot(self):
-        f_graph = self.__build_character_frequency_time_data()
-
-        for s, c in _SOURCES.items():
-            x = [r['t'] for r in f_graph if r['s'] == s]
-            y = [r['f'] for r in f_graph if r['s'] == s]
-            plt.scatter(x, y, c=c, s=2, zorder=2, label=s)
-
-        x = [r['t'] for r in f_graph]
-        y = [r['f'] for r in f_graph]
-        plt.plot(x, y, linewidth=1, color='k', zorder=1)
-
-        plt.legend()
-        plt.title('\n'.join(
-            wrap('Character Frequency vs. Time')))
-        plt.xlabel('Time (ms)')
-        plt.ylabel('Frequency')
-        plt.show()
-
     def process(self):
-        if self.plot:
-            self.__plot()
-
+        fts_data = self.__build_frequency_time_source_data()
         total_f = self.__build_frequency()
         clipboard_f = self.__build_frequency('CLIPBOARD')
         external_f = self.__build_frequency('EXTERNAL')
@@ -98,5 +72,6 @@ class FileProcessor:
             'diff_ratio': diff_ratio,
             'frequency_total': total_f,
             'frequency_clipboard': clipboard_f,
-            'frequency_external': external_f
+            'frequency_external': external_f,
+            'frequency_time_source_data': fts_data,
         }
