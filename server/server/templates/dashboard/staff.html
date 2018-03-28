@@ -14,6 +14,7 @@
                             <th class="col-sm-1">Full Name</th>
                             <th class="col-sm-1">Title</th>
                             <th class="col-sm-1">Module</th>
+                            <th class="col-sm-1">Submitted On</th>
                             <th class="col-sm-3">Files</th>
                         </tr>
                         </thead>
@@ -23,6 +24,15 @@
                                 <td>{{ submission.full_name }}</td>
                                 <td>{{ submission.title }}</td>
                                 <td>{{ submission.module }}</td>
+                                {% if submission._id %}
+                                    <td>
+                                        <script>
+                                            document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm"));
+                                        </script>
+                                    </td>
+                                {% else %}
+                                    <td>Unknown</td>
+                                {% endif %}
                                 <td>
                                     <pre lang="json"
                                          style="max-height: 250px;">{{ submission.files | tojson(indent=2, sort_keys=True) }}</pre>
