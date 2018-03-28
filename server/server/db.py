@@ -1,5 +1,6 @@
 import logging
 
+from bson import ObjectId
 from pymongo import MongoClient
 
 log = logging.getLogger(__name__)
@@ -105,6 +106,8 @@ class SubmissionCollection:
         data = {
             '$push': {
                 'submissions': {
+                    # Add submission unique id
+                    '_id': ObjectId(),
                     'title': title,
                     'module': module,
                     # Must convert keys for file data incase of $ of . in keys
