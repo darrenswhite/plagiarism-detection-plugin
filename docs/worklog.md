@@ -231,3 +231,5 @@ to both dashboards (small database changes by adding _id to each submission).
 Merged the plots for each file when using matplotlib so only one plot is shown
 per submission instead of per file. The Post Processor now watches and process
 submissions correctly but does not update the database just yet.
+- I have added the code to update the database with the processed result. This
+data is shown in JSON format on the Staff dashboard.
