@@ -15,7 +15,7 @@
                             <th class="col-sm-1">Title</th>
                             <th class="col-sm-1">Module</th>
                             <th class="col-sm-1">Submitted On</th>
-                            <th class="col-sm-3">Files</th>
+                            <th class="col-sm-3">Result</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -24,18 +24,22 @@
                                 <td>{{ submission.full_name }}</td>
                                 <td>{{ submission.title }}</td>
                                 <td>{{ submission.module }}</td>
-                                {% if submission._id %}
-                                    <td>
+                                <td>
+                                    {% if submission._id %}
                                         <script>
                                             document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm"));
                                         </script>
-                                    </td>
-                                {% else %}
-                                    <td>Unknown</td>
-                                {% endif %}
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                </td>
                                 <td>
-                                    <pre lang="json"
-                                         style="max-height: 250px;">{{ submission.files | tojson(indent=2, sort_keys=True) }}</pre>
+                                    {% if submission.result %}
+                                        <pre lang="json"
+                                             style="max-height: 250px;">{{ submission.result | tojson(indent=2, sort_keys=True) }}</pre>
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
