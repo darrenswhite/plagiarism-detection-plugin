@@ -26,6 +26,24 @@ class SubmissionCollection:
         self.database = self.client[DB_PLAGIARISM]
         self.submissions = self.database[COLL_SUBMISSIONS]
 
+    def update_submission(self, _id, submission, result):
+        self.log.info(
+            'Updating submission result: {}/{}'.format(_id, submission['_id']))
+        res = self.submissions.update_one(
+            {
+                '_id': _id,
+                'submissions._id': submission['_id']
+            },
+            {
+                '$set': {
+                    'submissions.$.result': result
+                }
+            }
+        )
+        log.debug('Submission result: matched=%s, modified=%s',
+                  res.matched_count, res.modified_count)
+        return res
+
     def watch(self):
         if COLL_SUBMISSIONS not in self.database.list_collection_names():
             self.log.info('Creating {} collection'.format(COLL_SUBMISSIONS))

@@ -40,7 +40,7 @@ class PostProcessor:
             plt.show()
 
     def __process(self, submission):
-        self.log.info('Processing submission: {}'.format(submission))
+        self.log.info('Processing submission...')
 
         result = {}
 
@@ -65,7 +65,7 @@ class PostProcessor:
         if self.plot:
             self.__plot_frequency_time_source(merged_fts_data)
 
-        self.log.info('Result: {}'.format(result))
+        self.log.debug('Result: {}'.format(result))
 
         return result
 
@@ -99,9 +99,13 @@ class PostProcessor:
     def __watch(self):
         with self.submissions.watch() as stream:
             for change in stream:
+                _id = change['documentKey']['_id']
                 if 'updateDescription' in change:
                     upd_desc = change['updateDescription']
                     if 'updatedFields' in upd_desc:
                         for submission in upd_desc['updatedFields'].values():
                             if 'files' in submission:
-                                self.__process(submission['files'])
+                                result = self.__process(submission['files'])
+                                self.submissions.update_submission(_id,
+                                                                   submission,
+                                                                   result)
