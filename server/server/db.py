@@ -44,7 +44,7 @@ class SubmissionCollection:
         """
         Query a submission. See pymongo.collection.find()
         """
-        self.log.debug('Find submission: %s, %s', args, kwargs)
+        self.log.info('Find submission: %s, %s', args, kwargs)
         return self.submissions.find(*args, **kwargs)
 
     def find_by_module(self, module):
@@ -53,7 +53,7 @@ class SubmissionCollection:
         :param module: The module to filter by
         :return: All user submissions for the module
         """
-        self.log.debug('Aggregate module: %s', module)
+        self.log.info('Aggregate module: %s', module)
         return self.submissions.aggregate([
             {
                 '$match': {
@@ -116,7 +116,7 @@ class SubmissionCollection:
             }
         }
 
-        self.log.debug(
+        self.log.info(
             'Insert submission: uid={}, submission={}'.format(uid, data))
 
         res = self.submissions.update_one(uid_filter, data)
@@ -136,7 +136,7 @@ class SubmissionCollection:
             'user_type': user.user_type,
         }
 
-        self.log.debug('Insert user: %s', user)
+        self.log.info('Insert user: %s', user)
 
         if stored_user is None:
             user_data['submissions'] = []

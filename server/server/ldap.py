@@ -11,6 +11,8 @@ LDAP_SERVER = 'ldap.dcs.aber.ac.uk'
 GECOS_FULL_NAME = 0
 GECOS_USER_TYPE = 4
 
+USER_FORMAT = 'uid={},ou=People,dc=dcs,dc=aber,dc=ac,dc=uk'
+
 log = logging.getLogger(__name__)
 
 
@@ -23,10 +25,8 @@ def try_bind(uid, password):
     """
     log.info('Attempting authentication for: %s', uid)
 
-    server = ldap_server()
-
     try:
-        with ldap_connection(server, uid, password) as conn:
+        with connection(uid, password) as conn:
             if conn.bind():
                 log.info('Authentication successful')
                 log.debug('Connection: %s', conn)
@@ -48,20 +48,17 @@ def try_bind(uid, password):
         return None
 
 
-def ldap_connection(server, uid, password):
+def connection(uid, password):
     """
     Get the LDAP connection
-    :param server: The LDAP server
     :param uid: The user id
     :param password: The user password
     :return: An LDAP Connection
     """
-    return Connection(server,
-                      'uid={},ou=People,dc=dcs,dc=aber,dc=ac,dc=uk'.format(uid),
-                      password)
+    return Connection(server(), USER_FORMAT.format(uid), password)
 
 
-def ldap_server():
+def server():
     """
     Get the LDAP server
     :return: An LDAP Server
