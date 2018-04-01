@@ -75,7 +75,7 @@ class PostProcessor:
 
         return result
 
-    def run(self, filename=None, ):
+    def run(self, filename=None):
         """
         Set up logging and start the post processor
         """
@@ -88,7 +88,7 @@ class PostProcessor:
         if filename is None:
             self.__watch()
         else:
-            self.__process(cipherparse(filename))
+            return self.__process(cipherparse(filename))
 
     @staticmethod
     def setup_logging(debug):
