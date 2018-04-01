@@ -4,6 +4,7 @@ import os
 from textwrap import wrap
 
 import matplotlib.pyplot as plt
+from mockupdb import MockupDB
 
 from postprocessor.db import SubmissionCollection
 from postprocessor.fileprocessor import FileProcessor
@@ -19,6 +20,12 @@ class PostProcessor:
         self.plot = plot
         # Submissions collection for the plagiarism database
         self.submissions = SubmissionCollection()
+
+    def mockdb(self):
+        mockdb = MockupDB(auto_ismaster=True)
+        mockdb.run()
+        self.submissions = SubmissionCollection(uri=mockdb.uri)
+        return mockdb
 
     def __plot_frequency_time_source(self, fts_data):
         if self.plot:
@@ -62,8 +69,7 @@ class PostProcessor:
         merged_fts_data = sorted(merged_fts_data, key=lambda d: int(d['t']))
 
         # Use matplotlib to plot merged fts graph
-        if self.plot:
-            self.__plot_frequency_time_source(merged_fts_data)
+        self.__plot_frequency_time_source(merged_fts_data)
 
         self.log.debug('Result: {}'.format(result))
 
