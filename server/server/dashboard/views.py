@@ -64,8 +64,19 @@ def forbidden(error):
     :param error: The error that occured
     """
     log.error(error)
-    return render_template('dashboard/403.html',
+    return render_template('dashboard/error_handler.html',
                            description=error.description), 403
+
+
+@dashboard.errorhandler(404)
+def forbidden(error):
+    """
+    Custom 404 error handler page
+    :param error: The error that occured
+    """
+    log.error(error)
+    return render_template('dashboard/error_handler.html',
+                           description=error.description), 404
 
 
 def __get_merged_fts_data(result):
