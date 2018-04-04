@@ -45,12 +45,14 @@
     <idea-version since-build="173.0"/>
 
     <extensions defaultExtensionNs="com.intellij">
+        <!-- ProjectTracker is a projectService so that state can be persisted -->
         <projectService
                 serviceImplementation="com.daw48.detector.ProjectTracker"/>
     </extensions>
 
     <project-components>
         <component>
+            <!-- PDL is used to listen for file changes -->
             <implementation-class>com.daw48.detector.ProjectDocumentListener
             </implementation-class>
         </component>

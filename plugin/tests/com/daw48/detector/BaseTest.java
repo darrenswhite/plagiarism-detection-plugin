@@ -8,7 +8,10 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 import org.junit.Assert;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -17,6 +20,9 @@ import java.util.function.Predicate;
  * @author Darren S. White
  */
 public abstract class BaseTest extends LightPlatformCodeInsightFixtureTestCase {
+    /**
+     * Files used during tests which should be closed in tearDown
+     */
     private final Set<VirtualFile> tearDownFiles = new HashSet<>();
 
     /**
@@ -66,19 +72,49 @@ public abstract class BaseTest extends LightPlatformCodeInsightFixtureTestCase {
         }
     }
 
+    /**
+     * Create a file with the given name
+     *
+     * @param filename The name of the file to create
+     * @return A VirtualFile pointing to the filename
+     */
     public VirtualFile createFile(String filename) {
         return createFile(filename, "", true, true);
     }
 
+    /**
+     * Create a file with the given name and content
+     *
+     * @param filename The name of the file to create
+     * @param content  The initial content of the file
+     * @return A VirtualFile pointing to the filename with the content
+     */
     public VirtualFile createFile(String filename, String content) {
         return createFile(filename, content, true, true);
     }
 
+    /**
+     * Create a file with the given name
+     *
+     * @param filename         The name of the file to create
+     * @param configure        true if the file should be configured for the test; false otherwise
+     * @param deleteOnTearDown If the file should be deleted in tearDown
+     * @return A VirtualFile pointing to the filename
+     */
     public VirtualFile createFile(String filename, boolean configure,
                                   boolean deleteOnTearDown) {
         return createFile(filename, "", configure, deleteOnTearDown);
     }
 
+    /**
+     * Create a file with the given name and content
+     *
+     * @param filename         The name of the file to create
+     * @param content          The initial content of the file
+     * @param configure        true if the file should be configured for the test; false otherwise
+     * @param deleteOnTearDown If the file should be deleted in tearDown
+     * @return A VirtualFile pointing to the filename
+     */
     public VirtualFile createFile(String filename, String content,
                                   boolean configure, boolean deleteOnTearDown) {
         // Create the file in the project directory

@@ -11,11 +11,21 @@ import java.util.Objects;
  * @author Darren S. White
  */
 public class ExternalDetectionTest extends BaseTest {
-
+    /**
+     * The filename to test
+     */
     private static final String filename = "file.txt";
+    /**
+     * The initial content of the file
+     */
     private static final String initialContent = "Initial content";
+    /**
+     * The external content to add
+     */
     private static final String externalContent = "\nExternal content";
-
+    /**
+     * The file to test
+     */
     private VirtualFile file;
 
     @Override

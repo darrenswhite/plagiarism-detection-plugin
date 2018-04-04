@@ -69,6 +69,7 @@ public class ProjectDocumentListener implements DocumentListener,
      * its current base64 encoded content
      */
     private void checkCachedExternalChanges() {
+        // Check all tracked files
         for (Map.Entry<String, FileTracker> entry : tracker.files.entrySet()) {
             String path = entry.getKey();
             FileTracker tracker = entry.getValue();
@@ -83,12 +84,14 @@ public class ProjectDocumentListener implements DocumentListener,
                 String cachedContent = new String(Base64.getDecoder()
                         .decode(entry.getValue().cache));
 
+                // Ensure the file is up-to-date with the file system
                 file.refresh(false, false);
 
                 if (file.exists()) {
                     String newContent = new String(IOUtils.toByteArray(
                             file.getInputStream()));
 
+                    // Compare cache with current data
                     if (!Objects.equals(cachedContent, newContent)) {
                         LOG.warn("File changed externally: " + path);
                         List<Change> changes = getChanges(cachedContent,
@@ -121,6 +124,13 @@ public class ProjectDocumentListener implements DocumentListener,
         }
     }
 
+    /**
+     * Get all changes from the diff between cache and new content
+     *
+     * @param cachedContent The cache content String
+     * @param newContent The new content String to compare against
+     * @return A List of Change's
+     */
     private List<Change> getChanges(String cachedContent, String newContent) {
         List<Change> changes = new ArrayList<>();
         // Get the list of diffs

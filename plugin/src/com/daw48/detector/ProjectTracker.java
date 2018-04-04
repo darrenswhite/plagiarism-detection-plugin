@@ -32,13 +32,26 @@ import java.util.Map;
         storages = @Storage("plagiarism_detection.xml"))
 public class ProjectTracker implements
         PersistentStateComponent<ProjectTracker.CipherState> {
-
+    /**
+     * Encrypted persistent state
+     */
     static class CipherState {
+        /**
+         * Map of encrypted file data
+         */
         public Map<String, String> files = new HashMap<>();
     }
 
+    /**
+     * The current open project
+     */
     private final Project project;
 
+    /**
+     * Creates a new ProjectTracker
+     *
+     * @param project The Project to track
+     */
     public ProjectTracker(Project project) {
         this.project = project;
     }
@@ -71,6 +84,7 @@ public class ProjectTracker implements
             return;
         }
 
+        // Use relative paths
         String path = VfsUtil.getRelativePath(file, project.getBaseDir());
         Change change = new Change(event.getOffset(),
                 event.getOldFragment().toString(),
@@ -80,10 +94,13 @@ public class ProjectTracker implements
 
         LOG.info("File changed: " + path);
 
+        // If file isn't tracked, check if it already has contents
         if (!files.containsKey(path)) {
             String content = event.getDocument().getText();
+            // Remove the current change
             content = content.substring(0, event.getOffset()) +
                     content.substring(event.getOffset() + event.getNewLength());
+            // If the content is not empty it still has content
             if (!content.isEmpty()) {
                 LOG.info("Previous content detected: " + content);
                 tracker.addChange(new Change(0, "", content, Change.Source.EXTERNAL,
@@ -130,6 +147,7 @@ public class ProjectTracker implements
     public CipherState getState() {
         CipherState state = new CipherState();
 
+        // Encrypte the tracked data
         state.files.putAll(CipherUtil.cipher(files));
 
         return state;
@@ -153,6 +171,7 @@ public class ProjectTracker implements
     @Override
     public void loadState(@NotNull CipherState state) {
         files.clear();
+        // Decrypt the tracked data
         files.putAll(CipherUtil.decipher(state.files, FileTracker.class));
         LOG.info("Loaded state: " + files);
     }

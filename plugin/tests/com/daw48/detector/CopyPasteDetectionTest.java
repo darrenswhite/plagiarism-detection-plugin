@@ -13,12 +13,22 @@ import java.util.Objects;
  * @author Darren S. White
  */
 public class CopyPasteDetectionTest extends BaseTest {
-
+    /**
+     * The filename to test
+     */
     private static final String filename = "file.txt";
+    /**
+     * The clipboard contents to test
+     */
     private static final String content = "A small string";
+    /**
+     * Clipboard value to paste
+     */
     private static final Transferable transferableContent = new SimpleTransferable(
             content, DataFlavor.stringFlavor);
-
+    /**
+     * The file to test with
+     */
     private VirtualFile file;
 
     @Override

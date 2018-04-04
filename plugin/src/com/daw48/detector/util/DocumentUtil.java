@@ -10,7 +10,6 @@ import com.intellij.openapi.vfs.VirtualFile;
  * @author Darren S. White
  */
 public class DocumentUtil {
-
     /**
      * Get the VirtualFile from a DocumentEvent
      *
