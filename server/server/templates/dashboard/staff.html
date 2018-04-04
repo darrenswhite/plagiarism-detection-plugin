@@ -34,7 +34,9 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if submission.result %}
+                                    {% if submission.scatter_chart %}
+                                        {{ submission.scatter_chart.render() | safe }}
+                                    {% elif submission.result %}
                                         <pre lang="json"
                                              style="max-height: 250px;">{{ submission.result | tojson(indent=2, sort_keys=True) }}</pre>
                                     {% else %}

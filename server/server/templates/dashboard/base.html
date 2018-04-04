@@ -27,7 +27,9 @@
                     <li>
                         <a href="{{ url_for('dashboard.overview') }}">Overview</a>
                     </li>
-                    <li><a href="{{ url_for('dashboard.submit') }}">Submit</a>
+                    {% if not current_user.is_staff() %}
+                        <li><a href="{{ url_for('dashboard.submit') }}">Submit</a>
+                    {% endif %}
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
