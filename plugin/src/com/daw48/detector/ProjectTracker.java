@@ -33,15 +33,17 @@ import java.util.Map;
 public class ProjectTracker implements
         PersistentStateComponent<ProjectTracker.CipherState> {
     /**
-     * Encrypted persistent state
+     * The Logger for this class
      */
-    static class CipherState {
-        /**
-         * Map of encrypted file data
-         */
-        public Map<String, String> files = new HashMap<>();
-    }
-
+    private static final Logger LOG = Logger.getInstance(ProjectTracker.class);
+    /**
+     * The Map of FileChanges for this Project
+     * <p>
+     * The key is the file path
+     * <p>
+     * Keep public and non-final for serialisation
+     */
+    public final Map<String, FileTracker> files = new HashMap<>();
     /**
      * The current open project
      */
@@ -57,18 +59,29 @@ public class ProjectTracker implements
     }
 
     /**
-     * The Logger for this class
+     * Gets the current instance for this class for a given Project
+     *
+     * @param project The current Project
+     * @return A ProjectTracker instance
      */
-    private static final Logger LOG = Logger.getInstance(ProjectTracker.class);
+    public static ProjectTracker getInstance(@NotNull Project project) {
+        return ServiceManager.getService(project, ProjectTracker.class);
+    }
 
     /**
-     * The Map of FileChanges for this Project
-     * <p>
-     * The key is the file path
-     * <p>
-     * Keep public and non-final for serialisation
+     * Gets the String representation for a Transferable object
+     *
+     * @param content The Transferable object to convert to a String
+     * @return A String representation for the given Transferable
      */
-    public final Map<String, FileTracker> files = new HashMap<>();
+    private static String getTransferableString(Transferable content) {
+        try {
+            return content == null ? null :
+                    (String) content.getTransferData(DataFlavor.stringFlavor);
+        } catch (IOException | UnsupportedFlavorException e) {
+            return null;
+        }
+    }
 
     /**
      * Add a change with a given Source from a DocumentEvent for a particular
@@ -132,16 +145,6 @@ public class ProjectTracker implements
         return false;
     }
 
-    /**
-     * Gets the current instance for this class for a given Project
-     *
-     * @param project The current Project
-     * @return A ProjectTracker instance
-     */
-    public static ProjectTracker getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, ProjectTracker.class);
-    }
-
     @Nullable
     @Override
     public CipherState getState() {
@@ -151,21 +154,6 @@ public class ProjectTracker implements
         state.files.putAll(CipherUtil.cipher(files));
 
         return state;
-    }
-
-    /**
-     * Gets the String representation for a Transferable object
-     *
-     * @param content The Transferable object to convert to a String
-     * @return A String representation for the given Transferable
-     */
-    private static String getTransferableString(Transferable content) {
-        try {
-            return content == null ? null :
-                    (String) content.getTransferData(DataFlavor.stringFlavor);
-        } catch (IOException | UnsupportedFlavorException e) {
-            return null;
-        }
     }
 
     @Override
@@ -198,5 +186,15 @@ public class ProjectTracker implements
         }
 
         addChange(file, event, source);
+    }
+
+    /**
+     * Encrypted persistent state
+     */
+    static class CipherState {
+        /**
+         * Map of encrypted file data
+         */
+        public Map<String, String> files = new HashMap<>();
     }
 }

@@ -8,7 +8,7 @@ import com.intellij.refactoring.listeners.RefactoringEventData;
 
 /**
  * Wrapper for RefactoringEventData to perform refactoring methods
- *
+ * <p>
  * Adds/removes changes to ProjectTracker when refactoring is done/undone
  *
  * @author Darren S. White
@@ -56,6 +56,7 @@ public class RefactoringData {
 
     /**
      * Perform the refactoring method. This is dependant on the refactoring id.
+     *
      * @param tracker The ProjectTracker to add the changes to
      */
     public void execute(ProjectTracker tracker) {
@@ -70,7 +71,7 @@ public class RefactoringData {
      * Perform file rename refactoring
      *
      * @param tracker The ProjectTracker to add the changes to
-     * @param undo true if refactoring is being undone; false otherwise
+     * @param undo    true if refactoring is being undone; false otherwise
      */
     private void executeRename(ProjectTracker tracker, boolean undo) {
         // Only file/class renaming is currently supported

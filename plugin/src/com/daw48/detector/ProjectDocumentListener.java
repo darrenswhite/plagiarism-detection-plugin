@@ -63,6 +63,15 @@ public class ProjectDocumentListener implements DocumentListener,
     }
 
     /**
+     * Gets the current instance for this class
+     *
+     * @return A ProjectDocumentListener instance
+     */
+    public static ProjectDocumentListener getInstance(@NotNull Project project) {
+        return project.getComponent(ProjectDocumentListener.class);
+    }
+
+    /**
      * Checks if any of the tracked files were changed externally
      * <p>
      * This works by comparing the base64 encoded cache for each file against
@@ -128,7 +137,7 @@ public class ProjectDocumentListener implements DocumentListener,
      * Get all changes from the diff between cache and new content
      *
      * @param cachedContent The cache content String
-     * @param newContent The new content String to compare against
+     * @param newContent    The new content String to compare against
      * @return A List of Change's
      */
     private List<Change> getChanges(String cachedContent, String newContent) {
@@ -152,15 +161,6 @@ public class ProjectDocumentListener implements DocumentListener,
         }
 
         return changes;
-    }
-
-    /**
-     * Gets the current instance for this class
-     *
-     * @return A ProjectDocumentListener instance
-     */
-    public static ProjectDocumentListener getInstance(@NotNull Project project) {
-        return project.getComponent(ProjectDocumentListener.class);
     }
 
     @Override
