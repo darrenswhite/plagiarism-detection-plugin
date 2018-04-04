@@ -233,3 +233,7 @@ per submission instead of per file. The Post Processor now watches and process
 submissions correctly but does not update the database just yet.
 - I have added the code to update the database with the processed result. This
 data is shown in JSON format on the Staff dashboard.
+
+## 02/04 - 08/04
+
+- Added code documentation to each module (plugin, postprocessor, and server)
