@@ -11,11 +11,11 @@
                            style="table-layout: fixed;">
                         <thead>
                         <tr>
-                            <th class="col-sm-1">Full Name</th>
+                            <th class="col-sm-1">Full name</th>
                             <th class="col-sm-1">Title</th>
                             <th class="col-sm-1">Module</th>
-                            <th class="col-sm-1">Submitted On</th>
-                            <th class="col-sm-4">Result</th>
+                            <th class="col-sm-1">Submitted on</th>
+                            <th class="col-sm-1">Details</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -34,14 +34,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if submission.scatter_chart %}
-                                        {{ submission.scatter_chart.render() | safe }}
-                                    {% elif submission.result %}
-                                        <pre lang="json"
-                                             style="max-height: 250px;">{{ submission.result | tojson(indent=2, sort_keys=True) }}</pre>
-                                    {% else %}
-                                        Unknown
-                                    {% endif %}
+                                    <a href="{{ url_for('dashboard.submission', user_uid=submission.uid, submission_id=submission._id) }}">View</a>
                                 </td>
                             </tr>
                         {% endfor %}

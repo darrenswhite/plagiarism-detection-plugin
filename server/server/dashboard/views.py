@@ -1,5 +1,6 @@
 import logging
 
+from bson.objectid import ObjectId
 from flask import Blueprint, abort, render_template, request, flash, redirect
 from flask_login import login_required, current_user
 from pygal.graph.xy import XY
@@ -99,6 +100,7 @@ def __overview_staff():
         submissions = user['submissions']
         for s in submissions:
             s['full_name'] = user['full_name']
+            s['uid'] = user['uid']
 
             # Add scatter chart if the submission has been processed
             if 'result' in s:
@@ -124,6 +126,26 @@ def __overview_student():
     user_submissions = user_data['submissions'] if user_data else []
     return render_template('dashboard/student.html',
                            submissions=user_submissions)
+
+
+@dashboard.route('/submission/<user_uid>/<submission_id>')
+@login_required
+def submission(user_uid, submission_id):
+    user_data = server.submissions.find(
+        {'uid': user_uid}).next()
+    user_submissions = user_data['submissions'] if user_data else []
+    user_submission = [s for s in user_submissions if
+                       s['_id'] == ObjectId(submission_id)]
+
+    if len(user_submission) == 0:
+        abort(404, 'Submission not found.')
+
+    user_submission[0]['full_name'] = user_data['full_name']
+    user_submission[0]['scatter_chart'] = __build_submission_scatter_chart(
+        user_submission[0]['result'])
+
+    return render_template('dashboard/submission.html',
+                           submission=user_submission[0])
 
 
 @dashboard.route('/submit', methods=['GET', 'POST'])
