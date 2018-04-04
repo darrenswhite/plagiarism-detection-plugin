@@ -13,11 +13,16 @@ cipher = AESCipher('plagiarismplugin')
 
 log = logging.getLogger(__name__)
 
+# Only allow uploading on XML files
 ALLOWED_EXTENSIONS = ['xml']
 
 
 @dashboard.errorhandler(403)
 def forbidden(error):
+    """
+    Custom 403 error handler page
+    :param error: The error that occured
+    """
     log.error(error)
     return render_template('dashboard/403.html',
                            description=error.description), 403
@@ -29,11 +34,13 @@ def overview():
     """
     The dashboard index route for logged in users
     """
+    # Show staff or student dashboard depending on user
     if current_user.is_staff():
         # Find all users' submissions
         all_user_data = list(server.submissions.find())
         all_user_submissions = []
 
+        # Add name to each submission
         for user in all_user_data:
             submissions = user['submissions']
             for s in submissions:
@@ -42,6 +49,7 @@ def overview():
 
         squashed_submissions = []
 
+        # Squash all submissions into a single list
         for user_submissions in all_user_submissions:
             for s in user_submissions:
                 squashed_submissions.append(s)
@@ -60,6 +68,10 @@ def overview():
 @dashboard.route('/submit', methods=['GET', 'POST'])
 @login_required
 def submit():
+    """
+    The submission page to post new submissions
+    """
+    # Only students can post submissions
     if current_user.is_staff():
         abort(403, 'Staff members cannot post submissions.')
 
@@ -81,8 +93,10 @@ def submit():
         if file and valid_filename(file.filename):
             title = request.form.get('title')
             module = request.form.get('module')
+            # Decrypt the XML data
             data = xml_parser.cipherparse(file)
             # TODO Check if submission transaction was successful
+            # Add submission to database
             server.submissions.insert_one(current_user.uid, title, module, data)
             flash('Submission saved successfully.', 'success')
         else:
@@ -92,5 +106,6 @@ def submit():
 
 
 def valid_filename(filename):
+    # Check valid extensions
     return '.' in filename and filename.rsplit('.', 1)[
         1].lower() in ALLOWED_EXTENSIONS

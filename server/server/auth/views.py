@@ -20,6 +20,7 @@ def index():
     The index page to allow users to login
     :return:
     """
+    # Redirect to dashboard if user is logged in already
     if current_user.is_authenticated:
         return redirect(url_for('dashboard.overview'))
 
@@ -29,8 +30,10 @@ def index():
         password = request.form.get('password')
         remember = request.form.get('remember-me') is not None
 
+        # Try and login the user
         user = try_bind(uid, password)
 
+        # Login failed
         if user is None:
             # TODO Add more specific error messages
             flash('Invalid username or password. Please try again.',
@@ -38,11 +41,15 @@ def index():
             return render_template('index.html')
 
         log.debug('Current user: %s', user)
+        # Login successful so update database with user info
         server.submissions.insert_user(user)
+        # Login the user using flask_login
         login_user(user, remember=remember)
         flash('You have successfully logged in.', 'success')
+        # Redirect to dashboard
         return redirect(url_for('dashboard.overview'))
 
+    # Show index of the signin
     return render_template('index.html')
 
 

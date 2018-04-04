@@ -1,4 +1,7 @@
 class AberUndergrad:
+    """
+    Aber Undergraduate test data
+    """
     FULL_NAME = 'John Smith'
     CAMPUS = 'AB'
     CARD_TYPE = 'AU'
@@ -21,6 +24,9 @@ class AberUndergrad:
 
 
 class AberUndergrad2:
+    """
+    2nd Aber Undergraduate test data
+    """
     FULL_NAME = 'Jake Deck'
     CAMPUS = 'AB'
     CARD_TYPE = 'AU'
@@ -43,6 +49,9 @@ class AberUndergrad2:
 
 
 class AberStaff:
+    """
+    Aber Staff test data
+    """
     FULL_NAME = 'Mike Jones'
     CAMPUS = 'AB'
     CARD_TYPE = 'SM'

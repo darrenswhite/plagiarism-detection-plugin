@@ -9,7 +9,9 @@ from .test_data import AberUndergrad, AberStaff, AberUndergrad2
 
 
 class TestDashboard(BaseTest):
+    # Regex for student dashboard submissions table
     STUDENT_SUBMISSION_REGEX = '<tr>\s*<td>{}<\/td>\s*<td>{}<\/td>'
+    # Regex for staff dashboard submissions table
     STAFF_SUBMISSION_REGEX = '<td>{}<\/td>\s*<td>{}<\/td>\s*<td>'
 
     @BaseTest.patch_connection(gecos=AberUndergrad.GECOS)
@@ -19,11 +21,14 @@ class TestDashboard(BaseTest):
             'password': AberUndergrad.PASSWORD,
         })
 
+        # Request to get current user
         request = self.mockdb.receives(
             Command('find', 'submissions', filter={'uid': AberUndergrad.UID}))
+        # Send back user data
         request.ok(cursor={'id': 0, 'firstBatch': [
             {'uid': AberUndergrad.UID, 'full_name': AberUndergrad.FULL_NAME,
              'user_type': AberUndergrad.USER_TYPE}]})
+        # Update user info upon login
         request = self.mockdb.receives(
             Command('update', 'submissions', updates=[{
                 'q': {
@@ -41,6 +46,7 @@ class TestDashboard(BaseTest):
             }]))
         request.ok()
 
+        # Check dashboard redirection
         response = future()
 
         self.assertEqual(response.status_code, 302)
@@ -49,22 +55,27 @@ class TestDashboard(BaseTest):
             self.assertEqual(response.location,
                              url_for('dashboard.overview', _external=True))
 
+        # Get the dashboard index
         future = go(self.app.get, '/dashboard/')
 
+        # Expect request to find user
         request = self.mockdb.receives(
             Command('find', 'submissions', filter={'uid': AberUndergrad.UID}))
+        # Send back user data
         request.ok(cursor={'id': 0, 'firstBatch': [
             {'uid': AberUndergrad.UID, 'full_name': AberUndergrad.FULL_NAME,
              'user_type': AberUndergrad.USER_TYPE}]})
-
+        # Expect request to find user submissions
         request = self.mockdb.receives(
             Command('find', 'submissions', filter={'uid': AberUndergrad.UID}))
+        # Send back user submissions
         request.ok(cursor={'id': 0, 'firstBatch': [
             {
                 'submissions': AberUndergrad.SUBMISSIONS
             }
         ]})
 
+        # Check submissions are in the dashboard table
         response = future()
 
         for s in AberUndergrad.SUBMISSIONS:
@@ -79,11 +90,14 @@ class TestDashboard(BaseTest):
             'password': AberStaff.PASSWORD,
         })
 
+        # Request to get current user
         request = self.mockdb.receives(
             Command('find', 'submissions', filter={'uid': AberStaff.UID}))
+        # Send back user data
         request.ok(cursor={'id': 0, 'firstBatch': [
             {'uid': AberStaff.UID, 'full_name': AberStaff.FULL_NAME,
              'user_type': AberStaff.USER_TYPE}]})
+        # Update user info upon login
         request = self.mockdb.receives(
             Command('update', 'submissions', updates=[{
                 'q': {
@@ -101,6 +115,7 @@ class TestDashboard(BaseTest):
             }]))
         request.ok()
 
+        # Check dashboard redirection
         response = future()
 
         self.assertEqual(response.status_code, 302)
@@ -109,10 +124,13 @@ class TestDashboard(BaseTest):
             self.assertEqual(response.location,
                              url_for('dashboard.overview', _external=True))
 
+        # Get the dashboard index
         future = go(self.app.get, '/dashboard/')
 
+        # Expect request to find user
         request = self.mockdb.receives(
             Command('find', 'submissions', filter={'uid': AberStaff.UID}))
+        # Send back user data
         request.ok(cursor={'id': 0, 'firstBatch': [
             {
                 'uid': AberStaff.UID,
@@ -121,8 +139,10 @@ class TestDashboard(BaseTest):
             }
         ]})
 
+        # Expect request to find all submissions
         request = self.mockdb.receives(
             Command('find', 'submissions'))
+        # Send back all submissions
         request.ok(cursor={'id': 0, 'firstBatch': [
             {
                 'uid': AberUndergrad.UID,
@@ -138,6 +158,7 @@ class TestDashboard(BaseTest):
             }
         ]})
 
+        # Check submissions are in the dashboard table
         response = future()
 
         for s in AberUndergrad.SUBMISSIONS + AberUndergrad2.SUBMISSIONS:

@@ -100,9 +100,11 @@ class SubmissionCollection:
         if files is None:
             files = {}
 
+        # The user must exist first, so this filter will fail otherwise
         uid_filter = {
             'uid': uid
         }
+        # Push a new submission into the submissions list
         data = {
             '$push': {
                 'submissions': {
@@ -125,6 +127,12 @@ class SubmissionCollection:
         return res
 
     def insert_user(self, user):
+        """
+        Insert a new or update an existing user
+        :param user: The user to insert/update
+        :return: An instance of :class:`~pymongo.results.InsertOneResult` or
+        :class:`~pymongo.results.UpdateResult` depending if the user exists
+        """
         # Find the user submissions, if any
         stored_user = self.submissions.find_one({'uid': user.uid})
         uid_filter = {
@@ -138,6 +146,7 @@ class SubmissionCollection:
 
         self.log.info('Insert user: %s', user)
 
+        # Insert or update if the user exists
         if stored_user is None:
             user_data['submissions'] = []
             res = self.submissions.insert_one(user_data)

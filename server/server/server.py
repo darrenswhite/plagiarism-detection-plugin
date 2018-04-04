@@ -10,6 +10,11 @@ from server.db import SubmissionCollection
 
 
 class Server:
+    """
+    Server is the main application class
+    """
+
+    # Flask host and port
     HOST = '0.0.0.0'
     PORT = 8000
 
@@ -41,6 +46,10 @@ class Server:
             return User(user['uid'], user['full_name'], user['user_type'])
 
     def mockdb(self):
+        """
+        Mock the plagiarism db and submissions collection
+        :return: The MockupDB instance
+        """
         mockdb = MockupDB(auto_ismaster=True)
         mockdb.run()
         self.submissions = SubmissionCollection(uri=mockdb.uri)
@@ -68,6 +77,7 @@ class Server:
         self.app.register_blueprint(dashboard)
 
         if run:
+            # Start the Flask application
             self.app.run(host=Server.HOST, port=Server.PORT, debug=debug)
 
     @staticmethod

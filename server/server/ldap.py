@@ -27,15 +27,18 @@ def try_bind(uid, password):
 
     try:
         with connection(uid, password) as conn:
+            # Try and authenticate the user
             if conn.bind():
                 log.info('Authentication successful')
                 log.debug('Connection: %s', conn)
                 log.debug('whoami: %s', conn.extend.standard.who_am_i())
+                # Lookup their details
                 if conn.search('dc=dcs,dc=aber,dc=ac,dc=uk',
                                '(uid={})'.format(uid), attributes=['gecos']):
                     gecos = conn.entries[0]['gecos'].value
                     gecos_parts = gecos.split(',')
                     log.debug('gecos: %s', gecos_parts)
+                    # gecos contains full name and user type
                     full_name = gecos_parts[GECOS_FULL_NAME]
                     user_type = gecos_parts[GECOS_USER_TYPE] \
                         .replace('[', '').replace(']', '')

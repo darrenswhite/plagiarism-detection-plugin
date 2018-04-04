@@ -19,8 +19,14 @@ log = logging.getLogger(__name__)
 
 
 def cipherparse(file):
+    """
+    Parse the XML file and perform AES-128 decryption
+    :param file: The file to parse & decrypt
+    :return: The XML data
+    """
     encrypted = parse(file)
     decrypted = {}
+    # Decrypt each value
     for key, value in encrypted.items():
         decrypted[key] = parsestring(cipher.decrypt(value))
     return decrypted
