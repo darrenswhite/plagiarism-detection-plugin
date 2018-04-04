@@ -145,6 +145,10 @@ def __overview_student():
 @dashboard.route('/submission/<user_uid>/<submission_id>')
 @login_required
 def submission(user_uid, submission_id):
+    # Only students can post submissions
+    if not current_user.is_staff():
+        abort(403, 'Only staff members can view submission details.')
+
     user_data = server.submissions.find(
         {'uid': user_uid}).next()
     user_submissions = user_data['submissions'] if user_data else []
