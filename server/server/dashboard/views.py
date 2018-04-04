@@ -28,16 +28,7 @@ _SOURCES_COLORS = ['#000000', '#FF0000', '#00FF00', '#777777']
 
 
 def __build_submission_scatter_chart(result):
-    merged_fts_data = []
-
-    # Merge all fts data from each file to make one data set
-    for p, r in result.items():
-        if 'frequency_time_source_data' in r:
-            merged_fts_data += r['frequency_time_source_data']
-
-    # Sort fts data by time
-    merged_fts_data = sorted(merged_fts_data,
-                             key=lambda d: int(d['t']))
+    merged_fts_data = __get_merged_fts_data(result)
 
     # Create a scatter chart for the data
     scatter_chart = XY(disable_xml_declaration=True,
@@ -61,7 +52,7 @@ def __build_submission_scatter_chart(result):
     for source in _SOURCES:
         data = [(r['t'], r['f']) for r in merged_fts_data if
                 r['s'] == source]
-        scatter_chart.add(source, data, stroke=False)
+        scatter_chart.add(source, data, dots_size=2, stroke=False)
 
     return scatter_chart
 
@@ -75,6 +66,18 @@ def forbidden(error):
     log.error(error)
     return render_template('dashboard/403.html',
                            description=error.description), 403
+
+
+def __get_merged_fts_data(result):
+    merged_fts_data = []
+
+    # Merge all fts data from each file to make one data set
+    for p, r in result.items():
+        if 'frequency_time_source_data' in r:
+            merged_fts_data += r['frequency_time_source_data']
+
+    # Sort fts data by time
+    return sorted(merged_fts_data, key=lambda d: int(d['t']))
 
 
 @dashboard.route('/')
