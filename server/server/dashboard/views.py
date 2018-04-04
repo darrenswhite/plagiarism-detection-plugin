@@ -1,8 +1,8 @@
 import logging
 
-import pygal
 from flask import Blueprint, abort, render_template, request, flash, redirect
 from flask_login import login_required, current_user
+from pygal.graph.xy import XY
 from pygal.style import Style
 
 from server import server, xml_parser
@@ -26,6 +26,45 @@ _SOURCES = ['CLIPBOARD', 'EXTERNAL', 'OTHER']
 _SOURCES_COLORS = ['#000000', '#FF0000', '#00FF00', '#777777']
 
 
+def __build_submission_scatter_chart(result):
+    merged_fts_data = []
+
+    # Merge all fts data from each file to make one data set
+    for p, r in result.items():
+        if 'frequency_time_source_data' in r:
+            merged_fts_data += r['frequency_time_source_data']
+
+    # Sort fts data by time
+    merged_fts_data = sorted(merged_fts_data,
+                             key=lambda d: int(d['t']))
+
+    # Create a scatter chart for the data
+    scatter_chart = XY(disable_xml_declaration=True,
+                       legend_at_bottom=True,
+                       legend_at_bottom_columns=len(_SOURCES_COLORS)
+                       )
+    scatter_chart.style = Style(
+        background='transparent',
+        plot_background='transparent',
+        colors=_SOURCES_COLORS
+    )
+    scatter_chart.title = 'Character Frequency vs. Time'
+    scatter_chart.x_title = 'Time (ms)'
+    scatter_chart.y_title = 'Frequency'
+
+    # Plot all data as a line
+    data = [(r['t'], r['f']) for r in merged_fts_data]
+    scatter_chart.add('ALL', data, show_dots=False)
+
+    # Plot each source as a scatter plot using its color
+    for source in _SOURCES:
+        data = [(r['t'], r['f']) for r in merged_fts_data if
+                r['s'] == source]
+        scatter_chart.add(source, data, stroke=False)
+
+    return scatter_chart
+
+
 @dashboard.errorhandler(403)
 def forbidden(error):
     """
@@ -45,12 +84,12 @@ def overview():
     """
     # Show staff or student dashboard depending on user
     if current_user.is_staff():
-        return overview_staff()
+        return __overview_staff()
     else:
-        return overview_student()
+        return __overview_student()
 
 
-def overview_staff():
+def __overview_staff():
     # Find all users' submissions
     all_user_data = list(server.submissions.find())
     all_user_submissions = []
@@ -61,44 +100,10 @@ def overview_staff():
         for s in submissions:
             s['full_name'] = user['full_name']
 
+            # Add scatter chart if the submission has been processed
             if 'result' in s:
-                merged_fts_data = []
-
-                # Merge all fts data from each file to make one data set
-                for p, r in s['result'].items():
-                    if 'frequency_time_source_data' in r:
-                        merged_fts_data += r['frequency_time_source_data']
-
-                # Sort fts data by time
-                merged_fts_data = sorted(merged_fts_data,
-                                         key=lambda d: int(d['t']))
-
-                # Create a scatter chart for the data
-                scatter_chart = pygal.XY(disable_xml_declaration=True,
-                                         legend_at_bottom=True,
-                                         legend_at_bottom_columns=len(
-                                             _SOURCES_COLORS)
-                                         )
-                scatter_chart.style = Style(
-                    background='transparent',
-                    plot_background='transparent',
-                    colors=_SOURCES_COLORS
-                )
-                scatter_chart.title = 'Character Frequency vs. Time'
-                scatter_chart.x_title = 'Time (ms)'
-                scatter_chart.y_title = 'Frequency'
-
-                # Plot all data as a line
-                data = [(r['t'], r['f']) for r in merged_fts_data]
-                scatter_chart.add('ALL', data, show_dots=False)
-
-                # Plot each source as a scatter plot using its color
-                for source in _SOURCES:
-                    data = [(r['t'], r['f']) for r in merged_fts_data if
-                            r['s'] == source]
-                    scatter_chart.add(source, data, stroke=False)
-
-                s['scatter_chart'] = scatter_chart
+                s['scatter_chart'] = __build_submission_scatter_chart(
+                    s['result'])
         all_user_submissions.append(submissions)
 
     squashed_submissions = []
@@ -112,7 +117,7 @@ def overview_staff():
                            submissions=squashed_submissions)
 
 
-def overview_student():
+def __overview_student():
     # Find all of the current users' submissions
     user_data = server.submissions.find(
         {'uid': current_user.uid}).next()
