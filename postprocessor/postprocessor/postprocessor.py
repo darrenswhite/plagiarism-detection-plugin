@@ -100,6 +100,44 @@ class PostProcessor:
 
         return result
 
+    def __process_change(self, change):
+        """
+        Process a change in the database
+        This will process new submissions and add the processed result to the
+        database
+        :param change: The database change
+        """
+        # Get the changed document id
+        _id = change['documentKey']['_id']
+        # Only watch for updates to a users submission
+        if 'updateDescription' not in change:
+            return
+
+        upd_desc = change['updateDescription']
+        if 'updatedFields' not in upd_desc:
+            return
+
+        for key, value in upd_desc['updatedFields'].items():
+            # Look for valid submissions
+            # First submission will add the submission list
+            if key == 'submissions':
+                for submission in value:
+                    self.__process_submission(_id, submission)
+            elif 'files' in value:
+                self.__process_submission(_id, value)
+
+    def __process_submission(self, _id, submission):
+        """
+        Process a submission and update the database with the result
+        :param _id: The document id
+        :param submission: The submission to process
+        :return: The result from updating the submission in the databse
+        """
+        # Process the submission
+        result = self.__process(submission['files'])
+        # Update the database with the result
+        return self.submissions.update_submission(_id, submission, result)
+
     def run(self, filename=None):
         """
         Set up logging and start the post processor
@@ -133,18 +171,4 @@ class PostProcessor:
         # Watch the stream for changes
         with self.submissions.watch() as stream:
             for change in stream:
-                # Get the changed document id
-                _id = change['documentKey']['_id']
-                # Only watch for updates to a users submission
-                if 'updateDescription' in change:
-                    upd_desc = change['updateDescription']
-                    if 'updatedFields' in upd_desc:
-                        for submission in upd_desc['updatedFields'].values():
-                            # Look for valid submissions
-                            if 'files' in submission:
-                                # Process the submission
-                                result = self.__process(submission['files'])
-                                # Update the database with the result
-                                self.submissions.update_submission(_id,
-                                                                   submission,
-                                                                   result)
+                self.__process_change(change)
