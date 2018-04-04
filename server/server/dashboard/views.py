@@ -3,6 +3,7 @@ import logging
 import pygal
 from flask import Blueprint, abort, render_template, request, flash, redirect
 from flask_login import login_required, current_user
+from pygal.style import Style
 
 from server import server, xml_parser
 from server.cipher import AESCipher
@@ -19,6 +20,10 @@ ALLOWED_EXTENSIONS = ['xml']
 
 # Source values for charts
 _SOURCES = ['CLIPBOARD', 'EXTERNAL', 'OTHER']
+
+# First element is for the line
+# Other elements match _SOURCES
+_SOURCES_COLORS = ['#000000', '#FF0000', '#00FF00', '#777777']
 
 
 @dashboard.errorhandler(403)
@@ -69,14 +74,23 @@ def overview_staff():
                                          key=lambda d: int(d['t']))
 
                 # Create a scatter chart for the data
-                scatter_chart = pygal.XY(disable_xml_declaration=True)
+                scatter_chart = pygal.XY(disable_xml_declaration=True,
+                                         legend_at_bottom=True,
+                                         legend_at_bottom_columns=len(
+                                             _SOURCES_COLORS)
+                                         )
+                scatter_chart.style = Style(
+                    background='transparent',
+                    plot_background='transparent',
+                    colors=_SOURCES_COLORS
+                )
                 scatter_chart.title = 'Character Frequency vs. Time'
                 scatter_chart.x_title = 'Time (ms)'
                 scatter_chart.y_title = 'Frequency'
 
                 # Plot all data as a line
                 data = [(r['t'], r['f']) for r in merged_fts_data]
-                scatter_chart.add('', data, show_dots=False)
+                scatter_chart.add('ALL', data, show_dots=False)
 
                 # Plot each source as a scatter plot using its color
                 for source in _SOURCES:
