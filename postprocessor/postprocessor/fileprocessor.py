@@ -3,7 +3,18 @@ from difflib import SequenceMatcher
 
 
 class FileProcessor:
+    """
+    The FileProcessor is used to process each file in a submission
+    and give a result
+    """
+
     def __init__(self, cache, changes, plot=False) -> None:
+        """
+        Create a new FileProcessor
+        :param cache: The cache of the file contents
+        :param changes: The list of changes
+        :param plot: true to plot using matplotlib; false otherwise
+        """
         super().__init__()
         self.log = logging.getLogger(type(self).__name__)
         self.cache = cache
@@ -11,13 +22,20 @@ class FileProcessor:
         self.plot = plot
 
     def __build_frequency_time_source_data(self):
+        """
+        Build data for frequency vs. time (with source labels) plot
+        :return: List of rows for plotting
+        """
         rows = []
+        # Normalize timestamps to start at 0
         initial_t = int(self.changes[0]['timestamp']) if len(
             self.changes) > 0 else 0
 
+        # Add each change as a new row
         for c in self.changes:
             add = len(c['newString'])
             rem = len(c['oldString'])
+            # Normalise the difference in change
             diff = add - rem
 
             rows.append({
@@ -29,10 +47,15 @@ class FileProcessor:
         return rows
 
     def __build_document(self):
+        """
+        Reconstruct the file from the list of changes
+        :return: The final file document
+        """
         document = ''
 
+        # Add each change to the document
         for c in self.changes:
-            # get change data
+            # Get change data
             old_str = c['oldString']
             new_str = c['newString']
             offset = int(c['offset'])
@@ -47,8 +70,14 @@ class FileProcessor:
         return document
 
     def __build_frequency(self, source=None):
+        """
+        Get the frequency for a given source (or all if None)
+        :param source: The source to get the frequency of
+        :return: The frequency of the source
+        """
         total = 0
 
+        # Get frequency over all changes
         for c in self.changes:
             if source is None or c['source'] == source:
                 total += len(c['newString']) - len(c['oldString'])
@@ -56,12 +85,20 @@ class FileProcessor:
         return total
 
     def __get_diff_ratio(self):
+        """
+        Get the difference ratio between the cache and reconstructed document
+        :return: The difference ratio
+        """
         # Reconstruct the document from the list of changes
         built = self.__build_document()
         # Get the diff ratio between the cache and reconstructed document
         return SequenceMatcher(None, self.cache, built).ratio()
 
     def process(self):
+        """
+        Process the file data and return the result
+        :return: A dictionary of metrics
+        """
         fts_data = self.__build_frequency_time_source_data()
         total_f = self.__build_frequency()
         clipboard_f = self.__build_frequency('CLIPBOARD')

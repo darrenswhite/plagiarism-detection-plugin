@@ -10,11 +10,20 @@ from postprocessor.db import SubmissionCollection
 from postprocessor.fileprocessor import FileProcessor
 from postprocessor.xml_parser import cipherparse
 
+# Matplotlib source colors
 _SOURCES = {'CLIPBOARD': 'r', 'EXTERNAL': 'b', 'OTHER': 'k'}
 
 
 class PostProcessor:
+    """
+    The PostProcessor will process submissions
+    """
+
     def __init__(self, plot=False) -> None:
+        """
+        Create a new PostProcessor and plot using matplotlib
+        :param plot: true to plot using matplotlib; false otherwise
+        """
         super().__init__()
         self.log = logging.getLogger(type(self).__name__)
         self.plot = plot
@@ -22,23 +31,34 @@ class PostProcessor:
         self.submissions = SubmissionCollection()
 
     def mockdb(self):
+        """
+        Mock the plagiarism db and submissions collection
+        :return: The MockupDB instance
+        """
         mockdb = MockupDB(auto_ismaster=True)
         mockdb.run()
         self.submissions = SubmissionCollection(uri=mockdb.uri)
         return mockdb
 
     def __plot_frequency_time_source(self, fts_data):
+        """
+        Plot frequency vs. time (and source colors) using matplotlib
+        :param fts_data: The data to plot
+        """
         if self.plot:
+            # Plot each source as a scatter plot using its color
             for s, c in _SOURCES.items():
                 x = [r['t'] for r in fts_data if r['s'] == s]
                 y = [r['f'] for r in fts_data if r['s'] == s]
                 plt.scatter(x, y, c=c, s=2, zorder=2, label=s)
 
+            # Plot all data as a line
             x = [r['t'] for r in fts_data]
             y = [r['f'] for r in fts_data]
 
             plt.plot(x, y, linewidth=1, color='k', zorder=1)
 
+            # Show legend for scatter plots
             plt.legend()
             plt.title('\n'.join(
                 wrap('Character Frequency vs. Time')))
@@ -47,6 +67,11 @@ class PostProcessor:
             plt.show()
 
     def __process(self, submission):
+        """
+        Process a submission
+        :param submission: The submission to process
+        :return: The processed result
+        """
         self.log.info('Processing submission...')
 
         result = {}
@@ -78,6 +103,8 @@ class PostProcessor:
     def run(self, filename=None):
         """
         Set up logging and start the post processor
+        :param filename the filename of the submission to process; if None
+        will watch the submissions collection in the plagiarism database
         """
         # Set PDP_DEBUG in the environment to enable debug
         # Use env instead of args because we are using Docker
@@ -103,15 +130,21 @@ class PostProcessor:
                             level=log_level)
 
     def __watch(self):
+        # Watch the stream for changes
         with self.submissions.watch() as stream:
             for change in stream:
+                # Get the changed document id
                 _id = change['documentKey']['_id']
+                # Only watch for updates to a users submission
                 if 'updateDescription' in change:
                     upd_desc = change['updateDescription']
                     if 'updatedFields' in upd_desc:
                         for submission in upd_desc['updatedFields'].values():
+                            # Look for valid submissions
                             if 'files' in submission:
+                                # Process the submission
                                 result = self.__process(submission['files'])
+                                # Update the database with the result
                                 self.submissions.update_submission(_id,
                                                                    submission,
                                                                    result)

@@ -2,6 +2,7 @@ from io import StringIO
 
 from tests.base import BaseTest
 
+# Encrypted submission data to process
 SUBMISSION_DATA = """<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="PlagiarismDetectorProjectComponent">
@@ -16,6 +17,7 @@ SUBMISSION_DATA = """<?xml version="1.0" encoding="UTF-8"?>
   </component>
 </project>"""
 
+# Expected submission result from post processing
 SUBMISSION_RESULT = {
     'src/B.java': {
         'frequency_clipboard': 0,
@@ -71,5 +73,7 @@ SUBMISSION_RESULT = {
 
 class TestProcess(BaseTest):
     def test_process(self):
+        # Post process the submission
         result = self.pp.run(StringIO(SUBMISSION_DATA))
+        # Check the result
         self.assertEqual(result, SUBMISSION_RESULT)

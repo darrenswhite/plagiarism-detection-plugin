@@ -27,8 +27,16 @@ class SubmissionCollection:
         self.submissions = self.database[COLL_SUBMISSIONS]
 
     def update_submission(self, _id, submission, result):
+        """
+        Update submission with post processing result
+        :param _id:
+        :param submission:
+        :param result:
+        :return:
+        """
         self.log.info(
             'Updating submission result: {}/{}'.format(_id, submission['_id']))
+        # Set the submission result
         res = self.submissions.update_one(
             {
                 '_id': _id,
@@ -45,6 +53,11 @@ class SubmissionCollection:
         return res
 
     def watch(self):
+        """
+        Watch the submission collection for changes
+        """
+        # Create the collection if it does not exist
+        # Watch will fail if it does not exist
         if COLL_SUBMISSIONS not in self.database.list_collection_names():
             self.log.info('Creating {} collection'.format(COLL_SUBMISSIONS))
             self.database.create_collection(COLL_SUBMISSIONS)
