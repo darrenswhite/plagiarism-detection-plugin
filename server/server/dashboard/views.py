@@ -28,6 +28,11 @@ _SOURCES_COLORS = ['#000000', '#FF0000', '#00FF00', '#777777']
 
 
 def __build_submission_scatter_chart(result):
+    """
+    Builds the Frequency vs. Time scatter chart for a submission
+    :param result: The post-processed submission result
+    :return: A Pygal XY chart
+    """
     merged_fts_data = __get_merged_fts_data(result)
 
     # Create a scatter chart for the data
@@ -80,6 +85,11 @@ def forbidden(error):
 
 
 def __get_merged_fts_data(result):
+    """
+    Merge submission post-processed file results
+    :param result: Post-processed submission results
+    :return: Merged file results
+    """
     merged_fts_data = []
 
     # Merge all fts data from each file to make one data set
@@ -105,6 +115,9 @@ def overview():
 
 
 def __overview_staff():
+    """
+    The staff dashboard overview
+    """
     # Find all users' submissions
     all_user_data = list(server.submissions.find())
     all_user_submissions = []
@@ -134,6 +147,10 @@ def __overview_staff():
 
 
 def __overview_student():
+    """
+    The student dashboard overview
+    :return:
+    """
     # Find all of the current users' submissions
     user_data = server.submissions.find(
         {'uid': current_user.uid}).next()
@@ -145,25 +162,30 @@ def __overview_student():
 @dashboard.route('/submission/<user_uid>/<submission_id>')
 @login_required
 def submission(user_uid, submission_id):
-    # Only students can post submissions
+    """
+    Route to view a submission details
+    :param user_uid: The user uid that owns the submission
+    :param submission_id: The submission id to view
+    """
+    # Only staff can view submission details
     if not current_user.is_staff():
         abort(403, 'Only staff members can view submission details.')
 
     user_data = server.submissions.find(
         {'uid': user_uid}).next()
     user_submissions = user_data['submissions'] if user_data else []
-    user_submission = [s for s in user_submissions if
-                       s['_id'] == ObjectId(submission_id)]
+    match_submissions = [s for s in user_submissions if
+                         s['_id'] == ObjectId(submission_id)]
 
-    if len(user_submission) == 0:
+    if len(match_submissions) == 0:
         abort(404, 'Submission not found.')
 
-    user_submission[0]['full_name'] = user_data['full_name']
-    user_submission[0]['scatter_chart'] = __build_submission_scatter_chart(
-        user_submission[0]['result'])
+    # Add extra info to the submission
+    subm = match_submissions[0]
+    subm['full_name'] = user_data['full_name']
+    subm['scatter_chart'] = __build_submission_scatter_chart(subm['result'])
 
-    return render_template('dashboard/submission.html',
-                           submission=user_submission[0])
+    return render_template('dashboard/submission.html', submission=subm)
 
 
 @dashboard.route('/submit', methods=['GET', 'POST'])
