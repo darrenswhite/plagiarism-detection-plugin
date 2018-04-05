@@ -32,7 +32,7 @@
                     <dd>
                         {% if submission.total_time %}
                             <script>
-                                document.write(moment.utc(moment.duration({{ submission.total_time }}).asMilliseconds()).format("HH:mm:ss"));
+                                document.write(moment.utc(moment.duration({{ submission.total_time }}).asMilliseconds()).format("H [hours] m [minutes] s [seconds]"));
                             </script>
                         {% else %}
                             Unknown
