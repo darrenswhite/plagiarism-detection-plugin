@@ -95,6 +95,16 @@ def __expand_submission(submission, user):
         if key in merged_result:
             submission[key] = merged_result[key]
 
+    if 'frequency_total' in submission and 'total_time' in submission:
+        # Add cpm (characters per minute)
+        # Total time is in ms so convert to minutes
+        submission['cpm'] = int(submission['frequency_total']) / (int(
+            submission['total_time']) / 1000 / 60)
+
+    if 'diff_ratio' in merged_result:
+        submission['diff_ratio'] = merged_result['diff_ratio'] / len(
+            result.keys())
+
     return submission
 
 

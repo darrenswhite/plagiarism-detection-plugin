@@ -44,8 +44,9 @@
                             <dt>{{ source }} frequency</dt>
                             <dd>
                                 {% if 'frequency_' + source | lower in submission %}
-                                    {{ submission['frequency_' + source | lower] / submission.frequency_total * 100 }}
-                                    %
+                                    {% set freq = submission['frequency_' + source | lower]
+                                        / submission.frequency_total * 100 -%}
+                                    {{ freq }}%
                                 {% else %}
                                     Unknown
                                 {% endif %}
@@ -53,15 +54,30 @@
                         {% endif %}
                     {% endfor %}
 
-                    <dt>Graph</dt>
+                    <dt>Characters per minute</dt>
                     <dd>
-                        {% if submission.scatter_chart %}
-                            {{ submission.scatter_chart.render() | safe }}
+                        {% if submission.cpm %}
+                            {{ submission.cpm }} CPM
                         {% else %}
-                            No graph found
+                            Unknown
+                        {% endif %}
+                    </dd>
+
+                    <dt>Diff ratio</dt>
+                    <dd>
+                        {% if submission.diff_ratio %}
+                            {{ submission.diff_ratio }}
+                        {% else %}
+                            Unknown
                         {% endif %}
                     </dd>
                 </dl>
+
+                {% if submission.scatter_chart %}
+                    {{ submission.scatter_chart.render() | safe }}
+                {% else %}
+                    No graph found
+                {% endif %}
             </div>
         </div>
     </div>
