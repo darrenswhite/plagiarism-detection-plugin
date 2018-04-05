@@ -19,11 +19,23 @@ SUBMISSION_DATA = """<?xml version="1.0" encoding="UTF-8"?>
 
 # Expected submission result from post processing
 SUBMISSION_RESULT = {
-    'src/B.java': {
+    'src/A.java': {
+        'diff_ratio': 0.0,
+        'frequency_total': -23,
         'frequency_clipboard': 0,
-        'frequency_total': 19,
-        'diff_ratio': 1.0,
         'frequency_external': 0,
+        'frequency_other': -23,
+        'frequency_time_source_data': [
+            {'f': -21, 's': 'OTHER', 't': 0},
+            {'f': -2, 's': 'OTHER', 't': 114}
+        ]
+    },
+    'src/B.java': {
+        'diff_ratio': 1.0,
+        'frequency_total': 19,
+        'frequency_clipboard': 0,
+        'frequency_external': 0,
+        'frequency_other': 19,
         'frequency_time_source_data': [
             {'f': 42, 's': 'OTHER', 't': 0},
             {'f': -21, 's': 'OTHER', 't': 96},
@@ -31,10 +43,11 @@ SUBMISSION_RESULT = {
         ]
     },
     'src/C.java': {
-        'frequency_clipboard': 0,
-        'frequency_total': 56,
         'diff_ratio': 0.9464285714285714,
+        'frequency_total': 56,
+        'frequency_clipboard': 0,
         'frequency_external': 56,
+        'frequency_other': 0,
         'frequency_time_source_data': [
             {'f': 5, 's': 'OTHER', 't': 0},
             {'f': 56, 's': 'EXTERNAL', 't': 1},
@@ -47,21 +60,12 @@ SUBMISSION_RESULT = {
             {'f': -5, 's': 'OTHER', 't': 28998}
         ]
     },
-    'src/A.java': {
-        'frequency_clipboard': 0,
-        'frequency_total': -23,
-        'diff_ratio': 0.0,
-        'frequency_external': 0,
-        'frequency_time_source_data': [
-            {'f': -21, 's': 'OTHER', 't': 0},
-            {'f': -2, 's': 'OTHER', 't': 114}
-        ]
-    },
     'src/Test.java': {
-        'frequency_clipboard': 0,
-        'frequency_total': 22,
         'diff_ratio': 1.0,
+        'frequency_total': 22,
+        'frequency_clipboard': 0,
         'frequency_external': 0,
+        'frequency_other': 22,
         'frequency_time_source_data': [
             {'f': 45, 's': 'OTHER', 't': 0},
             {'f': -21, 's': 'OTHER', 't': 160},
