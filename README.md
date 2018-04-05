@@ -29,7 +29,7 @@ To start both the server and post-processor use `./run.sh`. This will use
 The server uses the Aberystwyth LDAP server for authentication and must be
 connected to the `eduroam` network.
 
-To enable debugging, use `PDP_DEBUG=True ./run.sh`.
+To enable debugging, use `PDP_DEBUG=1 ./run.sh`.
 
 ## Worklog
 
