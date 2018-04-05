@@ -44,13 +44,13 @@ def __build_submission_scatter_chart(fts_data):
         colors=_SOURCES_COLORS
     )
     scatter_chart.title = 'Character Frequency vs. Time'
-    scatter_chart.x_title = 'Time (ms)'
+    scatter_chart.x_title = 'Time (minutes)'
     scatter_chart.y_title = 'Frequency'
 
     # Plot each source as a scatter plot using its color
     # Plot TOTAL data as a line with no dots
     for source in _SOURCES:
-        data = [(r['t'], r['f']) for r in fts_data if
+        data = [(r['t'] / 1000 / 60, r['f']) for r in fts_data if
                 r['s'] == source.upper() or source == 'Total']
         if source == 'Total':
             scatter_chart.add(source, data, show_dots=False, stroke=True)
