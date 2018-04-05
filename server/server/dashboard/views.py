@@ -51,11 +51,12 @@ def __build_submission_scatter_chart(fts_data):
     # Plot TOTAL data as a line with no dots
     for source in _SOURCES:
         data = [(r['t'], r['f']) for r in fts_data if
-                r['s'] == source or source == 'Total']
+                r['s'] == source.upper() or source == 'Total']
         if source == 'Total':
-            scatter_chart.add(source, data, show_dots=False)
+            scatter_chart.add(source, data, show_dots=False, stroke=True)
         else:
-            scatter_chart.add(source, data, dots_size=2, stroke=False)
+            scatter_chart.add(source, data, show_dots=True, dots_size=1.5,
+                              stroke=False)
 
     return scatter_chart
 
@@ -68,10 +69,9 @@ def __expand_submission(submission, user):
     :param user: The user who owns the submission
     :return: The modified submission
     """
-    result = submission['result'] if 'result' in submission else {}
+    result = submission.get('result', {})
     merged_result = __get_merged_result(result)
-    merged_fts_data = merged_result['frequency_time_source_data'] \
-        if 'frequency_time_source_data' in merged_result else {}
+    merged_fts_data = merged_result.get('frequency_time_source_data', {})
 
     # Add user full name
     submission['full_name'] = user['full_name']
