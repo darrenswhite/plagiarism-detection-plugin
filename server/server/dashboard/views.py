@@ -1,5 +1,6 @@
 import logging
 
+import bson
 from bson.objectid import ObjectId
 from flask import Blueprint, abort, render_template, request, flash, redirect
 from flask_login import login_required, current_user
@@ -238,8 +239,13 @@ def view_submission(user_uid, submission_id):
     user_data = server.submissions.find(
         {'uid': user_uid}).next()
     user_submissions = user_data['submissions'] if user_data else []
-    match_submissions = [s for s in user_submissions if
-                         s['_id'] == ObjectId(submission_id)]
+    match_submissions = []
+
+    try:
+        match_submissions = [s for s in user_submissions if
+                             s['_id'] == ObjectId(submission_id)]
+    except bson.errors.InvalidId:
+        abort(404, 'Invalid submission id.')
 
     if len(match_submissions) == 0:
         abort(404, 'Submission not found.')
