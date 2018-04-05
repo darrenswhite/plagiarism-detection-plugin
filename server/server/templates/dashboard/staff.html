@@ -16,6 +16,7 @@
                             <th class="col-sm-1">Module</th>
                             <th class="col-sm-1">Submitted on</th>
                             <th class="col-sm-1">Details</th>
+                            <th class="col-sm-1">P value</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -26,15 +27,20 @@
                                 <td>{{ submission.module }}</td>
                                 <td>
                                     {% if submission._id %}
-                                        <script>
-                                            document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm"));
-                                        </script>
+                                        <script>formatDateTime("{{ submission._id.generation_time }}");</script>
                                     {% else %}
                                         Unknown
                                     {% endif %}
                                 </td>
                                 <td>
                                     <a href="{{ url_for('dashboard.view_submission', user_uid=submission.uid, submission_id=submission._id) }}">View</a>
+                                </td>
+                                <td style="color: {{ submission.p_color }}">
+                                    {% if submission.p_value %}
+                                        <script>twoDP({{ submission.p_value }});</script>
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

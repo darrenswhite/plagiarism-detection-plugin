@@ -3,6 +3,21 @@
 {% block extra_head %}
     <link rel="stylesheet"
           href="{{ url_for('static', filename='styles/dashboard.css') }}">
+
+    <script>
+        function formatDuration(duration) {
+            document.write(moment.utc(moment.duration(duration).asMilliseconds())
+                .format("H [hours] m [minutes] s [seconds]"));
+        }
+
+        function formatDateTime(datetime) {
+            document.write(moment(datetime).format("ddd, MMM D YYYY HH:mm:ss"));
+        }
+
+        function twoDP(value) {
+            document.write(parseFloat(value).toFixed(2))
+        }
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -28,7 +43,8 @@
                         <a href="{{ url_for('dashboard.overview') }}">Overview</a>
                     </li>
                     {% if not current_user.is_staff() %}
-                        <li><a href="{{ url_for('dashboard.submit') }}">Submit</a>
+                        <li>
+                        <a href="{{ url_for('dashboard.submit') }}">Submit</a>
                     {% endif %}
                     </li>
                 </ul>

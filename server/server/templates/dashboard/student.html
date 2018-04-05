@@ -21,15 +21,13 @@
                             <tr>
                                 <td>{{ submission.title }}</td>
                                 <td>{{ submission.module }}</td>
-                                {% if submission._id %}
-                                    <td>
-                                        <script>
-                                            document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm:ss"));
-                                        </script>
-                                    </td>
-                                {% else %}
-                                    <td>Unknown</td>
-                                {% endif %}
+                                <td>
+                                    {% if submission._id %}
+                                        <script>formatDateTime("{{ submission._id.generation_time }}");</script>
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>

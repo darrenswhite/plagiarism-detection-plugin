@@ -18,13 +18,16 @@ cipher = AESCipher('plagiarismplugin')
 log = logging.getLogger(__name__)
 
 # Only allow uploading on XML files
-ALLOWED_EXTENSIONS = ['xml']
+__ALLOWED_EXTENSIONS = ['xml']
 
 # Source values for charts
-_SOURCES = ['Total', 'Clipboard', 'External', 'Other']
+__SOURCES = ['Total', 'Clipboard', 'External', 'Other']
 
 # Elements match _SOURCES
-_SOURCES_COLORS = ['#000000', '#FF0000', '#00FF00', '#777777']
+__SOURCES_COLORS = ['#000000', '#FF0000', '#00FF00', '#777777']
+
+# P value maximum value
+__P_VALUE_LIMIT = 40
 
 
 def __build_submission_scatter_chart(fts_data):
@@ -36,20 +39,20 @@ def __build_submission_scatter_chart(fts_data):
     # Create a scatter chart for the data
     scatter_chart = XY(disable_xml_declaration=True,
                        legend_at_bottom=True,
-                       legend_at_bottom_columns=len(_SOURCES_COLORS)
+                       legend_at_bottom_columns=len(__SOURCES_COLORS)
                        )
     scatter_chart.style = Style(
         background='transparent',
         plot_background='transparent',
-        colors=_SOURCES_COLORS
+        colors=__SOURCES_COLORS
     )
     scatter_chart.title = 'Character Frequency vs. Time'
     scatter_chart.x_title = 'Time (minutes)'
     scatter_chart.y_title = 'Frequency'
 
     # Plot each source as a scatter plot using its color
-    # Plot TOTAL data as a line with no dots
-    for source in _SOURCES:
+    # Plot Total source as a line with no dots
+    for source in __SOURCES:
         data = [(r['t'] / 1000 / 60, r['f']) for r in fts_data if
                 r['s'] == source.upper() or source == 'Total']
         if source == 'Total':
@@ -59,6 +62,42 @@ def __build_submission_scatter_chart(fts_data):
                               stroke=False)
 
     return scatter_chart
+
+
+def __calculate_p_color(p_value):
+    """
+    Calculates the color for the given p value
+    :param p_value: The p value to calculate the color of
+    :return: The p value color
+    """
+    # Mod is the max value for red
+    # i.e when p_value = 0 p_color = green
+    # and when p_value = 40 p_color = red
+    mod = 255 / __P_VALUE_LIMIT
+    r = min(255, round(p_value * mod))
+    g = max(0, 255 - round(p_value * mod))
+    return '#{:02X}{:02X}{:02X}'.format(r, g, 0)
+
+
+def __calculate_p_value(submission):
+    """
+    Calculates the p value for the submission
+    :param submission: The submission to calculate the p value of
+    :return: The calulcated p value
+    """
+    # Get frequencies as float (0.0 - 1.0)
+    clipboard_f = submission['frequency_clipboard'] / submission[
+        'frequency_total']
+    external_f = submission['frequency_external'] / submission[
+        'frequency_total']
+    cpm = submission['cpm']
+    diff_ratio = submission['diff_ratio']
+    # Ensure frequencies are minimum of 1
+    # External has a significant impact
+    # CPM acts as penalty modifier
+    # Diff ratio acts as accuracy modifier
+    return ((clipboard_f + 1) + pow(external_f + 1, 2)) * \
+           (cpm / 100) * diff_ratio
 
 
 def __expand_submission(submission, user):
@@ -88,22 +127,31 @@ def __expand_submission(submission, user):
         submission['total_time'] = int(
             merged_fts_data[len(merged_fts_data) - 1]['t']) - int(
             merged_fts_data[0]['t'])
+    else:
+        submission['total_time'] = -1
 
     # Add source frequencies
-    for source in _SOURCES:
+    for source in __SOURCES:
         key = 'frequency_' + source.lower()
-        if key in merged_result:
-            submission[key] = merged_result[key]
+        submission[key] = merged_result.get(key, -1)
 
     if 'frequency_total' in submission and 'total_time' in submission:
         # Add cpm (characters per minute)
         # Total time is in ms so convert to minutes
-        submission['cpm'] = int(submission['frequency_total']) / (int(
-            submission['total_time']) / 1000 / 60)
+        submission['cpm'] = round(int(submission['frequency_total']) / (int(
+            submission['total_time']) / 1000 / 60))
+    else:
+        submission['cpm'] = -1
 
     if 'diff_ratio' in merged_result:
         submission['diff_ratio'] = merged_result['diff_ratio'] / len(
             result.keys())
+    else:
+        submission['diff_ratio'] = -1
+
+    p_value = __calculate_p_value(submission)
+    submission['p_value'] = p_value
+    submission['p_color'] = __calculate_p_color(p_value)
 
     return submission
 
@@ -250,7 +298,7 @@ def submit():
 def valid_filename(filename):
     # Check valid extensions
     return '.' in filename and filename.rsplit('.', 1)[
-        1].lower() in ALLOWED_EXTENSIONS
+        1].lower() in __ALLOWED_EXTENSIONS
 
 
 @dashboard.route('/submission/<user_uid>/<submission_id>')
@@ -285,4 +333,4 @@ def view_submission(user_uid, submission_id):
     __expand_submission(submission, user_data)
 
     return render_template('dashboard/submission.html', submission=submission,
-                           sources=_SOURCES)
+                           sources=__SOURCES)

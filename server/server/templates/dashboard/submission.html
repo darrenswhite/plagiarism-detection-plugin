@@ -20,9 +20,7 @@
                     <dt>Submitted on</dt>
                     <dd>
                         {% if submission._id %}
-                            <script>
-                                document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm:ss"));
-                            </script>
+                            <script>formatDateTime("{{ submission._id.generation_time }}");</script>
                         {% else %}
                             Unknown
                         {% endif %}
@@ -31,9 +29,7 @@
                     <dt>Total time</dt>
                     <dd>
                         {% if submission.total_time %}
-                            <script>
-                                document.write(moment.utc(moment.duration({{ submission.total_time }}).asMilliseconds()).format("H [hours] m [minutes] s [seconds]"));
-                            </script>
+                            <script>formatDuration({{ submission.total_time }});</script>
                         {% else %}
                             Unknown
                         {% endif %}
@@ -46,7 +42,7 @@
                                 {% if 'frequency_' + source | lower in submission %}
                                     {% set freq = submission['frequency_' + source | lower]
                                         / submission.frequency_total * 100 -%}
-                                    {{ freq }}%
+                                    <script>twoDP({{ freq }});</script>%
                                 {% else %}
                                     Unknown
                                 {% endif %}
@@ -57,7 +53,7 @@
                     <dt>Characters per minute</dt>
                     <dd>
                         {% if submission.cpm %}
-                            {{ submission.cpm }} CPM
+                            {{ submission.cpm }}
                         {% else %}
                             Unknown
                         {% endif %}
@@ -66,7 +62,16 @@
                     <dt>Diff ratio</dt>
                     <dd>
                         {% if submission.diff_ratio %}
-                            {{ submission.diff_ratio }}
+                            <script>twoDP({{ submission.diff_ratio }});</script>
+                        {% else %}
+                            Unknown
+                        {% endif %}
+                    </dd>
+
+                    <dt>P value</dt>
+                    <dd style="color: {{ submission.p_color }}">
+                        {% if submission.p_value %}
+                            <script>twoDP({{ submission.p_value }});</script>
                         {% else %}
                             Unknown
                         {% endif %}
