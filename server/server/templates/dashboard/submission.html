@@ -30,11 +30,28 @@
 
                     <dt>Total time</dt>
                     <dd>
-                        <script>
-                            document.write(moment.utc(moment.duration({{ submission.total_time }}).asMilliseconds()).format("HH:mm:ss"));
-                        </script>
-
+                        {% if submission.total_time %}
+                            <script>
+                                document.write(moment.utc(moment.duration({{ submission.total_time }}).asMilliseconds()).format("HH:mm:ss"));
+                            </script>
+                        {% else %}
+                            Unknown
+                        {% endif %}
                     </dd>
+
+                    {% for source in sources %}
+                        {% if source != 'Total' %}
+                            <dt>{{ source }} frequency</dt>
+                            <dd>
+                                {% if 'frequency_' + source | lower in submission %}
+                                    {{ submission['frequency_' + source | lower] / submission.frequency_total * 100 }}
+                                    %
+                                {% else %}
+                                    Unknown
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+                    {% endfor %}
 
                     <dt>Graph</dt>
                     <dd>

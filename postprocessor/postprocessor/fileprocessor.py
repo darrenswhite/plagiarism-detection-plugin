@@ -103,6 +103,7 @@ class FileProcessor:
         total_f = self.__build_frequency()
         clipboard_f = self.__build_frequency('CLIPBOARD')
         external_f = self.__build_frequency('EXTERNAL')
+        other_f = self.__build_frequency('OTHER')
         diff_ratio = self.__get_diff_ratio()
 
         return {
@@ -110,5 +111,6 @@ class FileProcessor:
             'frequency_total': total_f,
             'frequency_clipboard': clipboard_f,
             'frequency_external': external_f,
+            'frequency_other': other_f,
             'frequency_time_source_data': fts_data,
         }

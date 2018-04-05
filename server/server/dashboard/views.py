@@ -21,10 +21,9 @@ log = logging.getLogger(__name__)
 ALLOWED_EXTENSIONS = ['xml']
 
 # Source values for charts
-_SOURCES = ['CLIPBOARD', 'EXTERNAL', 'OTHER']
+_SOURCES = ['Total', 'Clipboard', 'External', 'Other']
 
-# First element is for the line
-# Other elements match _SOURCES
+# Elements match _SOURCES
 _SOURCES_COLORS = ['#000000', '#FF0000', '#00FF00', '#777777']
 
 
@@ -48,15 +47,15 @@ def __build_submission_scatter_chart(fts_data):
     scatter_chart.x_title = 'Time (ms)'
     scatter_chart.y_title = 'Frequency'
 
-    # Plot all data as a line
-    data = [(r['t'], r['f']) for r in fts_data]
-    scatter_chart.add('ALL', data, show_dots=False)
-
     # Plot each source as a scatter plot using its color
+    # Plot TOTAL data as a line with no dots
     for source in _SOURCES:
         data = [(r['t'], r['f']) for r in fts_data if
-                r['s'] == source]
-        scatter_chart.add(source, data, dots_size=2, stroke=False)
+                r['s'] == source or source == 'Total']
+        if source == 'Total':
+            scatter_chart.add(source, data, show_dots=False)
+        else:
+            scatter_chart.add(source, data, dots_size=2, stroke=False)
 
     return scatter_chart
 
@@ -70,19 +69,31 @@ def __expand_submission(submission, user):
     :return: The modified submission
     """
     result = submission['result'] if 'result' in submission else {}
-    merged_fts_data = __get_merged_fts_data(result)
+    merged_result = __get_merged_result(result)
+    merged_fts_data = merged_result['frequency_time_source_data'] \
+        if 'frequency_time_source_data' in merged_result else {}
 
     # Add user full name
     submission['full_name'] = user['full_name']
+
     # Add user uid
     submission['uid'] = user['uid']
+
     # Add scatter chart
     submission['scatter_chart'] = __build_submission_scatter_chart(
         merged_fts_data)
-    # Add total time
-    submission['total_time'] = int(
-        merged_fts_data[len(merged_fts_data) - 1]['t']) - int(
-        merged_fts_data[0]['t'])
+
+    if len(merged_fts_data) > 0:
+        # Add total time
+        submission['total_time'] = int(
+            merged_fts_data[len(merged_fts_data) - 1]['t']) - int(
+            merged_fts_data[0]['t'])
+
+    # Add source frequencies
+    for source in _SOURCES:
+        key = 'frequency_' + source.lower()
+        if key in merged_result:
+            submission[key] = merged_result[key]
 
     return submission
 
@@ -109,21 +120,29 @@ def forbidden(error):
                            description=error.description), 404
 
 
-def __get_merged_fts_data(result):
+def __get_merged_result(result):
     """
     Merge submission post-processed file results
-    :param result: Post-processed submission results
-    :return: Merged file results
+    :param result: Post-processed submission result
+    :return: Merged file result
     """
-    merged_fts_data = []
+    merged_result = {}
 
     # Merge all fts data from each file to make one data set
-    for p, r in result.items():
-        if 'frequency_time_source_data' in r:
-            merged_fts_data += r['frequency_time_source_data']
+    for path, data in result.items():
+        for key, value in data.items():
+            if key in merged_result:
+                merged_result[key] += value
+            else:
+                merged_result[key] = value
 
-    # Sort fts data by time
-    return sorted(merged_fts_data, key=lambda d: int(d['t']))
+    if 'frequency_time_source_data' in merged_result:
+        # Sort fts data by time
+        merged_result['frequency_time_source_data'] = sorted(
+            merged_result['frequency_time_source_data'],
+            key=lambda d: int(d['t']))
+
+    return merged_result
 
 
 @dashboard.route('/')
@@ -255,4 +274,5 @@ def view_submission(user_uid, submission_id):
 
     __expand_submission(submission, user_data)
 
-    return render_template('dashboard/submission.html', submission=submission)
+    return render_template('dashboard/submission.html', submission=submission,
+                           sources=_SOURCES)
