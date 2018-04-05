@@ -27,14 +27,12 @@ _SOURCES = ['CLIPBOARD', 'EXTERNAL', 'OTHER']
 _SOURCES_COLORS = ['#000000', '#FF0000', '#00FF00', '#777777']
 
 
-def __build_submission_scatter_chart(result):
+def __build_submission_scatter_chart(fts_data):
     """
     Builds the Frequency vs. Time scatter chart for a submission
-    :param result: The post-processed submission result
+    :param fts_data: The frequency time source data to plot
     :return: A Pygal XY chart
     """
-    merged_fts_data = __get_merged_fts_data(result)
-
     # Create a scatter chart for the data
     scatter_chart = XY(disable_xml_declaration=True,
                        legend_at_bottom=True,
@@ -50,16 +48,42 @@ def __build_submission_scatter_chart(result):
     scatter_chart.y_title = 'Frequency'
 
     # Plot all data as a line
-    data = [(r['t'], r['f']) for r in merged_fts_data]
+    data = [(r['t'], r['f']) for r in fts_data]
     scatter_chart.add('ALL', data, show_dots=False)
 
     # Plot each source as a scatter plot using its color
     for source in _SOURCES:
-        data = [(r['t'], r['f']) for r in merged_fts_data if
+        data = [(r['t'], r['f']) for r in fts_data if
                 r['s'] == source]
         scatter_chart.add(source, data, dots_size=2, stroke=False)
 
     return scatter_chart
+
+
+def __expand_submission(submission, user):
+    """
+    Adds extra data to the submission for viewing
+
+    :param submission: The submission to add extra data to
+    :param user: The user who owns the submission
+    :return: The modified submission
+    """
+    result = submission['result'] if 'result' in submission else {}
+    merged_fts_data = __get_merged_fts_data(result)
+
+    # Add user full name
+    submission['full_name'] = user['full_name']
+    # Add user uid
+    submission['uid'] = user['uid']
+    # Add scatter chart
+    submission['scatter_chart'] = __build_submission_scatter_chart(
+        merged_fts_data)
+    # Add total time
+    submission['total_time'] = int(
+        merged_fts_data[len(merged_fts_data) - 1]['t']) - int(
+        merged_fts_data[0]['t'])
+
+    return submission
 
 
 @dashboard.errorhandler(403)
@@ -126,13 +150,7 @@ def __overview_staff():
     for user in all_user_data:
         submissions = user['submissions']
         for s in submissions:
-            s['full_name'] = user['full_name']
-            s['uid'] = user['uid']
-
-            # Add scatter chart if the submission has been processed
-            if 'result' in s:
-                s['scatter_chart'] = __build_submission_scatter_chart(
-                    s['result'])
+            __expand_submission(s, user)
         all_user_submissions.append(submissions)
 
     squashed_submissions = []
@@ -157,35 +175,6 @@ def __overview_student():
     user_submissions = user_data['submissions'] if user_data else []
     return render_template('dashboard/student.html',
                            submissions=user_submissions)
-
-
-@dashboard.route('/submission/<user_uid>/<submission_id>')
-@login_required
-def submission(user_uid, submission_id):
-    """
-    Route to view a submission details
-    :param user_uid: The user uid that owns the submission
-    :param submission_id: The submission id to view
-    """
-    # Only staff can view submission details
-    if not current_user.is_staff():
-        abort(403, 'Only staff members can view submission details.')
-
-    user_data = server.submissions.find(
-        {'uid': user_uid}).next()
-    user_submissions = user_data['submissions'] if user_data else []
-    match_submissions = [s for s in user_submissions if
-                         s['_id'] == ObjectId(submission_id)]
-
-    if len(match_submissions) == 0:
-        abort(404, 'Submission not found.')
-
-    # Add extra info to the submission
-    subm = match_submissions[0]
-    subm['full_name'] = user_data['full_name']
-    subm['scatter_chart'] = __build_submission_scatter_chart(subm['result'])
-
-    return render_template('dashboard/submission.html', submission=subm)
 
 
 @dashboard.route('/submit', methods=['GET', 'POST'])
@@ -232,3 +221,32 @@ def valid_filename(filename):
     # Check valid extensions
     return '.' in filename and filename.rsplit('.', 1)[
         1].lower() in ALLOWED_EXTENSIONS
+
+
+@dashboard.route('/submission/<user_uid>/<submission_id>')
+@login_required
+def view_submission(user_uid, submission_id):
+    """
+    Route to view a submission details
+    :param user_uid: The user uid that owns the submission
+    :param submission_id: The submission id to view
+    """
+    # Only staff can view submission details
+    if not current_user.is_staff():
+        abort(403, 'Only staff members can view submission details.')
+
+    user_data = server.submissions.find(
+        {'uid': user_uid}).next()
+    user_submissions = user_data['submissions'] if user_data else []
+    match_submissions = [s for s in user_submissions if
+                         s['_id'] == ObjectId(submission_id)]
+
+    if len(match_submissions) == 0:
+        abort(404, 'Submission not found.')
+
+    # Add extra info to the submission
+    submission = match_submissions[0]
+
+    __expand_submission(submission, user_data)
+
+    return render_template('dashboard/submission.html', submission=submission)

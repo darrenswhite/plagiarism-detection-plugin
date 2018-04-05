@@ -34,7 +34,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('dashboard.submission', user_uid=submission.uid, submission_id=submission._id) }}">View</a>
+                                    <a href="{{ url_for('dashboard.view_submission', user_uid=submission.uid, submission_id=submission._id) }}">View</a>
                                 </td>
                             </tr>
                         {% endfor %}

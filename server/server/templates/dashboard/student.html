@@ -24,7 +24,7 @@
                                 {% if submission._id %}
                                     <td>
                                         <script>
-                                            document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm"));
+                                            document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm:ss"));
                                         </script>
                                     </td>
                                 {% else %}

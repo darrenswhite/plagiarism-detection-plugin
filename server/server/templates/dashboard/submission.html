@@ -21,11 +21,19 @@
                     <dd>
                         {% if submission._id %}
                             <script>
-                                document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm"));
+                                document.write(moment("{{ submission._id.generation_time }}").format("ddd, MMM D YYYY HH:mm:ss"));
                             </script>
                         {% else %}
                             Unknown
                         {% endif %}
+                    </dd>
+
+                    <dt>Total time</dt>
+                    <dd>
+                        <script>
+                            document.write(moment.utc(moment.duration({{ submission.total_time }}).asMilliseconds()).format("HH:mm:ss"));
+                        </script>
+
                     </dd>
 
                     <dt>Graph</dt>
