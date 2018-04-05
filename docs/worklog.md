@@ -237,3 +237,18 @@ data is shown in JSON format on the Staff dashboard.
 ## 02/04 - 08/04
 
 - Added code documentation to each module (plugin, postprocessor, and server)
+- I have used Pygal to display the FTS data in a scatter graph on the staff
+dashboard. Originally I had embedded it in the table data. But this was taking
+up lots of room. So I decided to move submission details to a new view. Only
+staff would have access to this view. The view would display details on a
+submission (the url is `/dashboard/submission/<user_uid>/<submission_id>`). The
+staff dashboard table now has a link to access the submission details view. The
+submission details view has a description list for the metrics and the scatter
+graph. The Pygal module is similar to matplotlib for displaying charts. I added
+the total time metric for submissions which also allowed me to add the CPM 
+(characters per minute) metric using the total frequency. Finally, I added the
+p_value (i.e plagiarism metric) for submissions. This is calculated using all
+the metrics available. It also has an associated color (low value is green, high
+value is red). I have set the high value limit to 40, but this is only a
+guideline. More samples would be needed for a more accurate limit.
+ 
