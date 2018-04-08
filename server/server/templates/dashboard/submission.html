@@ -79,7 +79,7 @@
                 </dl>
 
                 {% if submission.scatter_chart %}
-                    {{ submission.scatter_chart.render() | safe }}
+                    <embed type="image/svg+xml" src={{ submission.scatter_chart | safe }} />
                 {% else %}
                     No graph found
                 {% endif %}

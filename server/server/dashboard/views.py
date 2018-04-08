@@ -37,10 +37,10 @@ def __build_submission_scatter_chart(fts_data):
     :return: A Pygal XY chart
     """
     # Create a scatter chart for the data
-    scatter_chart = XY(disable_xml_declaration=True,
-                       legend_at_bottom=True,
-                       legend_at_bottom_columns=len(__SOURCES_COLORS)
-                       )
+    scatter_chart = XY(
+        legend_at_bottom=True,
+        legend_at_bottom_columns=len(__SOURCES_COLORS)
+    )
     scatter_chart.style = Style(
         background='transparent',
         plot_background='transparent',
@@ -61,7 +61,7 @@ def __build_submission_scatter_chart(fts_data):
             scatter_chart.add(source, data, show_dots=True, dots_size=1.5,
                               stroke=False)
 
-    return scatter_chart
+    return scatter_chart.render_data_uri()
 
 
 def __calculate_p_color(p_value):
