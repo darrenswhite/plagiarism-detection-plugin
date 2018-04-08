@@ -15,7 +15,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="postprocessor" />
-    <option name="PARAMETERS" value="-f $PROJECT_DIR$/samples/bingo_01.xml -p" />
+    <option name="PARAMETERS" value="-f $PROJECT_DIR$/samples/bingo_02.xml -p" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="true" />

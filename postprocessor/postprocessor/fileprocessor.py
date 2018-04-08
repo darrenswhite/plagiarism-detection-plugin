@@ -27,9 +27,6 @@ class FileProcessor:
         :return: List of rows for plotting
         """
         rows = []
-        # Normalize timestamps to start at 0
-        initial_t = int(self.changes[0]['timestamp']) if len(
-            self.changes) > 0 else 0
 
         # Add each change as a new row
         for c in self.changes:
@@ -41,7 +38,7 @@ class FileProcessor:
             rows.append({
                 'f': diff,
                 's': c['source'],
-                't': int(c['timestamp']) - initial_t
+                't': int(c['timestamp'])
             })
 
         return rows
