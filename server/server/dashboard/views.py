@@ -109,7 +109,7 @@ def __calculate_p_value(submission):
            (cpm / 100) * diff_ratio
 
 
-def __expand_submission(submission, user, chart=False, large_changes=False,
+def __expand_submission(submission, user, chart=False, large_change_size=None,
                         normalise_changes=False, include_change_path=False):
     """
     Adds extra data to the submission for viewing
@@ -117,8 +117,8 @@ def __expand_submission(submission, user, chart=False, large_changes=False,
     :param submission: The submission to add extra data to
     :param user: The user who owns the submission
     :param chart: True to include the Pygal chart; false otherwise
-    :param large_changes: True to include a list of large changes; false
-    otherwise
+    :param large_change_size: A positive number to include a list of changes
+    that meet the size requirement; set to None to disable
     :param normalise_changes: True to normalise change timestamps; false
     otherwise
     :param include_change_path: True to include the file path for each change
@@ -139,10 +139,10 @@ def __expand_submission(submission, user, chart=False, large_changes=False,
         submission['scatter_chart'] = __build_submission_scatter_chart(
             merged_fts_data)
 
-    if large_changes:
+    if large_change_size is not None:
         # Add large changes
         submission['large_changes'] = \
-            __get_changes(submission, __LARGE_CHANGE_FREQUENCY,
+            __get_changes(submission, large_change_size,
                           normalise=normalise_changes,
                           include_path=include_change_path)
 
@@ -392,8 +392,12 @@ def view_submission(user_uid, submission_id):
     # Add extra info to the submission
     submission = match_submissions[0]
 
-    __expand_submission(submission, user_data, chart=True, large_changes=True,
-                        normalise_changes=True, include_change_path=True)
+    large_change_size = int(request.args.get('large_change_size',
+                                             __LARGE_CHANGE_FREQUENCY))
+    __expand_submission(submission, user_data, chart=True,
+                        large_change_size=large_change_size,
+                        normalise_changes=True,
+                        include_change_path=True)
 
     return render_template('dashboard/submission.html', submission=submission,
                            sources=__SOURCES)
