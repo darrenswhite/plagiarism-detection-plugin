@@ -233,9 +233,9 @@ def __get_changes(submission, min_size=0, normalise=False, include_path=False):
             if size >= min_size:
                 # No need to check normalise here as initial_t will be 0
                 c['timestamp'] = int(c['timestamp']) - initial_t
-            if include_path:
-                c['path'] = path
-            changes.append(c)
+                if include_path:
+                    c['path'] = path
+                changes.append(c)
 
     return changes
 
