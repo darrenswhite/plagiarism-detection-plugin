@@ -116,6 +116,12 @@ def __expand_submission(submission, user, chart=False, large_changes=False,
 
     :param submission: The submission to add extra data to
     :param user: The user who owns the submission
+    :param chart: True to include the Pygal chart; false otherwise
+    :param large_changes: True to include a list of large changes; false
+    otherwise
+    :param normalise_changes: True to normalise change timestamps; false
+    otherwise
+    :param include_change_path: True to include the file path for each change
     :return: The modified submission
     """
     result = submission.get('result', {})
@@ -197,24 +203,39 @@ def forbidden(error):
 
 
 def __get_changes(submission, min_size=0, normalise=False, include_path=False):
+    """
+    Gets all the changes in a submission
+    :param submission: The submission to get the changes from
+    :param min_size: The minimum size a change must be
+    :param normalise: True to normalise change timestamps; false otherwise
+    :param include_path: True to include the file path for each change; false
+    otherwise
+    :return: A list of changes
+    """
     changes = []
+    # The initial timestamp used for normalising timestamps
     initial_t = sys.maxsize
 
-    for path, data in submission['files'].items():
-        for c in data['changes']:
-            t = int(c['timestamp'])
-            if t < initial_t:
-                initial_t = t
+    if normalise:
+        # Find initial timestamp from all changes
+        for path, data in submission['files'].items():
+            for c in data['changes']:
+                t = int(c['timestamp'])
+                if t < initial_t:
+                    initial_t = t
+    else:
+        # Set to zero if we're not normalising
+        initial_t = 0
 
     for path, data in submission['files'].items():
         for c in data['changes']:
             size = abs(len(c['newString']) - len(c['oldString']))
             if size >= min_size:
-                if normalise:
-                    c['timestamp'] = int(c['timestamp']) - initial_t
-                if include_path:
-                    c['path'] = path
-                changes.append(c)
+                # No need to check normalise here as initial_t will be 0
+                c['timestamp'] = int(c['timestamp']) - initial_t
+            if include_path:
+                c['path'] = path
+            changes.append(c)
 
     return changes
 
