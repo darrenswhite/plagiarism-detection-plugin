@@ -2,87 +2,126 @@
 
 {% block dashboard_content %}
 
-    <div class="container-fluid">
+    <div class="container-fluid main">
+    <div class="main">
         <div class="row">
-            <div class="main">
-                <h1 class="page-header">View submission</h1>
+            <h1 class="page-header">View submission</h1>
 
-                <dl class="dl-horizontal">
-                    <dt>Full name</dt>
-                    <dd>{{ submission.full_name }}</dd>
+            <h2>Submission data</h2>
+            <dl class="dl-horizontal">
+                <dt>Full name</dt>
+                <dd>{{ submission.full_name }}</dd>
 
-                    <dt>Title</dt>
-                    <dd>{{ submission.title }}</dd>
+                <dt>Title</dt>
+                <dd>{{ submission.title }}</dd>
 
-                    <dt>Module</dt>
-                    <dd>{{ submission.module }}</dd>
+                <dt>Module</dt>
+                <dd>{{ submission.module }}</dd>
 
-                    <dt>Submitted on</dt>
-                    <dd>
-                        {% if submission._id %}
-                            <script>formatDateTime("{{ submission._id.generation_time }}");</script>
-                        {% else %}
-                            Unknown
-                        {% endif %}
-                    </dd>
+                <dt>Submitted on</dt>
+                <dd>
+                    {% if submission._id %}
+                        <script>formatDateTime("{{ submission._id.generation_time }}");</script>
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                </dd>
 
-                    <dt>Total time</dt>
-                    <dd>
-                        {% if submission.total_time %}
-                            <script>formatDuration({{ submission.total_time }});</script>
-                        {% else %}
-                            Unknown
-                        {% endif %}
-                    </dd>
+                <dt>Total time</dt>
+                <dd>
+                    {% if submission.total_time %}
+                        <script>formatDuration({{ submission.total_time }});</script>
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                </dd>
 
-                    {% for source in sources %}
-                        {% if source != 'Total' %}
-                            <dt>{{ source }} frequency</dt>
-                            <dd>
-                                {% if 'frequency_' + source | lower in submission %}
-                                    {% set freq = submission['frequency_' + source | lower]
+                {% for source in sources %}
+                    {% if source != 'Total' %}
+                        <dt>{{ source }} frequency</dt>
+                        <dd>
+                            {% if 'frequency_' + source | lower in submission %}
+                                {% set freq = submission['frequency_' + source | lower]
                                         / submission.frequency_total * 100 -%}
-                                    <script>twoDP({{ freq }});</script>%
-                                {% else %}
-                                    Unknown
-                                {% endif %}
-                            </dd>
-                        {% endif %}
-                    {% endfor %}
+                                <script>twoDP({{ freq }});</script>%
+                            {% else %}
+                                Unknown
+                            {% endif %}
+                        </dd>
+                    {% endif %}
+                {% endfor %}
 
-                    <dt>Characters per minute</dt>
-                    <dd>
-                        {% if submission.cpm %}
-                            {{ submission.cpm }}
-                        {% else %}
-                            Unknown
-                        {% endif %}
-                    </dd>
+                <dt>Characters per minute</dt>
+                <dd>
+                    {% if submission.cpm %}
+                        {{ submission.cpm }}
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                </dd>
 
-                    <dt>Diff ratio</dt>
-                    <dd>
-                        {% if submission.diff_ratio %}
-                            <script>twoDP({{ submission.diff_ratio }});</script>
-                        {% else %}
-                            Unknown
-                        {% endif %}
-                    </dd>
+                <dt>Diff ratio</dt>
+                <dd>
+                    {% if submission.diff_ratio %}
+                        <script>twoDP({{ submission.diff_ratio }});</script>
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                </dd>
 
-                    <dt>P value</dt>
-                    <dd style="color: {{ submission.p_color }}">
-                        {% if submission.p_value %}
-                            <script>twoDP({{ submission.p_value }});</script>
-                        {% else %}
-                            Unknown
-                        {% endif %}
-                    </dd>
-                </dl>
+                <dt>P value</dt>
+                <dd style="color: {{ submission.p_color }}">
+                    {% if submission.p_value %}
+                        <script>twoDP({{ submission.p_value }});</script>
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                </dd>
+            </dl>
 
+            <div class="row">
+                <h2>Frequency chart</h2>
                 {% if submission.scatter_chart %}
-                    <embed type="image/svg+xml" src={{ submission.scatter_chart | safe }} />
+                    <embed type="image/svg+xml"
+                           src="{{ submission.scatter_chart | safe }}"/>
                 {% else %}
-                    No graph found
+                    No chart found
                 {% endif %}
+            </div>
+
+            <div class="row">
+                <h2>Large changes</h2>
+                {% if submission.large_changes %}
+                    <div class="table-responsive">
+                    <table class="table table-striped"
+                           style="table-layout: fixed;">
+                    <thead>
+                    <tr>
+                        <th class="col-sm-2">Path</th>
+                        <th class="col-sm-1">Timestamp (minutes)</th>
+                        <th class="col-sm-1">Offset</th>
+                        <th class="col-sm-4">Old string</th>
+                        <th class="col-sm-4">New string</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for c in submission.large_changes %}
+                        <tr>
+                            <td>{{ c.path }}</td>
+                            <td>{{ c.timestamp / 1000 / 60 }}</td>
+                            <td>{{ c.offset }}</td>
+                            <td><pre
+                                    style="max-height: 250px;">{{ c.oldString }}</pre>
+                            </td>
+                            <td><pre
+                                    style="max-height: 250px;">{{ c.newString }}</pre>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    No large changes found
+                {% endif %}
+                </div>
             </div>
         </div>
     </div>

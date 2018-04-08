@@ -1,4 +1,5 @@
 import logging
+import sys
 
 import bson
 from bson.objectid import ObjectId
@@ -29,6 +30,9 @@ __SOURCES_COLORS = ['#000000', '#FF0000', '#00FF00', '#777777']
 # P value maximum value
 __P_VALUE_LIMIT = 40
 
+# Size of a change to be considered "large"
+__LARGE_CHANGE_FREQUENCY = 200
+
 
 def __build_submission_scatter_chart(fts_data):
     """
@@ -49,6 +53,11 @@ def __build_submission_scatter_chart(fts_data):
     scatter_chart.title = 'Character Frequency vs. Time'
     scatter_chart.x_title = 'Time (minutes)'
     scatter_chart.y_title = 'Frequency'
+
+    initial_t = fts_data[0]['t']
+    # Normalise timestamps
+    for r in fts_data:
+        r['t'] -= initial_t
 
     # Plot each source as a scatter plot using its color
     # Plot Total source as a line with no dots
@@ -100,7 +109,8 @@ def __calculate_p_value(submission):
            (cpm / 100) * diff_ratio
 
 
-def __expand_submission(submission, user):
+def __expand_submission(submission, user, chart=False, large_changes=False,
+                        normalise_changes=False, include_change_path=False):
     """
     Adds extra data to the submission for viewing
 
@@ -118,9 +128,17 @@ def __expand_submission(submission, user):
     # Add user uid
     submission['uid'] = user['uid']
 
-    # Add scatter chart
-    submission['scatter_chart'] = __build_submission_scatter_chart(
-        merged_fts_data)
+    if chart:
+        # Add scatter chart
+        submission['scatter_chart'] = __build_submission_scatter_chart(
+            merged_fts_data)
+
+    if large_changes:
+        # Add large changes
+        submission['large_changes'] = \
+            __get_changes(submission, __LARGE_CHANGE_FREQUENCY,
+                          normalise=normalise_changes,
+                          include_path=include_change_path)
 
     if len(merged_fts_data) > 0:
         # Add total time
@@ -176,6 +194,29 @@ def forbidden(error):
     log.error(error)
     return render_template('dashboard/error_handler.html',
                            description=error.description), 404
+
+
+def __get_changes(submission, min_size=0, normalise=False, include_path=False):
+    changes = []
+    initial_t = sys.maxsize
+
+    for path, data in submission['files'].items():
+        for c in data['changes']:
+            t = int(c['timestamp'])
+            if t < initial_t:
+                initial_t = t
+
+    for path, data in submission['files'].items():
+        for c in data['changes']:
+            size = abs(len(c['newString']) - len(c['oldString']))
+            if size >= min_size:
+                if normalise:
+                    c['timestamp'] = int(c['timestamp']) - initial_t
+                if include_path:
+                    c['path'] = path
+                changes.append(c)
+
+    return changes
 
 
 def __get_merged_result(result):
@@ -330,7 +371,8 @@ def view_submission(user_uid, submission_id):
     # Add extra info to the submission
     submission = match_submissions[0]
 
-    __expand_submission(submission, user_data)
+    __expand_submission(submission, user_data, chart=True, large_changes=True,
+                        normalise_changes=True, include_change_path=True)
 
     return render_template('dashboard/submission.html', submission=submission,
                            sources=__SOURCES)
