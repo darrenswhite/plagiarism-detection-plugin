@@ -46,6 +46,11 @@ class PostProcessor:
         :param fts_data: The data to plot
         """
         if self.plot:
+            initial_t = fts_data[0]['t']
+            # Normalise timestamps
+            for r in fts_data:
+                r['t'] -= initial_t
+
             # Plot each source as a scatter plot using its color
             for s, c in _SOURCES.items():
                 x = [r['t'] for r in fts_data if r['s'] == s]
@@ -74,7 +79,7 @@ class PostProcessor:
         """
         self.log.info('Processing submission...')
 
-        result = {}
+        results = {}
 
         # Process each file in the submission
         for path, data in submission.items():
@@ -82,13 +87,13 @@ class PostProcessor:
             changes = sorted(data['changes'], key=lambda c: int(c['timestamp']))
             # Decode the document cache
             cache = base64.b64decode(data['cache']).decode('utf-8')
-            result[path] = FileProcessor(cache, changes, self.plot).process()
+            results[path] = FileProcessor(cache, changes, self.plot).process()
 
         merged_fts_data = []
 
         # Merge all fts data from each file to make one data set
-        for p, r in result.items():
-            merged_fts_data += r['frequency_time_source_data']
+        for p, result in results.items():
+            merged_fts_data += result['frequency_time_source_data']
 
         # Sort fts data by time
         merged_fts_data = sorted(merged_fts_data, key=lambda d: int(d['t']))
@@ -96,7 +101,7 @@ class PostProcessor:
         # Use matplotlib to plot merged fts graph
         self.__plot_frequency_time_source(merged_fts_data)
 
-        self.log.debug('Result: {}'.format(result))
+        self.log.debug('Results: {}'.format(results))
 
         return result
 
