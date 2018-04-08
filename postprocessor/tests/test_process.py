@@ -26,8 +26,8 @@ SUBMISSION_RESULT = {
         'frequency_external': 0,
         'frequency_other': -23,
         'frequency_time_source_data': [
-            {'f': -21, 's': 'OTHER', 't': 0},
-            {'f': -2, 's': 'OTHER', 't': 114}
+            {'f': -21, 's': 'OTHER', 't': 1522108577165},
+            {'f': -2, 's': 'OTHER', 't': 1522108577279}
         ]
     },
     'src/B.java': {
@@ -37,10 +37,10 @@ SUBMISSION_RESULT = {
         'frequency_external': 0,
         'frequency_other': 19,
         'frequency_time_source_data': [
-            {'f': 42, 's': 'OTHER', 't': 0},
-            {'f': -21, 's': 'OTHER', 't': 96},
-            {'f': -2, 's': 'OTHER', 't': 128}
-        ]
+            {'f': 42, 's': 'OTHER', 't': 1522108657566},
+            {'f': -21, 's': 'OTHER', 't': 1522108657662},
+            {'f': -2, 's': 'OTHER', 't': 1522108657694}
+        ],
     },
     'src/C.java': {
         'diff_ratio': 0.9464285714285714,
@@ -49,15 +49,15 @@ SUBMISSION_RESULT = {
         'frequency_external': 56,
         'frequency_other': 0,
         'frequency_time_source_data': [
-            {'f': 5, 's': 'OTHER', 't': 0},
-            {'f': 56, 's': 'EXTERNAL', 't': 1},
-            {'f': 0, 's': 'OTHER', 't': 36},
-            {'f': 5, 's': 'OTHER', 't': 19039},
-            {'f': 0, 's': 'OTHER', 't': 19085},
-            {'f': -4, 's': 'OTHER', 't': 19770},
-            {'f': 4, 's': 'OTHER', 't': 28587},
-            {'f': -5, 's': 'OTHER', 't': 28601},
-            {'f': -5, 's': 'OTHER', 't': 28998}
+            {'f': 5, 's': 'OTHER', 't': 1522108919242},
+            {'f': 56, 's': 'EXTERNAL', 't': 1522108919243},
+            {'f': 0, 's': 'OTHER', 't': 1522108919278},
+            {'f': 5, 's': 'OTHER', 't': 1522108938281},
+            {'f': 0, 's': 'OTHER', 't': 1522108938327},
+            {'f': -4, 's': 'OTHER', 't': 1522108939012},
+            {'f': 4, 's': 'OTHER', 't': 1522108947829},
+            {'f': -5, 's': 'OTHER', 't': 1522108947843},
+            {'f': -5, 's': 'OTHER', 't': 1522108948240}
         ]
     },
     'src/Test.java': {
@@ -67,9 +67,9 @@ SUBMISSION_RESULT = {
         'frequency_external': 0,
         'frequency_other': 22,
         'frequency_time_source_data': [
-            {'f': 45, 's': 'OTHER', 't': 0},
-            {'f': -21, 's': 'OTHER', 't': 160},
-            {'f': -2, 's': 'OTHER', 't': 237}
+            {'f': 45, 's': 'OTHER', 't': 1522108498856},
+            {'f': -21, 's': 'OTHER', 't': 1522108499016},
+            {'f': -2, 's': 'OTHER', 't': 1522108499093}
         ]
     }
 }

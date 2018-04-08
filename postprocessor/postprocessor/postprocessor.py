@@ -103,7 +103,7 @@ class PostProcessor:
 
         self.log.debug('Results: {}'.format(results))
 
-        return result
+        return results
 
     def __process_change(self, change):
         """
