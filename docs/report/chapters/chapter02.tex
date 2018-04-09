@@ -1,0 +1,108 @@
+\chapter{Background}
+% What the project is about, why I chose it, etc.
+This project introduces three problems. Tracking the work as it is being written, and identifying when plagiarism has occurred. Tracking code being written will be accomplished by developing a plugin for IntelliJ IDEA. IntelliJ IDEA is a Java IDE (Integrated Development Environment) for software development. IntelliJ has to capability to add and develop plugins. These plugins are developed using the IntelliJ Platform\cite{IntelliJPlatform}. Identifying plagiarism is the second major task for this project. Due to this system operating differently to existing systems, it will be difficult to determine how to accurately detect plagiarism.
+
+``Plagiarism detection usually is based on comparison of two or more documents''\cite{Lukashenko2007}. This is what makes this project stand out for me. It's not simply reinventing the wheel, but finding new ways to solve problems which still exist in academia. 
+
+\section{Existing Systems}
+\label{sec:existing-systems}
+% Discuss existing systems such as MOSS and Turnitin
+% Discuss different methods for detecting plagiarism (intrinsic and extrinsic)
+The most popular existing systems are Turnitin, MOSS, JPlag, and YAP3, amongst many others. For this system, MOSS and JPlag are worth looking into as they both check source code, whereas Turnitin only checks plain text\cite{Lukashenko2007}. Although these tools can automatically identify plagiarism, they still require human verification.
+
+MOSS relies on the Winnowing detection algorithm. It works by creating fingerprints or hashes for documents\cite{Schleimer2003}. Creating single hashes for each document allows for exact document comparisons. Single hashes are useful for checking if a document is correct and non-corrupt. Instead, Winnowing, uses multiple k-grams for each document. K-grams all for partial document comparisons between multiple documents. Comparing between multiple sources does however require a large set of documents beforehand.
+
+JPlag provides an online user interface where documents can be submitted and the results can be viewed. JPlag parses each document into token strings and these tokens are compared in pairs between documents. The percentage of tokens that match is referred to as the similarity factor\cite{Prechelt2003}. 
+
+Yap3 operates in a similar way to JPlag and MOSS. It uses its own similarity detection algorithm, RKR-GST. The algorithm compares sets of strings in a text much like the other algorithms\cite{Wise1996}.
+
+Plagiarism detection tools can use either extrinsic or intrinsic detection algorithms. Extrinsic detection uses external sources to compare against. Using a massive collection of external documents, extrinsic algorithms can be used very effectively although will take a large amount of time to process. Intrinsic detection analyses the document to detect changes in writing style. This allows the post-processing time to be very small in comparison to extrinsic algorithms. All of the existing systems described above use extrinsic detection algorithms.
+
+\section{IntelliJ Plugin SDK}
+% Discuss my research into using/learning the SDK, looking at existing plugins, tutorials, etc.
+Being unfamiliar with the IntelliJ Plugin SDK, I delved deep into the online tutorials provided by JetBrains\cite{IntelliJGettingStarted}. IntelliJ comes bundled with the IntelliJ Platform Plugin SDK so setting up the development environment is no issue. The IntelliJ Community Edition is open source and contains many plugins\cite{IntelliJGitHub}. This repository is very useful. Looking at existing plugins is sometimes more useful than reading tutorials.
+
+One aspect of the plugin that would be needed is to track keyboard events. I set out to try and find what possible methods there were of doing this. This feature is not mentioned in the tutorial, so I went digging through the SDK in the Community Edition repository. TypedHandlerDelegate and TypedHandler are classes used to perform actions upon typing events in the editor of the IDE.
+
+Saving data to disk is also another feature that would be used by the plugin. This feature is used widely by many plugins and was documented in the tutorial. The tutorial was understandable but I decided to take a look at an existing plugin for a real example, the GitHub plugin. GitHub saves settings to file and so this was helpful to my understanding.
+
+\section{Back-end Server}
+% Discuss research into the back-end server. Possible languages and frameworks.
+The following is a comprehensive list of the possible technologies that could be used for the back-end server.
+
+\begin{itemize}
+  \item \textbf{Python / Flask} - Micro web framework for Python based on Werkzeug, and Jinja2.
+  \item \textbf{Ruby on Rails} - Server-side web framework written in Ruby which uses a MVC architecture and provides default structures. It is very quick to implement a solution.
+  \item \textbf{Bootstrap / JQuery} - Bootstrap is a front-end library for HTML, CSS, and JavaScript. JQuery is a JavaScript library.
+\end{itemize}
+
+\section{Analysis}
+
+\subsection{Specification}
+% List of objectives/requirements (use Outline Project Specification as a start)
+
+\subsection{Potential Issues}
+% Discuss any potential issues, security problems, cheating the system, etc.
+
+\section{Process}
+% Discuss the process I took (agile/scrum/sprints)
+The approach I choose to use for this project was an agile methodology, scrum. Scrum uses short iterations, each consisting of planning at the beginning, implementation, review, and then retrospective at the end. Weekly meetings on Mondays with my supervisor were also organised. These meetings consisted mostly of discussions of the previous and next sprints.
+
+Planning involves discussing and deciding which stories should be worked on during the sprint. A story is a piece of work that needs to be done. The intricate details of each story may not yet be known but they will develop over the course of the iteration. A story will have a time estimate associated with it. The golden ratio is used as a guideline, and the story points are described below.
+
+\begin{itemize}
+  \item \textbf{1} - 10 minutes to 1 hour
+  \item \textbf{2} - A few hours to half a day
+  \item \textbf{3} - A few days
+  \item \textbf{5} - A week
+  \item \textbf{8} - Over a week, this story should be broken into smaller stories
+\end{itemize}
+
+Implementation and review take up most of the iteration time. This is spent designing, developing, and reviewing code that will end up in the code base. Once code has been reviewed for a story, it can be marked as done. 
+
+Retrospective is a reflective process. It is a discussion of what went well, what didn't go well, and what could change for the next sprint. The retrospective is aimed to improve the scrum process over time.
+
+To track each sprint and its stories, I used milestones and issues on GitHub\cite{GitHubMilestones}. During planning I would create a new milestone, assign issues to it (creating new issues if necessary), and set a goal. The goal would be a general aim for that sprint, which multiple stories would accomplish. During implementation and review, issues can easily be closed by referencing them in a commit message with specific keywords such as \textit{Fixes \#IssueNum}\cite{GitHubCloseIssueCommit}. After the sprint is done, I would close the milestone. Any remaining issues in the milestone would remain in the backlog still marked as open.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% This section should discuss your preparation for the project, including background reading, your analysis of the problem and the process or method you have followed to help structure your work. It is likely that you will reuse part of your outline project specification, but at this point in the project you should have more to talk about.
+
+% \textbf{Note}:
+
+% \begin{itemize}
+%    \item All of the sections and text in this example are for illustration purposes. The main Chapters are a good starting point, but the content and actual sections that you include are likely to be different.
+%    \item Look at the document MMP: Final Report and Technical Work for additional guidance.
+% \end {itemize}
+
+% \section{Background}
+% What was your background preparation for the project? What similar systems did you assess? What was your motivation and interest in this project?
+
+% \section{Analysis}
+% Taking into account the problem and what you learned from the background work, what was your analysis of the problem? How did your analysis help to decompose the problem into the main tasks that you would undertake? Were there alternative approaches? Why did you choose one approach compared to the alternatives?
+
+% There should be a clear statement of the objectives of the work, which you will evaluate at the end of the work.
+
+% In most cases, the agreed objectives or requirements will be the result of a compromise between what would ideally have been produced and what was determined to be possible in the time available. A discussion of the process of arriving at the final list is usually appropriate.
+
+% As mentioned in the lectures, think about possible security issues for the project topic. Whilst these might not be relevant for all projects, do consider if there are relevant for your project. Where there are relevant security issues, discuss how they will this affect the work that you are doing. Carry forward this discussion into relevant areas for design, implementation and testing.
+
+% \section{Process}
+% You need to describe briefly the life cycle model or research method that you used. You do not need to write about all of the different process models that you are aware of. Focus on the process model that you have used. It is possible that you needed to adapt an existing process model to suit your project; clearly identify what you used and how you adapted it for your needs.
