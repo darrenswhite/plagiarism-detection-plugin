@@ -251,4 +251,6 @@ p_value (i.e plagiarism metric) for submissions. This is calculated using all
 the metrics available. It also has an associated color (low value is green, high
 value is red). I have set the high value limit to 40, but this is only a
 guideline. More samples would be needed for a more accurate limit.
- 
+- Changed Pygal chart to allow interactivity. Also added "large changes" to
+submission detail view. All of the needed functionality is complete. The
+remaining work is all optional.
