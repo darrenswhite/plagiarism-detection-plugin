@@ -1,9 +1,39 @@
-\chapter{Iteration 8}
-\section{Planning}
+\chapter{Design Architecture}
+% Talk about previous designs and why I didn't/couldn't choose them (continuous tracking and sending to server).
+\textit{Should I put this before the iterations or after?}
 
+As discussed in \nameref{it:1}, the non-continuous server design was chosen. The continuous server would be more complex to design and implement than the non-continuous version. This is because a constant connection between the plugin and server was required. If the network connection was interrupted or disconnected then data would not be sent to the server. This means that a fail-safe protocol would have to be implemented, such as writing the unsent data to file. This fail-safe protocol implementation would be required for the non-continuous server anyway.
 
-\section{Implementation}
+The server-side of the continuous design would also need to be more sophisticated. The server would have to know when a new project is being started, which project data is being received, and when a project is completed. The non-continuous server only required a method to submit the tracked data file.
 
+\section{Final Design}
+\autoref{fig:architecture-diagram} shows the interaction between each of the modules. The plugin only needs to track file changes in the editor. This data is saved to an XML file, which the user can submit to the server using the front-end web application. This requires authentication using Aberystwyth credentials. Once the file has been submitted, the back-end server converts the XML data to JSON and stores it in the MongoDB database. The post-processor is continually monitoring the database for new student submissions to process and update the database with the result.
 
-\section{Retrospective}
+\autoref{fig:sequence-diagram-student} shows a typical students' interaction with each component. Initially, when a student opens a project, the tracked files are checked for external changes. This is done by comparing each files last known contents (which is stored as a base 64 encoded value) with its current file contents. The difference is added to the list of changes for each file. A DocumentListener is then added to the project for listening to file changes. Each file change is identified and then added to the list of changes for that file. After every new change that is added, the files last known contents is updated (for checking external changes). The recorded data is saved any time a file is saved. File change tracking stops when the project is closed (or if the plugin is disabled or uninstalled).
 
+\subsection{Data structure}
+\textit{TODO: Make class diagram for the data structure}
+
+\begin{figure}[H]
+  \centering
+  \fbox{
+    \includegraphics[height=\textheight,
+    keepaspectratio=true,
+    width=\textwidth,
+    ]{figures/architecture-diagram.png}
+  }
+  \caption{Architecture diagram (reminder to update this figure with descriptions for each component - maybe split it up into multiple smaller diagrams)}
+  \label{fig:architecture-diagram}
+\end{figure} 
+
+\begin{figure}[H]
+  \centering
+  \fbox{
+    \includegraphics[height=\textheight,
+    keepaspectratio=true,
+    width=\textwidth,
+    ]{figures/sequence-diagram-student.png}
+  }
+  \caption{Student sequence diagram (reminder to update this figure with correct labels)}
+  \label{fig:sequence-diagram-student}
+\end{figure}
