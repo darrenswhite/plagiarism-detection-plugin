@@ -1,6 +1,6 @@
 # Work log
 
-## 29/01 - 04/02
+## 29/01 - 04/02 (Iteration: 0)
 
 - Looked at the IntelliJ Platform Plugin SDK
 - Created a Hello World plugin
@@ -12,7 +12,7 @@
 - Researched existing detection tools (MOSS, Turnitin)
   - These are used after work is submitted
 
-## 05/02 - 11/02
+## 05/02 - 11/02 (Iteration: 0)
 
 - Started the OPS (Outline Project Specification)
 - Prepared for OPS presentation
@@ -41,7 +41,7 @@ algorithm will need to be written to check what has changed.
 - External change detects when files are deleted
 - .idea directory is ignored when tracking changes
 
-## 12/02 - 18/02
+## 12/02 - 18/02 (Iteration: 1)
 
 - Added algorithm to detect external file changes
   - This uses the IntelliJ SDK for diffs (com.intellij.diff)
@@ -62,7 +62,7 @@ for user authentication. I used a bootstrap template for the login page
 used to deploy each of the containers. A Bash script is used to run the docker
 compose commands easily
 
-## 19/02 - 25/02
+## 19/02 - 25/02 (Iteration: 2)
 
 - Added basic boostrap form for posting new submissions. The form post is
 currently a no-op.
@@ -78,7 +78,7 @@ flu and could not work much during the last half of the sprint. The remaining
 stories will be moved into the next sprint. This sprint velocity is dramatically
 low due to this.
 
-## 26/02 - 04/03
+## 26/02 - 04/03 (Iteration: 3)
 
 - The previous sprint stories have been moved into this sprint and I will
 continue to work on these for the rest of this sprint. I had to cancel my weekly
@@ -105,7 +105,7 @@ https://emptysqua.re/blog/test-mongodb-failures-mockupdb/.
 - After creating the first signin test, it was very easy to add more. After
 adding a second test it was time to refactor.
 
-## 05/03 - 11/03
+## 05/03 - 11/03 (Iteration: 4)
 
 - This week I will work primarily on adding more tests, creating design
 documents, and preparing for the mid-project demonstration.
@@ -121,7 +121,7 @@ the root into the docs directory.
 - Completed the goal for this milestone and created the milestone for the next
 sprint.
 
-## 12/03 - 18/03
+## 12/03 - 18/03 (Iteration: 5)
 
 - Added initial Python files for the post processor module. The base files
 were taken from the server module. The Dockerfile used was also taken from the
@@ -157,7 +157,7 @@ plugin. My primary focus should then shift toward the post-processor. This
 week I have also been working on preparing for the mid-project demonstration. I
 opted to use Google Slides to create a small presentation to aid with the demo.
 
-## 19/03 - 25/03
+## 19/03 - 25/03 (Iteration: 6)
 
 - I have been researching machine learning techniques used to identify
 plagiarism in source code. I have read many articles and have added them to
@@ -194,7 +194,7 @@ this in the recorded data. Aside from other students testing the plugin, I will
 also write simple Java applications (the same one but in different ways) to
 get a range of XML files.
 
-## 26/03 - 01/04
+## 26/03 - 01/04 (Iteration: 7)
 
 - The plugin should be fully complete. This does not include any extra features.
 I will document these missing/wanted features in my report instead. If I had
@@ -234,7 +234,7 @@ submissions correctly but does not update the database just yet.
 - I have added the code to update the database with the processed result. This
 data is shown in JSON format on the Staff dashboard.
 
-## 02/04 - 08/04
+## 02/04 - 08/04 (Iteration: 8)
 
 - Added code documentation to each module (plugin, postprocessor, and server)
 - I have used Pygal to display the FTS data in a scatter graph on the staff
