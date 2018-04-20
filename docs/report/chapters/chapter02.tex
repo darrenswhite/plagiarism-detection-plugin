@@ -20,9 +20,9 @@ Plagiarism detection tools can use either extrinsic or intrinsic detection algor
 
 \section{IntelliJ Plugin SDK}
 % Discuss my research into using/learning the SDK, looking at existing plugins, tutorials, etc.
-Being unfamiliar with the IntelliJ Plugin SDK, I delved deep into the online tutorials provided by JetBrains\cite{IntelliJGettingStarted}. IntelliJ comes bundled with the IntelliJ Platform Plugin SDK so setting up the development environment is no issue. The IntelliJ Community Edition is open source and contains many plugins\cite{IntelliJGitHub}. This repository is very useful. Looking at existing plugins is sometimes more useful than reading tutorials.
+Being unfamiliar with the IntelliJ Plugin SDK, I delved deep into the online tutorials provided by JetBrains\cite{IntelliJGettingStarted}. IntelliJ comes bundled with the IntelliJ Platform Plugin SDK so setting up the development environment should be no issue. The IntelliJ Community Edition is open source and contains many plugins\cite{IntelliJGitHub}. This repository is very useful. Looking at existing plugins is sometimes more useful than reading tutorials.
 
-One aspect of the plugin that would be needed is to track keyboard events. I set out to try and find what possible methods there were of doing this. This feature is not mentioned in the tutorial, so I went digging through the SDK in the Community Edition repository. TypedHandlerDelegate and TypedHandler are classes used to perform actions upon typing events in the editor of the IDE.
+One aspect of the plugin that would be needed is to track keyboard events. I set out to try and find what possible methods there were of doing this. This feature is not mentioned in the tutorial, so I went digging through the SDK in the Community Edition repository. TypedHandlerDelegate and TypedHandler are classes used to perform actions upon typing events in the editor of the IDE. Both of these classes could be very useful when starting development.
 
 Saving data to disk is also another feature that would be used by the plugin. This feature is used widely by many plugins and was documented in the tutorial. Persistent state is stored to file using the XML format. The tutorial was understandable but I decided to take a look at an existing plugin for a real example, the GitHub plugin. GitHub saves settings to file and so this was helpful to my understanding.
 
@@ -48,6 +48,7 @@ A front-end application will also be required for staff and potentially students
 The post-processor would be a part of the server. Its functionality would be to process the data recorded from the plugin. The resulting data would be stored in the database, which the server can display when requested. There is also the possibility to add machine learning to the post-processor to improve detection results.
 
 \section{Analysis}
+\label{sec:analysis}
 % Taking into account the problem and what you learned from the background work, what was your analysis of the problem? How did your analysis help to decompose the problem into the main tasks that you would undertake? Were there alternative approaches? Why did you choose one approach compared to the alternatives?
 % There should be a clear statement of the objectives of the work, which you will evaluate at the end of the work.
 % In most cases, the agreed objectives or requirements will be the result of a compromise between what would ideally have been produced and what was determined to be possible in the time available. A discussion of the process of arriving at the final list is usually appropriate.
@@ -94,7 +95,7 @@ In this scenario, the user will interact with both the plugin and the front-end 
     \item \textbf{Back-end server}
     \begin{itemize}
       \item Database storage
-      \item Authentication for lecturers (and potentially students)
+      \item Authentication for staff (and potentially students)
       \item Docker support for quick deployment
       \item Mechanism to submit recorded student data
       \item Unit tests
@@ -109,10 +110,10 @@ In this scenario, the user will interact with both the plugin and the front-end 
 
     \item \textbf{Front-end application}
     \begin{itemize}
-      \item A web application for lecturers to use (and possibly students)
-      \item Authentication page for lectures (and possibly students)
+      \item A web application for staff to use (and possibly students)
+      \item Authentication page for staff (and possibly students)
       \item Display student project submission data
-      \item Lecturers should be able to view all students' submission data
+      \item Staff should be able to view all students' submission data
       \item Students should only view their own submissions
       \item Possible cases of plagiarism should be shown with adequate evidence. Graphs, metrics, and tracked data could be displayed.
     \end{itemize}
@@ -137,4 +138,6 @@ Implementation and review take up most of the iteration time. This is spent desi
 
 Retrospective is a reflective process. It is a discussion of what went well, what didn't go well, and what could change for the next sprint. The retrospective is aimed to improve the scrum process over time.
 
-To track each sprint and its stories, I used milestones and issues on GitHub\cite{GitHubMilestones}. During planning I would create a new milestone, assign issues to it (creating new issues if necessary), and set a goal. The goal would be a general aim for that sprint, which multiple stories would accomplish. During implementation and review, issues can easily be closed by referencing them in a commit message with specific keywords such as \textit{Fixes \#IssueNum}\cite{GitHubCloseIssueCommit}. After the sprint is done, I would close the milestone. Any remaining issues in the milestone would remain in the backlog still marked as open.
+To track each sprint and its stories, I used milestones and issues on GitHub\cite{GitHubMilestones}. During planning I would create a new milestone, assign issues to it (creating new issues if necessary), and set a goal. The goal would be a general aim for that sprint, which multiple stories would accomplish. During implementation and review, issues can easily be closed by referencing them in a commit message with specific keywords such as \texttt{Fixes \#IssueNum}\cite{GitHubCloseIssueCommit}. After the sprint is done, I would close the milestone. Any remaining issues in the milestone would remain in the backlog still marked as open.
+
+The structure of this report will continue with each iteration as a new chapter. The final design will be discussed in detail in \autoref{chp:design}. The testing approaches used for each of the project components will be discussed in \autoref{chp:testing}. 

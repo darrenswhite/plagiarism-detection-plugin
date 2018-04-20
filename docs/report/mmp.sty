@@ -13,6 +13,10 @@
 
 \usepackage{textcomp}
 
+\usepackage{listings}
+
+\usepackage{xcolor}
+
 \usepackage{graphicx} %to allow images to be imported see example at end of template
 
 \usepackage{palatino} %or {times} etc
@@ -22,6 +26,7 @@
 \usepackage{amssymb} %math fonts
 
 % packages for figures
+\usepackage[labelfont={bf}]{caption}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{float}
@@ -40,6 +45,8 @@
 % Package for url formatting and also creates hyperlinks.  
 \usepackage{hyperref}
 
+\usepackage{verbatim}
+
 % Various parameters
 \setlength{\textheight}{229mm}
 \setlength{\topmargin}{-5.4mm}
@@ -53,6 +60,9 @@
 % index and section numbering depths
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{4}
+
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{\oldtexttt{\hyphenchar\font=`\-\relax#1}}
 
 \newcommand{\is}{\hspace*{0.2in}} %little indent space
 
@@ -110,8 +120,9 @@
   \newcommand{\showmodulecode}{#1}
 }
 
-\newcommand{\wordcount}[1]{
-  \newcommand{\showwordcount}{#1}
+\newcommand{\texcount}{
+	\immediate\write18{texcount \jobname.tex -merge -out=\jobname.sum -sum -sub=chapter}
+    \verbatiminput{\jobname.sum}
 }
 
 \newcommand{\helv}{ 
