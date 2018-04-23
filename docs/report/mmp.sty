@@ -59,12 +59,23 @@
 
 \parskip=6pt
 
+% JSON listings language
+\lstdefinelanguage{JSON}{
+  string       = [s]{"}{"},
+  stringstyle  = \color{blue},
+  comment      = [l]{:},
+  commentstyle = \color{black}
+} %
+
 % index and section numbering depths
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{4}
 
 \let\oldtexttt\texttt
-\renewcommand{\texttt}[1]{\oldtexttt{\hyphenchar\font=`\-\relax#1}}
+\renewcommand{\texttt}[1]{
+\sloppy
+\oldtexttt{\hyphenchar\font=`\-#1}%
+\fussy}
 
 \newcommand{\is}{\hspace*{0.2in}} %little indent space
 

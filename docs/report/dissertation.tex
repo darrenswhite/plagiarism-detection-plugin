@@ -37,6 +37,8 @@
 
 \begin{document}
 
+%TC:ignore
+
 % all of the include directives below refer to tex files
 % so \include{cover} includes cover.tex - to change the content,
 % edit the tex file
@@ -47,7 +49,7 @@
 \include{cover}
 
 % Show word count
-% \texcount
+\texcount
 
 % Set up page numbering
 \pagestyle{empty}
@@ -56,6 +58,7 @@
 \include{declaration}               
 
 \include{acknowledgements} % Acknowledgements
+
 \include{abstract} % Abstract
 
 \pagenumbering{roman}
@@ -77,6 +80,8 @@
 
 \setchapterheaderfooter
 
+%TC:endignore
+
 % include the chapters
 \include{chapters/chapter01}
 \include{chapters/chapter02}
@@ -93,6 +98,8 @@
 \include{chapters/chapter13}
 \include{chapters/chapter14}
 \include{chapters/chapter15}
+
+%TC:ignore
 
 \setemptyheader
 \addcontentsline{toc}{chapter}{Appendices}
@@ -135,12 +142,13 @@
 % the following line is included so that the bibliography is also shown in the table of contents. There is the possibility that this is added to the previous page for the bibliography. To address this, a newline is added so that it appears on the first page for the bibliography. 
 \addcontentsline{toc}{chapter}{Annotated Bibliography} % Adds References to contents page
 
-%
 % example of including an annotated bibliography. The current style is an author date one. If you want to change, comment out the line and uncomment the subsequent line. You should also modify the packages included at the top (see the notes earlier in the file) and then trash your aux files and re-run. 
 %\bibliographystyle{authordate2annot}
 \bibliographystyle{IEEEannotU}
 \renewcommand{\bibname}{Annotated Bibliography} 
 
 \bibliography{references} % References file
+
+%TC:endignore
 
 \end{document}

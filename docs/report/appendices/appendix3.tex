@@ -1,20 +1,16 @@
 \chapter{Code Examples}
 \label{chp:code-examples}
 \section{Example MongoDB Student Document}
-\label{fig:mongodb-student-document}
+\label{sec:mongodb-student-document}
 
 Below is an example MongoDB student document. The document contains the user information retrieved from the Aberystwyth University LDAP server. The submissions array contains all of the students tracked project data. Each submission entry has a one-to-one relation with the XML file. The submission \texttt{\_id} is unique for each submission. The \texttt{\_id} also contains the date which is useful to know when submission was posted. The submission contains input from the student, such as the title and module. The XML file that is submitted is processed and transformed into the correct formatting (JSON) which contains all of the tracked files. Each file has its path, changes, and cache. After post-processing, the result is added to the submission. 
 
-\lstset{
-  breaklines   = true,
-  postbreak    = \mbox{\textcolor{red}{$\hookrightarrow$}\space},
-  frame        = single,
-  string       = [s]{"}{"},
-  stringstyle  = \color{blue},
-  comment      = [l]{:},
-  commentstyle = \color{black}
-}
-\begin{lstlisting}
+\begin{lstlisting}[
+  breaklines = true,
+  postbreak  = \mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  frame      = single,
+  language   = JSON
+]
 {
   "_id" : ObjectId("5aca40bda326f6001046e1b7"),
   "uid" : "abc12",

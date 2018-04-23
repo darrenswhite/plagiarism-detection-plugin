@@ -1,9 +1,21 @@
 \chapter{Iteration 8}
 \section{Planning}
+This main goal for this iteration is to complete the post-processor and front-end web application. Finishing the detection methods implementations and displaying the metrics and chart in the staff dashboard. Below is the list of stories and their assigned story points. The list is displayed in completion order.
 
+\begin{itemize}
+\item Add post-processor tests: 3 points
+\item Add full documentation to each module: 2 points
+\item Add installation instructions: 2 points
+\item Add submission graph visuals for staff dashboard: 3 points
+\item Implement a plagiarism / UAC scale: 1 point
+\end{itemize}
 
 \section{Implementation}
+Due to the post-processor data structure not being well developed before implementation, unit tests were not appropriate at the time. Now that the data structure is mostly complete, it is now reasonable to add these unit tests. Currently, due to time restrictions, only one unit test was implemented. A simple input-process-output test. This test uses sample encrypted XML data, runs it through the post-processor, and a result is returned. The result is compared to the expected data.
 
+Over the course of the last few sprints, code documentation has become scarce. A story was put into this sprint to accommodate for the lack of documentation, including installation instructions. Each module was fully documented with appropriate Javadocs, docstrings, and line comments where necessary. The installation instructions were added to the \texttt{README.md} file. These instructions also included system requirements. Separate instructions are documentation for each module.
+
+Currently, Matplotlib is used for displaying the frequency vs. time chart. This only works locally, but is useful for testing the chart data. Pygal will be used to display these in the Flask application\cite{PygalFlask}.
 
 \section{Retrospective}
 

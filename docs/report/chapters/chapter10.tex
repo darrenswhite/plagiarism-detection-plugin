@@ -1,9 +1,63 @@
 \chapter{Iteration 7}
 \section{Planning}
+This iteration will focus on finishing the final touches to the plugin and implementing basic detection methods in the post-processor. Below is the list of stories and their assigned story points. The list is displayed in completion order.
 
+\begin{itemize}
+\item Detect file name changes and deletions: 2 points
+\item Gather sample XML files: 3 points
+\item Reconstruct files from change list: 2 points
+\item Implement copy-paste detection in post-processor: 3 points
+\item Implement external file change detection in post-processor: 3 points
+\item Create post-processed data structure: 2 points
+\item Update database with processed submission data: 2 points
+\end{itemize}
 
 \section{Implementation}
+In the previous iteration, it was mentioned that while investigating detecting automatic code generation, a potential solution was found for detecting refactoring changes. The \texttt{RefactoringEventListener} class provides an interface to listen to refactoring events. Specifically, \texttt{refactoringStarted}, \texttt{refactoringDone}, \texttt{conflictsDetected}, \texttt{undoRefactoring}. A wrapper class for the refactoring data was developed, \textit{RefactoringData}. This class will store the before and after refactoring data. Two methods are using for applying and undoing the refactoring data. Applying or undoing the refactoring in this class will apply the changes to the appropriate FileTracker for the file that was modified. Currently, only renaming classes or files is supported. It was originally planned to also detect file deletions but instead it was decided to keep the file changes (the same as externally deleting a file).
 
+Four XML sample files were collected by writing a simple Java application (a bingo caller). Two of the samples did not correctly track the beginning of the project. The \texttt{public class ... \{ \}} declaration was not recorded. Using these sample XML files a small algorithm was developed to reconstruct each of the files using the list of changes (see \autoref{cde:build-document}). This algorithm worked perfectly, aside from missing the class declaration. The fix for that was rather simple. It works by first checking if the file is not already being tracked. Then it will get the contents (before the change currently being made) and if the contents are not empty it will add the change as external.
+
+%TC:ignore
+\begin{lstlisting}[
+  breaklines = true,
+  postbreak  = \mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  frame      = single,
+  language   = Python,
+  caption    = Python code to build a string document from a list of changes,
+  label      = cde:build-document
+]
+document = ''
+
+# Add each change to the document
+for c in self.changes:
+    # Get change data
+    old_str = c['oldString']
+    new_str = c['newString']
+    offset = int(c['offset'])
+
+    # Get the start and end of the document which shouldn't be modified
+    start = document[:offset] if len(document) > 0 else ''
+    end = document[offset + len(old_str):] if len(document) > 0 else ''
+
+    # Insert the new value into the document
+    document = start + new_str + end
+
+return document
+\end{lstlisting}
+%TC:endignore
+
+\nameref{sec:mongodb-student-document} in \nameref{chp:code-examples} shows the MongoDB document for a student. The \texttt{result} value is the post-processed data. This data structure contains a set of metrics. Each tracked file has its own set of metrics. In the next sprint, these metrics will be used to calculate a plagiarism value on a linear scale.
+
+\begin{itemize}
+\item \textbf{diff\_ratio}: This is the ratio difference between the cached file contents and the reconstructed file contents from the list of changes. This acts as an accuracy modifier.
+\item \textbf{frequency\_total}: The total character count in the file
+\item \textbf{frequency\_clipboard}: The character count from clipboard changes
+\item \textbf{frequency\_external}: The character count from external changes
+\item \textbf{frequency\_other}: The character count from any other changes (keyboard, auto code generation, etc.)
+\item \textbf{frequency\_time\_source\_data}: The frequency vs. time data including source. This data will be used to plot a scatter/line graph
+\end{itemize}
+
+Matplotlib can be used to easily create graphs. Using the \texttt{frequency\_time\_source\_data} values, a line/scatter graph of Code Frequency vs. Time can be created. One graph is created per submission. Merging the metrics for each file in a submission will allow creating a single graph for each submission. This graph will show the character additions/deletions over the time of the project. This allows easy visualisation for larger chunks of code being added (i.e. large copy/paste). Other metrics which are being generated are; total frequency (character count), clipboard frequency, external frequency, and diff ratios. The frequencies are simply the character for a source. The diff ratios is comparing the file cache to the reconstructed document (1.0 is perfect match). Currently these metrics are not being inserted back into the database and therefore not being shown on the dashboard. Updating the submission with the result data was a simple task. The user id and submission id are both used to update the submission with the new data.
 
 \section{Retrospective}
-
+The velocity for this sprint was 17. An increase from the past couple of iterations. The stories completed in this iteration developed the fundamentals for the post-processor detection methods. The next step will be to complete these detection methods and display the metrics in the staff dashboard. If the next iteration is as productive as this, then the post-processor and front-end web application should be completed.

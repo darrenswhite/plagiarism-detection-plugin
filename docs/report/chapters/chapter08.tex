@@ -1,9 +1,30 @@
 \chapter{Iteration 5}
 \section{Planning}
+The mid-project demonstration date is approaching. Below is the list of stories and their assigned story points. The list is displayed in completion order.
 
+\begin{itemize}
+\item Create post-processor module hello world: 2 points
+\item Add Docker container to post-processor: 1 point
+\item Create post-processor module hello world: 2 points
+\item Detect automatic code generation: 3 points
+\end{itemize}
 
 \section{Implementation}
+The post-processor will be developed using Python 3. Originally it was to be built-in to the back-end server. But, to allow for modularity, it will be developed separately. There will be some duplicate code, such as the database code but the post-processor does not need to directly interact with the server.
 
+The post-processor was based on the server due to the server also being developed in Python 3. The Dockerfile was also reused and modified slightly. The \texttt{docker-compose.yml} was updated to add the post-processor service. Once the infrastructure was in place, the major features could be implemented.
+
+The main feature that the post-processor needs is to be able to process new submissions that are inserted into the database. PyMongo provides a \texttt{watch} method. This method returns an iterator which iterates over the changes. It acts as a event notification system. When a student posts a new submission, this is inserted into the database, and the watch iterator will be trigged. As with most things in the programming world, this did not work at first. There were in fact, multiple problems faced when implementing this. Firstly, MongoDB had to be upgraded to 3.6 to be able to use the \texttt{watch} method. This was simple enough to change in the Dockerfile. Next, the database was required to be a replica set for it to work properly. Looking through plenty of online tutorials, there was lots of manual work, let alone only any Docker tutorials (or Docker Compose for that matter). At first it was thought that redundancy had to be added to the database (i.e. 3 nodes instead of 1). This proved difficult with the networking configuration. After the network issues were solved, another issue was encountered. The \texttt{replicaSet} was not able to vote for a master node. The two redundancy nodes were removed but the same problem was occurring. It turned out to be that the master/primary node had to be initialized to configure the replica set (only one time). It worked after initialization. But that was manual initialization of the master node. To automate this a bash script was written which would check if its not initialized, and then initialize it. The final issue was that deploying the application a second time would cause the replica state to fail. It turns out the hostname would change each time. The fix was to change the hostname in the \texttt{docker-compose.yml} file. This ensured the hostname was the same every time it was deployed.
+
+In summary:
+
+\begin{itemize}
+\item Upgrade MongoDB to 3.6 to watch collections\cite{MongoDBChangeStreams}
+\item Fix networking issues after upgrading to 3.6 by using \texttt{--bind\_ip 0.0.0.0}
+\item Initialise the \texttt{replicaSet} with \texttt{mongo --eval 'rs.initiate()';}
+\end{itemize}
+
+The last story in the sprint was not completed. Implementing automatic code generation detection was thoroughly investigated. The \texttt{ActionManager} class provides a listener which is used to identify the menu action that was performed. This includes the code generation actions. The difficulty comes with identify the exact editor changes that were executed from that action. The start of the changes is known, but when is the auto generated code finished? Another option is to get the previous/last action performed when detecting editor changes. This has a similar problem, when does the action end? At this point, it is appropriate to ask how much time should be spent trying to find a solution. Should development continue without discrete identifications of source code? On the other hand, while trying to find a solution for automatic code generation, a potential solution for detecting refactoring was found. If renaming files can be detected then that would be enough for the plugin. The primary focus should then shift toward the post-processor.
 
 \section{Retrospective}
-
+The velocity for this sprint is 8. Most of the time during this sprint was spent on getting the \texttt{watch} method to work with MongoDB. Despite not being able to implement automatic code generation detection, it could be added in the future.
