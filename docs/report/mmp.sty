@@ -11,12 +11,18 @@
 
 %\usepackage[a4paper,margin=2.5cm,nohead,headheight=3cm,headsep=20pt]{geometry}
 
+% Package to embed pdf documents
 \usepackage[final]{pdfpages}
 
 \usepackage{textcomp}
 
-\usepackage{listings}
+% Package for syntax highlighting
+\usepackage[newfloat]{minted}
+\usepackage{caption}
 
+\newenvironment{code}{\captionsetup{type=listing}}{}
+
+% Package for colours
 \usepackage{xcolor}
 
 \usepackage{graphicx} %to allow images to be imported see example at end of template
@@ -40,6 +46,7 @@
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 
+% Package for math equations
 \usepackage{amsmath}
 
 % package for tidy url formatting - commented out in favour of the 
@@ -51,6 +58,13 @@
 
 \usepackage{verbatim}
 
+% Use sloppy
+\setlength{\emergencystretch}{3em}
+
+% Disable hyphenation
+\hyphenpenalty 10000
+\exhyphenpenalty 10000
+
 % Various parameters
 \setlength{\textheight}{229mm}
 \setlength{\topmargin}{-5.4mm}
@@ -61,24 +75,9 @@
 
 \parskip=6pt
 
-% JSON listings language
-\lstdefinelanguage{JSON}{
-  string       = [s]{"}{"},
-  stringstyle  = \color{blue},
-  comment      = [l]{:},
-  commentstyle = \color{black}
-} %
-
 % index and section numbering depths
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{4}
-
-\let\oldtexttt\texttt
-\renewcommand{\texttt}[1]{
-\sloppy%
-\oldtexttt{\hyphenchar\font=`\-#1}%
-\fussy%
-}
 
 \newcommand{\is}{\hspace*{0.2in}} %little indent space
 

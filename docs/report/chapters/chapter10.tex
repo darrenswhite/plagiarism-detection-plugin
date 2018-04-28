@@ -13,19 +13,17 @@ This iteration will focus on finishing the final touches to the plugin and imple
 \end{itemize}
 
 \section{Implementation}
-In the previous iteration, it was mentioned that while investigating detecting automatic code generation, a potential solution was found for detecting refactoring changes. The \texttt{RefactoringEventListener} class provides an interface to listen to refactoring events. Specifically, \texttt{refactoringStarted}, \texttt{refactoringDone}, \texttt{conflictsDetected}, \texttt{undoRefactoring}. A wrapper class for the refactoring data was developed, \textit{RefactoringData}. This class will store the before and after refactoring data. Two methods are using for applying and undoing the refactoring data. Applying or undoing the refactoring in this class will apply the changes to the appropriate FileTracker for the file that was modified. Currently, only renaming classes or files is supported. It was originally planned to also detect file deletions but instead it was decided to keep the file changes (the same as externally deleting a file).
+\subsection{Detecting Rename Refactoring}
+In the previous iteration, it was mentioned that while investigating detecting automatic code generation, a potential solution was found for detecting refactoring changes.  The \texttt{RefactoringEventListener} class provides an interface to listen to refactoring events. Specifically, \texttt{refactoringStarted}, \texttt{refactoringDone}, \texttt{conflictsDetected}, \texttt{undoRefactoring}. A wrapper class for the refactoring data was developed, \texttt{RefactoringData}. This class will store the before and after refactoring data. Two methods are using for applying and undoing the refactoring data. Applying or undoing the refactoring in this class will apply the changes to the appropriate \texttt{FileTracker} for the file that was modified. Currently, only renaming classes or files is supported. It was originally planned to also detect file deletions but instead it was decided to keep the file changes (the same as externally deleting a file).
 
-Four XML sample files were collected by writing a simple Java application (a bingo caller). Two of the samples did not correctly track the beginning of the project. The \texttt{public class ... \{ \}} declaration was not recorded. Using these sample XML files a small algorithm was developed to reconstruct each of the files using the list of changes (see \autoref{cde:build-document}). This algorithm worked perfectly, aside from missing the class declaration. The fix for that was rather simple. It works by first checking if the file is not already being tracked. Then it will get the contents (before the change currently being made) and if the contents are not empty it will add the change as external.
+\subsection{Rebuilding Files From the Tracked Changes}
+Four XML sample files were collected by writing a simple Java application (a bingo caller). Two of the samples did not correctly track the beginning of the project. The \texttt{public class ... \{ \}} declaration was not recorded. Using these sample XML files a small algorithm was developed to reconstruct each of the files using the list of changes. \autoref{cde:build-document} shows this Python algorithm below. This algorithm worked perfectly, aside from missing the class declaration. The fix for that was rather simple. It works by first checking if the file is not already being tracked. Then it will get the contents (before the change currently being made) and if the contents are not empty it will add the change as external.
 
 %TC:ignore
-\begin{lstlisting}[
-  breaklines = true,
-  postbreak  = \mbox{\textcolor{red}{$\hookrightarrow$}\space},
-  frame      = single,
-  language   = Python,
-  caption    = Python code to build a string document from a list of changes,
-  label      = cde:build-document
-]
+\begin{code}
+\begin{minted}[breaklines,
+               linenos,
+               frame=lines]{python}
 document = ''
 
 # Add each change to the document
@@ -43,9 +41,13 @@ for c in self.changes:
     document = start + new_str + end
 
 return document
-\end{lstlisting}
+\end{minted}
+\caption{Python code to build a string document from a list of changes}
+\label{cde:build-document}
+\end{code}
 %TC:endignore
 
+\subsection{The Post-Processed Result Data Structure}
 \nameref{sec:mongodb-student-document} in \nameref{chp:code-examples} shows the MongoDB document for a student. The \texttt{result} value is the post-processed data. This data structure contains a set of metrics. Each tracked file has its own set of metrics. In the next sprint, these metrics will be used to calculate a plagiarism value on a linear scale.
 
 \begin{itemize}
