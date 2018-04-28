@@ -17,6 +17,7 @@ This first iteration involved investigating the IntelliJ Plugin SDK and starting
 \end{itemize}
 
 \section{Implementation}
+\subsection{Initial Investigation of IntelliJ Plugin SDK}
 The \textit{Getting Started} tutorial from JetBrains is an obvious place to start\cite{IntelliJGettingStarted}. Setting up a new project with the IntelliJ Plugin SDK was very simple, as the SDK is bundled with IntelliJ IDEA. Following the tutorial to add actions to the plugin was straight-forward. \texttt{AnAction} is a class which can be subclassed to perform an action when an a menu item or toolbar button is clicked. \texttt{AnAction} is registered to a menu item or toolbar button in the \texttt{plugin.xml} file.
 
 The \texttt{plugin.xml} file is used to register actions and project components. These components can be one of three levels: application, project, or module\cite{IntelliJProjectComponents}. An application level component is created and initialised upon the start-up of the IDE. A project level component is created for each project in the IDE. A module level component is created for each module inside of each project in the IDE.
@@ -25,11 +26,12 @@ The \texttt{plugin.xml} file is used to register actions and project components.
 
 \texttt{PersistentStateComponent} is a class used to store data to a file. Using this in conjunction with the previously used \texttt{AnAction} implementation allows saving the students' username to file and loading it when the project is loaded. This XML file is saved in the .idea directory.
 
-As found during my earlier investigation of the IntelliJ Plugin SDK, the TypedHandler and TypedHandlerDelegate can be used to listen typing events in the editor. Implementing the TypedHandlerDelegate was a simplistic solution. Although, as with anything simple, there is always a drawback. That drawback is when the auto-complete popup is shown, the typing events are no longer trigged. This means that most of the typing will not be tracked. On the other hand, implementing a TypedHandler class to override the default class worked well but also came with a dramatic downside. The auto-complete popup no longer worked at all. There had to be another way to track typing events in the editor. Introducing, \texttt{DocumentListener}, this class listens to file changes in the editor. This means that any change to a files contents will trigger an event. This works perfectly, even with the auto-complete popup. The \texttt{DocumentEvent} object contains all of the data that describes what was changed in a file.
+The TypedHandler and TypedHandlerDelegate classes can both be used to listen to typing events in the editor. Implementing the TypedHandlerDelegate was a simplistic solution. Although, as with anything simple, there is always a drawback. That drawback is when the auto-complete popup is shown, the typing events are no longer trigged. This means that most of the typing will not be tracked. On the other hand, implementing a TypedHandler class to override the default class worked well but also came with a dramatic downside. The auto-complete popup no longer worked at all. There had to be another way to track typing events in the editor. Introducing, \texttt{DocumentListener}, this class listens to file changes in the editor. This means that any change to a files contents will trigger an event. This works perfectly, even with the auto-complete popup. The \texttt{DocumentEvent} object contains all of the data that describes what was changed in a file.
 
-The \texttt{Change} class is the core of the data structure implementation (see \autoref{uml:class-change} for the UML Class Diagram). Whenever a file is modified a new \texttt{Change} object is created to represent the data that was altered. Initially, a LinkedList of Changes was used to store all recorded data. A LinkedList was chosen due to keeping insertion order, but it wasn't fully necessary as each Change had an associated timestamp. However, the LinkedList was superseded by the HashMap. The key was the file path, and the value was a FileTracker object (see \autoref{uml:class-filetracker} for the UML Class Diagram). The FileTracker now contains the LinkedList of Changes  object. The final data structure design and example XML data is discussed more in \autoref{chp:design}.
+\subsection{Developing the Initial Data Structure}
+The \texttt{Change} class is the core of the data structure implementation (see \autoref{fig:uml-class-change} below for the UML Class Diagram). Whenever a file is modified a new \texttt{Change} object is created to represent the data that was altered. Initially, a LinkedList of Changes was used to store all recorded data. A LinkedList was chosen due to keeping insertion order, but it wasn't fully necessary as each Change had an associated timestamp. However, the LinkedList was superseded by the HashMap. The key was the file path, and the value was a FileTracker object (see \autoref{fig:uml-class-filetracker} below for the UML Class Diagram). The FileTracker now contains the LinkedList of Changes object. The final data structure design and example XML data is discussed more in \autoref{chp:design}.
 
-\begin{table}[H]
+\begin{figure}[H]
 \centering
 \begin{tabular}{|l|}
 \hline
@@ -43,26 +45,28 @@ The \texttt{Change} class is the core of the data structure implementation (see 
 + Change(int, String, String, Source, long)\\ \hline
 \end{tabular}
 \caption[Change UML Class Diagram]{The UML Class Diagram for the \texttt{Change} class. Each of the fields are public and non-final to allow for serialisation which is required for storing state via \texttt{PersistentStateComponent}. The default constructor is also needed for serialisation. Initially the this class also had a path:String field but was removed when moving to a Map data structure.}
-\label{uml:class-change}
-\end{table}
+\label{fig:uml-class-change}
+\end{figure}
 
-\begin{table}[H]
+\begin{figure}[H]
 \centering
 \begin{tabular}{|l|}
 \hline
 \multicolumn{1}{|c|}{\textbf{FileTracker}}\\ \hline
 + path:String\\
-+ changes:LinkedList<Change>\\
++ changes:LinkedList\textless{}Change\textgreater{}\\
 + cache:String\\ \hline
 + FileTracker()\\
 + FileTracker(String)\\ \hline
 \end{tabular}
 \caption[FileTracker UML Class Diagram]{The UML Class Diagram for the \texttt{FileTracker} class. Each of the fields are public and non-final to allow for serialisation which is required for storing state via \texttt{PersistentStateComponent}. The default constructor is also needed for serialisation.}
-\label{uml:class-filetracker}
-\end{table}
+\label{fig:uml-class-filetracker}
+\end{figure}
 
+\subsection{Identifying Change Sources}
 Now that file changes can be detected and stored in an adequate data structure, the source of the changes must be identified. Below is a list of identifiable sources. The first source detection that was implemented was clipboard (i.e. copying and pasting). The \texttt{CopyPasteManager} class contains methods to retrieve the current clipboard contents. To identify if a change originated from the clipboard, the change \texttt{newString} value must be compared with the clipboard contents. IntelliJ IDEA supports clipboard history so each content value must be checked. If the values match then the change must have been a copy-paste event. Currently, any unidentified change will be classed as having a source of \texttt{other}. This includes normal typing. The reasoning behind this is to identify all types of source changes and then the remaining unidentified changes would only be from the student typing. But for now, they will be classed as \texttt{other}.
 
+\paragraph{Identifiable Sources:}
 \begin{itemize}
   \item Keyboard events
   \item Copy/paste
@@ -74,6 +78,7 @@ Now that file changes can be detected and stored in an adequate data structure, 
 
 The last story for this sprint is to implement detecting external file changes. External file changes occur when the project is closed. When using an external editor (i.e. any other editor besides IntelliJ IDEA) to edit any of the project files, these should be detected when the project is next opened. The \texttt{FileTracker} class has a String \texttt{cache}. This will be used to store the last known file contents for that file (encoded as base-64). Each time a new change is added to a \texttt{FileTracker} its cache is also updated. This ensures the \texttt{cache} is always up-to-date. Upon opening the project, the \texttt{cache} of each \texttt{FileTracker} is compared against its current file contents. Unfortunately, there wasn't enough time in this sprint to finish implement an algorithm to determine the differences between the old and new file contents.
 
+\subsection{Squashing the Bugs}
 Multiple minor bugs were encountered near the end of this iteration. The first was a simple \texttt{NullPointerException} when adding a new change for a file. If the file had no parent file, then getting its path would throw an \texttt{NullPointerException}. The next issue was less of a bug, and more of an inconvenience. Files in the \texttt{.idea} directory were being tracked. This was causing the XML file containing the tracked data to track itself and this caused the a massive increase in the file size very quickly. The last two bugs were associated with the new external file change detection. When reading the new contents of a large file, a \texttt{FileTooBigException} was being thrown. This was solved by directly reading from the file \texttt{InputStream}. Lastly, externally changed files were not checked if they exists (i.e. they were deleted when the project was closed). Originally, the removed file was to be removed from the tracked list. But, it was decided to add a change which removed all the content instead.
 
 \section{Retrospective}

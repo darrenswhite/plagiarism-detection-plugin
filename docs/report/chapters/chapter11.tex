@@ -15,7 +15,29 @@ Due to the post-processor data structure not being well developed before impleme
 
 Over the course of the last few sprints, code documentation has become scarce. A story was put into this sprint to accommodate for the lack of documentation, including installation instructions. Each module was fully documented with appropriate Javadocs, docstrings, and line comments where necessary. The installation instructions were added to the \texttt{README.md} file. These instructions also included system requirements. Separate instructions are documentation for each module.
 
-Currently, Matplotlib is used for displaying the frequency vs. time chart. This only works locally, but is useful for testing the chart data. Pygal will be used to display these in the Flask application\cite{PygalFlask}.
+Currently, Matplotlib is used for displaying the frequency vs. time chart. This only works locally, but is useful for testing the chart data. Pygal will be used to display charts in the Flask application\cite{PygalFlask}. Matplotlib and Pygal share a very similar method of building charts. This made a smooth transition to Pygal to display the FTS (Frequency Time Source) data. Matplotlib is still used for local testing of charts. The submission charts were added to the staff dashboard. Initially they were embedded directly into the table. This took up a lot of space and was aesthetically pleasing. It was decided to add a new page which would display all submission details. This would keep the submissions table simple, providing a link to each submission detail page. The submission detail page uses this url format, \texttt{/dashboard/submission/<user\_uid>/<submission\_id>}. The staff dashboard table now has a link to access the submission details view. The submission details displays the metrics, the FTS chart, and a list of \textit{large changes}. The metrics are displayed in a description list. The FTS chart is displayed as an SVG+XML image. This allows the Pygal chart to provide interactivity. This include selecting specific sources and tool tips showing discrete values. A \textit{large change} is a change which meets a specific size requirement. The default size considered for a change to be \textit{large} is 200 characters. This can be configured by specifying a GET parameter in the URL. For example, \texttt{/dashboard/submission/abc12/5aca40cca326f6001046e1b8?large\_change\_size=91}. This url will show a specific submission where large changes are classed as having a size of 91 or greater. The total time metric for submissions was added which lead to the creation of the CPM (characters per minute) metric. The CPM is calculated by simply dividing the total frequency by the total time. The average CPM is between 190 and 200\cite{LiveChatTypingSpeedTest}. For professional typists the average CPM is between 325 and 375. However, the CPM when using IntelliJ could be drastically higher. Due to tracking every single change, auto-completion, automatic code generation, and refactoring all count towards the CPM. This will have to be taken into account when evaluating a submission.
+
+The final metric to be added was the p\_value metric (i.e. the plagiarism value). This is calculated using all the metrics available. It also has an associated colour (low value is green, high value is red). The p\_value operates on a linear scale. Currently this is 0 to 40. This scale is only a guideline and may change in the future with more testing. A large range of samples would be required for a more accurate scale. The p\_value equation is shown below.
+
+\[
+  p\_value = \frac{t}{100} \cdot d \cdot ((c + 1) + (e + 1)^2)
+\]
+
+\begin{align*}
+  \text{where}~t &= \text{Total time,} \\
+  d &= \text{Diff ratio,} \\
+  c &= \text{Clipboard change frequency,} \\
+  e &= \text{External file change frequency}
+\end{align*}
+
+The clipboard and external change frequencies are added together. The external frequency is exponential because externally changing a file allows any kind of changes. The diff ratio acts as an accuracy modifier. Usually the diff ratio will be 1.0 so it will not affect the final value. The diff ratio will be less than 1.0 when one or more changes are not tracked. The p\_value also has a colour associated with it. Depending on the value, the colour will gradually change. The algorithm for determining the colour shown below. The \texttt{\_\_P\_VALUE\_LIMIT} is defined as 40. But this may change in the future.
+
+\begin{lstlisting}[frame=single]
+mod = 255 / __P_VALUE_LIMIT
+r = min(255, round(p_value * mod))
+g = max(0, 255 - round(p_value * mod))
+b = 0
+\end{lstlisting}
 
 \section{Retrospective}
-
+This velocity for this final iteration is 11. All of the development was completed during this iteration. The post-processor and front-end web application are finished now. The following chapters in this report will include the design architecture, testing, evaluation, and conclusions.

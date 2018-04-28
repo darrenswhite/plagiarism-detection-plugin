@@ -9,7 +9,7 @@
 %%
 \ProvidesPackage{mmp}
 
-%\usepackage[a4paper,margin=2.5cm,nohead, headheight=3cm, headsep=20pt]{geometry}
+%\usepackage[a4paper,margin=2.5cm,nohead,headheight=3cm,headsep=20pt]{geometry}
 
 \usepackage[final]{pdfpages}
 
@@ -39,6 +39,8 @@
 % package to do page headers nice and fancy
 \usepackage{fancyhdr}
 \usepackage{lastpage}
+
+\usepackage{amsmath}
 
 % package for tidy url formatting - commented out in favour of the 
 % hyperref package which also provides clickable links in the document. 
@@ -73,9 +75,10 @@
 
 \let\oldtexttt\texttt
 \renewcommand{\texttt}[1]{
-\sloppy
+\sloppy%
 \oldtexttt{\hyphenchar\font=`\-#1}%
-\fussy}
+\fussy%
+}
 
 \newcommand{\is}{\hspace*{0.2in}} %little indent space
 
@@ -188,7 +191,6 @@
 
 \skip\@mpfootins = \skip\footins
 \fboxsep = 3pt \fboxrule = .4pt 
-
 
 \def\thepart{\Roman{part}}
 \def\thesection {\arabic{chapter}.\arabic{section}}
@@ -196,7 +198,7 @@
 \def\thesubsubsection {\thesubsection .\arabic{subsubsection}}
 \def\theparagraph {\thesubsubsection.\arabic{paragraph}}
 \def\thesubparagraph {\theparagraph.\arabic{subparagraph}}
-
+
 \def\@pnumwidth{1.55em}
 \def\@tocrmarg {2.55em}
 \def\@dotsep{4.5}
