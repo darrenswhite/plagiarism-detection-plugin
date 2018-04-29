@@ -162,8 +162,8 @@ def __expand_submission(submission, user, chart=False, large_change_size=None,
     if 'frequency_total' in submission and 'total_time' in submission:
         # Add cpm (characters per minute)
         # Total time is in ms so convert to minutes
-        submission['cpm'] = round(int(submission['frequency_total']) / (int(
-            submission['total_time']) / 1000 / 60))
+        submission['cpm'] = max(1, round(int(submission['frequency_total']) / (int(
+            submission['total_time']) / 1000 / 60)))
     else:
         submission['cpm'] = -1
 
