@@ -36,13 +36,13 @@ The \texttt{Change} class is the core of the data structure implementation (see 
 \begin{tabular}{|l|}
 \hline
 \multicolumn{1}{|c|}{\textbf{Change}}\\ \hline
-+ offset:int\\
-+ oldString:String\\
-+ newString:String\\
-+ source:Source\\
-+ timestamp:long\\ \hline
++ offset: int\\
++ oldString: String\\
++ newString: String\\
++ source: Source\\
++ timestamp: long\\ \hline
 + Change()\\
-+ Change(int, String, String, Source, long)\\ \hline
++ Change(int,String,String,Source,long)\\ \hline
 \end{tabular}
 \caption[Change UML Class Diagram]{The UML Class Diagram for the \texttt{Change} class. Each of the fields are public and non-final to allow for serialisation which is required for storing state via \texttt{PersistentStateComponent}. The default constructor is also needed for serialisation. Initially the this class also had a path:String field but was removed when moving to a Map data structure.}
 \label{fig:uml-class-change}
@@ -53,9 +53,9 @@ The \texttt{Change} class is the core of the data structure implementation (see 
 \begin{tabular}{|l|}
 \hline
 \multicolumn{1}{|c|}{\textbf{FileTracker}}\\ \hline
-+ path:String\\
-+ changes:LinkedList\textless{}Change\textgreater{}\\
-+ cache:String\\ \hline
++ path: String\\
++ changes: LinkedList\textless{}Change\textgreater{}\\
++ cache: String\\ \hline
 + FileTracker()\\
 + FileTracker(String)\\ \hline
 \end{tabular}

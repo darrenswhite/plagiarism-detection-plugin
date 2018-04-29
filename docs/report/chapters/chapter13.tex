@@ -1,9 +1,8 @@
 \chapter{Testing}
 \label{chp:testing}
 \section{Strategy}
-% TODO: Not really sure what to include here
-% Justifcation for different kinds of test
-% What my plan was before i did the testing
+% Justification for different kinds of test
+% What my plan was before I did the testing
 
 \section{Plugin}
 JUnit was used for testing the plugin. The IntelliJ Plugin SDK provides a testing infrastructure. This allows testing the plugin in a headless environment. What this means is that the IDE is run without the UI to test all aspects of the plugin. Everything is loaded as usual except the UI. The SDK provides classes and methods to \textit{emulate} user actions such as typing, pasting, clicking menu items, and clicking tool bar buttons. Emulating such actions allows testing of detecting editor changes.

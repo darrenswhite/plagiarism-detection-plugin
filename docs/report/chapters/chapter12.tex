@@ -5,64 +5,114 @@ As discussed in \nameref{it:1} in \autoref{it:1}, the non-continuous server desi
 
 The server-side of the continuous design would also need to be more sophisticated. The server would have to know when a new project is being started, which project data is being received, and when a project is completed. The non-continuous server only required a method to submit the tracked data file.
 
-\section{Final Design}
+The following pages show diagrams to aid with discussing the final design of the system.
+
+\newpage
+
+\section{Architecture Diagram}
 \autoref{fig:architecture-diagram} shows the interaction between each of the modules. The plugin only needs to track file changes in the editor. This data is saved to an XML file, which the user can submit to the server using the front-end web application. This requires authentication using Aberystwyth credentials. Once the file has been submitted, the back-end server converts the XML data to JSON and stores it in the MongoDB database. The post-processor is continually monitoring the database for new student submissions to process and update the database with the result.
+
+\vspace*{\fill}
 
 \begin{figure}[H]
   \centering
   \fbox{
-    \includegraphics[height=.75\textheight,
+    \includegraphics[height=\textheight,
     keepaspectratio=true,
-    width=.75\textwidth,
+    width=\textwidth,
     ]{figures/architecture-diagram.png}
   }
-  \caption[Final design architecture diagram]{Architecture diagram (reminder to update this figure with descriptions for each component)}
+  \caption[Final design architecture diagram]{Architecture diagram}
   \label{fig:architecture-diagram}
 \end{figure}
 
+\vspace*{\fill}
+
+\newpage
+
+\section{Student Plugin Interaction Sequence Diagram}
 \autoref{fig:sequence-diagram-student-plugin} shows a typical students' interaction with the plugin. Initially, when a student opens a project, the tracked files are checked for external changes. This is done by comparing each files last known contents (which is stored as a base 64 encoded value) with its current file contents. The difference is added to the list of changes for each file. A DocumentListener is then added to the project for listening to file changes. Each file change is identified and then added to the list of changes for that file. After every new change that is added, the files last known contents is updated (for checking external changes). The recorded data is saved any time a file is saved. File change tracking stops when the project is closed (or if the plugin is disabled or uninstalled).
+
+\vspace*{\fill}
 
 \begin{figure}[H]
   \centering
   \fbox{
-    \includegraphics[height=.75\textheight,
+    \includegraphics[height=\textheight,
     keepaspectratio=true,
-    width=.75\textwidth,
+    width=\textwidth,
     ]{figures/sequence-diagram-student-plugin.png}
   }
   \caption[Student-plugin sequence diagram]{Sequence diagram showing a student interacting with the IntelliJ plugin}
   \label{fig:sequence-diagram-student-plugin}
 \end{figure}
 
-\autoref{fig:sequence-diagram-student-server} shows the students interaction with the server. Once the project is completed. The student may login to the web application using their Aberystwyth University credentials. This authorisation is achieved using the LDAP server provided by Aberystwyth University. This requires the back-end server to be running on the Aberystwyth University network. The LDAP server returns if authentication was successful or not. If successful, then the student will be redirected to their dashboard. A query is sent to the database to retrieve all of the students' submissions. These submissions are then displayed in a table in the dashboard. Students can post new project submissions by uploading the XML file with additional meta data for identification in a form. The form is submitted via POST. The XML file is decrypted and added to the students submissions in the database. The user will be notified of success or failure via a flash message.
+\vspace*{\fill}
+
+\newpage
+
+\section{Student Server Interaction Sequence Diagram}
+\autoref{fig:sequence-diagram-student-server} shows a students' interaction with the server. Once the project is completed. The student may login to the web application using their Aberystwyth University credentials. This authorisation is achieved using the LDAP server provided by Aberystwyth University. This requires the back-end server to be running on the Aberystwyth University network. The LDAP server returns if authentication was successful or not. If successful, then the student will be redirected to their dashboard. A query is sent to the database to retrieve all of the students' submissions. These submissions are then displayed in a table in the dashboard. Students can post new project submissions by uploading the XML file with additional meta data for identification in a form. The form is submitted via POST. The XML file is decrypted and added to the students submissions in the database. The user will be notified of success or failure via a flash message.
+
+\vspace*{\fill}
 
 \begin{figure}[H]
   \centering
   \fbox{
-    \includegraphics[height=.75\textheight,
+    \includegraphics[height=\textheight,
     keepaspectratio=true,
-    width=.75\textwidth,
+    width=\textwidth,
     ]{figures/sequence-diagram-student-server.png}
   }
   \caption[Student-server sequence diagram]{Sequence diagram showing a student interacting with the server}
   \label{fig:sequence-diagram-student-server}
 \end{figure}
 
-\autoref{fig:sequence-diagram-post-processor} \textit{NOTE: Not sure how much detail to do on the post-processor here.} Upon posting a new submission, the post-processor is trigged. The new submission is processed and the result is inserted back into the database.
+\vspace*{\fill}
+
+\newpage
+
+\section{Post-Processor Sequence Diagram}
+\autoref{fig:sequence-diagram-post-processor} When a student posts a new submission via the web application, the post-processor is notified. This is implemented using the \texttt{watch} method from PyMongo. The \texttt{watch} method notifies the post-processor of all changes in the database in real time. These changes must first be filtered to only identify new submissions. All new submissions are processed and then the resulting data is inserted back into the database using the original submission id and user id.
+
+\vspace*{\fill}
 
 \begin{figure}[H]
   \centering
   \fbox{
-    \includegraphics[height=.75\textheight,
+    \includegraphics[height=\textheight,
     keepaspectratio=true,
-    width=.75\textwidth,
+    width=\textwidth,
     ]{figures/sequence-diagram-post-processor.png}
   }
   \caption[Post-processor sequence diagram]{Sequence diagram for the post-processor}
   \label{fig:sequence-diagram-post-processor}
 \end{figure}
 
-\subsection{Data structure}
+\vspace*{\fill}
 
-\subsection{Front-end web application}
+\newpage
+
+\section{Data Structure Class Diagram}
+
+
+\vspace*{\fill}
+
+\begin{figure}[H]
+  \centering
+  \fbox{
+    \includegraphics[height=\textheight,
+    keepaspectratio=true,
+    width=\textwidth,
+    ]{figures/plugin-uml-class-diagram.png}
+  }
+  \caption[Tracked data structure]{Data structure to store tracked data}
+  \label{fig:tracked-data-uml-class}
+\end{figure}
+
+\vspace*{\fill}
+
+\newpage
+
+\section{Front-end Web Application}
 

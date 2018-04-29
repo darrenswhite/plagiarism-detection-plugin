@@ -17,7 +17,6 @@
 % There will be good things and room for improvement with any project. As you write this section, identify and discuss the parts of the work that went well and also consider ways in which the work could be improved.
 
 % In the latter stages of the module, we will discuss the evaluation. That will probably be around week 9, although that differs each year.
-
 The major requirements for this project were an IntelliJ Platform Plugin, back-end server, post-processor, front-end application, and a database. Each of these components were fully-developed. The settings GUI for the plugin was not implemented due to the using the continuous server architecture. Code generation, and code auto-completion of the source code detection types were not implemented due to the complexity of the identification process.
 
 The primary design decision between using a continuous or non-continuous server architecture was a huge decision during this project. It impacted the method in which students would interact with the plugin and submit their tracked data. This in turn affected the back-end server internals. This decision was required before fully developing the server. If the continuous design was used then it would have most definitely increased the workload. Testing the direct connection between the plugin and server would be significantly more difficult than being able to individually test each component.
@@ -27,3 +26,29 @@ Using MongoDB was a very clear and strong design decision. If a RDBMS was to be 
 If the project was to be written from scratch again, it would be interesting to have a greater focus on the post-processor. Concentrating more on the identification of possible cases of plagiarism would provide a much better result. It would be better due to the simplicity of the current identification algorithm being used. Integrating complex algorithms in the post-processor would allow for a more concrete result for each submission.
 
 IntelliJ IDEA offers many ways to interact with the editor. Many were explored during the project including auto-completion, automatic code generation, and refactoring. Other methods that were not explored were using IdeaVim, and applying Git operations. IdeaVim emulates Vim in the editor. How would the use of this affect the detection methods? Would yank and paste still register as copy and paste? Using Git to stash changes, change branches, or even simply pulling from upstream can all modify files. Would these changes be tracked? If so, would this result in conflicts in the XML file? The XML file would need to be staged in each branch and commit before changing branch. Both IdeaVim, and Git could have been investigated.
+
+\autoref{fig:velocity-chart} shows the velocity for each sprint. The average sprint velocity is 11. \autoref{fig:burndown-chart} shows the burndown for all iterations.
+
+\begin{figure}[H]
+  \centering
+  \fbox{
+    \includegraphics[height=.75\textheight,
+    keepaspectratio=true,
+    width=.75\textwidth,
+    ]{figures/velocity-chart.png}
+  }
+  \caption[Velocity chart]{Velocity for each iteration}
+  \label{fig:velocity-chart}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \fbox{
+    \includegraphics[height=.75\textheight,
+    keepaspectratio=true,
+    width=.75\textwidth,
+    ]{figures/burndown-chart.png}
+  }
+  \caption[Burndown chart]{Burndown for all iterations}
+  \label{fig:burndown-chart}
+\end{figure}
