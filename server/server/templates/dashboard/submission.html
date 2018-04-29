@@ -7,86 +7,89 @@
         <div class="row">
             <h1 class="page-header">View submission</h1>
 
-            <h2>Submission data</h2>
-            <dl class="dl-horizontal">
-                <dt>Full name</dt>
-                <dd>{{ submission.full_name }}</dd>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h2>Submission data</h2>
+                    <dl class="dl-horizontal">
+                        <dt>Full name</dt>
+                        <dd>{{ submission.full_name }}</dd>
 
-                <dt>Title</dt>
-                <dd>{{ submission.title }}</dd>
+                        <dt>Title</dt>
+                        <dd>{{ submission.title }}</dd>
 
-                <dt>Module</dt>
-                <dd>{{ submission.module }}</dd>
+                        <dt>Module</dt>
+                        <dd>{{ submission.module }}</dd>
 
-                <dt>Submitted on</dt>
-                <dd>
-                    {% if submission._id %}
-                        <script>formatDateTime("{{ submission._id.generation_time }}");</script>
-                    {% else %}
-                        Unknown
-                    {% endif %}
-                </dd>
-
-                <dt>Total time</dt>
-                <dd>
-                    {% if submission.total_time %}
-                        <script>formatDuration({{ submission.total_time }});</script>
-                    {% else %}
-                        Unknown
-                    {% endif %}
-                </dd>
-
-                {% for source in sources %}
-                    {% if source != 'Total' %}
-                        <dt>{{ source }} frequency</dt>
+                        <dt>Submitted on</dt>
                         <dd>
-                            {% if 'frequency_' + source | lower in submission %}
-                                {% set freq = submission['frequency_' + source | lower]
-                                        / submission.frequency_total * 100 -%}
-                                <script>twoDP({{ freq }});</script>%
+                            {% if submission._id %}
+                                <script>formatDateTime("{{ submission._id.generation_time }}");</script>
                             {% else %}
                                 Unknown
                             {% endif %}
                         </dd>
-                    {% endif %}
-                {% endfor %}
 
-                <dt>Characters per minute</dt>
-                <dd>
-                    {% if submission.cpm %}
-                        {{ submission.cpm }}
+                        <dt>Total time</dt>
+                        <dd>
+                            {% if submission.total_time %}
+                                <script>formatDuration({{ submission.total_time }});</script>
+                            {% else %}
+                                Unknown
+                            {% endif %}
+                        </dd>
+
+                        {% for source in sources %}
+                            {% if source != 'Total' %}
+                                <dt>{{ source }} frequency</dt>
+                                <dd>
+                                    {% if 'frequency_' + source | lower in submission %}
+                                        {% set freq = submission['frequency_' + source | lower]
+                                        / submission.frequency_total * 100 -%}
+                                        <script>twoDP({{ freq }});</script>%
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                </dd>
+                            {% endif %}
+                        {% endfor %}
+
+                        <dt>Characters per minute</dt>
+                        <dd>
+                            {% if submission.cpm %}
+                                {{ submission.cpm }}
+                            {% else %}
+                                Unknown
+                            {% endif %}
+                        </dd>
+
+                        <dt>Diff ratio</dt>
+                        <dd>
+                            {% if submission.diff_ratio %}
+                                <script>twoDP({{ submission.diff_ratio }});</script>
+                            {% else %}
+                                Unknown
+                            {% endif %}
+                        </dd>
+
+                        <dt>P value</dt>
+                        <dd style="color: {{ submission.p_color }}">
+                            {% if submission.p_value %}
+                                <script>twoDP({{ submission.p_value }});</script>
+                            {% else %}
+                                Unknown
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+                <div class="col-sm-offset-3 col-sm-6">
+                    <h2>Frequency chart</h2>
+                    {% if submission.scatter_chart %}
+                        <embed type="image/svg+xml"
+                               src="{{ submission.scatter_chart | safe }}"/>
                     {% else %}
-                        Unknown
+                        No chart found
                     {% endif %}
-                </dd>
-
-                <dt>Diff ratio</dt>
-                <dd>
-                    {% if submission.diff_ratio %}
-                        <script>twoDP({{ submission.diff_ratio }});</script>
-                    {% else %}
-                        Unknown
-                    {% endif %}
-                </dd>
-
-                <dt>P value</dt>
-                <dd style="color: {{ submission.p_color }}">
-                    {% if submission.p_value %}
-                        <script>twoDP({{ submission.p_value }});</script>
-                    {% else %}
-                        Unknown
-                    {% endif %}
-                </dd>
-            </dl>
-
-            <div class="row">
-                <h2>Frequency chart</h2>
-                {% if submission.scatter_chart %}
-                    <embed type="image/svg+xml"
-                           src="{{ submission.scatter_chart | safe }}"/>
-                {% else %}
-                    No chart found
-                {% endif %}
+                </div>
             </div>
 
             <div class="row">
