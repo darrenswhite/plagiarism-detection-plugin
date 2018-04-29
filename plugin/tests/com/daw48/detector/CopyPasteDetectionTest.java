@@ -55,8 +55,8 @@ public class CopyPasteDetectionTest extends BaseTest {
         myFixture.performEditorAction(IdeActions.ACTION_EDITOR_PASTE);
 
         // Check the tracked changes
-        assertChangeListSize(file.getPath(), 2);
-        assertOneChangeMatches(file.getPath(), (c) ->
+        assertChangeListSize(filename, 2);
+        assertOneChangeMatches(filename, (c) ->
                 c.source == Change.Source.CLIPBOARD
                         && Objects.equals(c.oldString, "")
                         && Objects.equals(c.newString, content)

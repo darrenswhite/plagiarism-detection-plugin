@@ -55,8 +55,8 @@ public class ExternalDetectionTest extends BaseTest {
         }
 
         // Check the tracked changes
-        assertChangeListSize(file.getPath(), 2);
-        assertOneChangeMatches(file.getPath(), (c) -> c.source == Change.Source.EXTERNAL
+        assertChangeListSize(filename, 3);
+        assertOneChangeMatches(filename, (c) -> c.source == Change.Source.EXTERNAL
                 && Objects.equals(c.oldString, "")
                 && Objects.equals(c.newString, externalContent)
                 && c.offset == 15);

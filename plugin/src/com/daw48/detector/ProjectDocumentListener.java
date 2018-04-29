@@ -13,7 +13,6 @@ import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.progress.util.ProgressIndicatorBase;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.refactoring.listeners.RefactoringEventData;
 import com.intellij.refactoring.listeners.RefactoringEventListener;
@@ -82,8 +81,8 @@ public class ProjectDocumentListener implements DocumentListener,
         for (Map.Entry<String, FileTracker> entry : tracker.files.entrySet()) {
             String path = entry.getKey();
             FileTracker tracker = entry.getValue();
-            VirtualFile file = LocalFileSystem.getInstance()
-                    .findFileByPath(path);
+            VirtualFile file = project.getBaseDir()
+                    .findFileByRelativePath(path);
 
             if (file == null) {
                 continue;
