@@ -102,9 +102,11 @@
                     <tr>
                         <th class="col-sm-2">Path</th>
                         <th class="col-sm-1">Timestamp (minutes)</th>
+                        <th class="col-sm-1">Source</th>
+                        <th class="col-sm-1">Size</th>
                         <th class="col-sm-1">Offset</th>
-                        <th class="col-sm-4">Old string</th>
-                        <th class="col-sm-4">New string</th>
+                        <th class="col-sm-3">Old string</th>
+                        <th class="col-sm-3">New string</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -112,6 +114,8 @@
                         <tr>
                             <td>{{ c.path }}</td>
                             <td>{{ c.timestamp / 1000 / 60 }}</td>
+                            <td>{{ c.source }}</td>
+                            <td>{{ c.size }}</td>
                             <td>{{ c.offset }}</td>
                             <td><pre
                                     style="max-height: 250px;">{{ c.oldString }}</pre>
