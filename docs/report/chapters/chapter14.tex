@@ -1,54 +1,131 @@
-\chapter{Evaluation}
-% Examiners expect to find in your dissertation a section addressing such questions as:
+\chapter{Results Analysis}
+\label{chp:results}
+In the following sections, the results produced from the post-processor will be discussed. The results include the submission data, FTS chart (Frequency vs. Time including Source), and large changes. Two different submissions will be used as examples.
 
-% \begin{itemize}
-%    \item Were the requirements correctly identified?
-%    \item Were the design decisions correct?
-%    \item Could a more suitable set of tools have been chosen?
-%    \item How well did the software meet the needs of those who were expecting to use it?
-%    \item How well were any other project aims achieved?
-%    \item If you were starting again, what would you do differently?
-% \end{itemize}
-
-% Other questions can be addressed as appropriate for a project.
-
-% Such material is regarded as an important part of the dissertation; it should demonstrate that you are capable not only of carrying out a piece of work but also of thinking critically about how you did it and how you might have done it better. This is seen as an important part of an honours degree.
-
-% There will be good things and room for improvement with any project. As you write this section, identify and discuss the parts of the work that went well and also consider ways in which the work could be improved.
-
-% In the latter stages of the module, we will discuss the evaluation. That will probably be around week 9, although that differs each year.
-The major requirements for this project were an IntelliJ Platform Plugin, back-end server, post-processor, front-end application, and a database. Each of these components were fully-developed. The settings GUI for the plugin was not implemented due to the using the continuous server architecture. Code generation, and code auto-completion of the source code detection types were not implemented due to the complexity of the identification process.
-
-The primary design decision between using a continuous or non-continuous server architecture was a huge decision during this project. It impacted the method in which students would interact with the plugin and submit their tracked data. This in turn affected the back-end server internals. This decision was required before fully developing the server. If the continuous design was used then it would have most definitely increased the workload. Testing the direct connection between the plugin and server would be significantly more difficult than being able to individually test each component.
-
-Using MongoDB was a very clear and strong design decision. If a RDBMS was to be used then the tracked data would need to be completely different from its current form. The use of Python has a clear advantage for using MongoDB. The simplicity of using dictionaries lead to simple interactions with the database.
-
-If the project was to be written from scratch again, it would be interesting to have a greater focus on the post-processor. Concentrating more on the identification of possible cases of plagiarism would provide a much better result. It would be better due to the simplicity of the current identification algorithm being used. Integrating complex algorithms in the post-processor would allow for a more concrete result for each submission.
-
-IntelliJ IDEA offers many ways to interact with the editor. Many were explored during the project including auto-completion, automatic code generation, and refactoring. Other methods that were not explored were using IdeaVim, and applying Git operations. IdeaVim emulates Vim in the editor. How would the use of this affect the detection methods? Would yank and paste still register as copy and paste? Using Git to stash changes, change branches, or even simply pulling from upstream can all modify files. Would these changes be tracked? If so, would this result in conflicts in the XML file? The XML file would need to be staged in each branch and commit before changing branch. Both IdeaVim, and Git could have been investigated.
-
-\autoref{fig:velocity-chart} shows the velocity for each sprint. The average sprint velocity is 11. \autoref{fig:burndown-chart} shows the burndown for all iterations.
+\section{Example A}
+The submission data is shown below in \autoref{fig:results-a-submission-data}. This shows seven metrics which can be used to quickly identify potential submissions which contain plagiarism or UAC. The \texttt{P value} is calculated from the other six values using the algorithm described in \autoref{sec:the-plagiarism-value-metric} of \autoref{it:8}. A linear scale is used for the \texttt{P value} and has an associated colour to help with quick identifications. The colour ranges from green to red, which red being a higher chance of plagiarism. This example has a value of 3.77 which is quite low. However, it does contain some copy/paste code, as indicated by the \texttt{Clipboard frequency} which is at 12.89\%.
 
 \begin{figure}[H]
   \centering
   \fbox{
-    \includegraphics[height=.75\textheight,
+    \includegraphics[height=.5\textheight,
     keepaspectratio=true,
-    width=.75\textwidth,
-    ]{figures/velocity-chart.png}
+    width=.5\textwidth,
+    ]{figures/14-web-view-good-submission-data.png}
   }
-  \caption[Velocity chart]{Velocity for each iteration}
-  \label{fig:velocity-chart}
+  \caption[Submission Results A Data]{Example A submission data}
+  \label{fig:results-a-submission-data}
+\end{figure}
+
+\newpage
+
+\autoref{fig:results-a-submission-chart} shows the frequency of each source change over the time of development. There are several substantial changes which are noticeable immediately. Two clipboard changes occur just after 7 minutes, but notice that there were deletions of similar sizes just before these. This could potentially just be using copy/paste to move a piece of code. Similarly with the last two large changes, these could be part of a large refactoring method or reformatting. These changes can be individually looked at in detail in the \textit{large changes} below the chart.
+
+\begin{figure}[H]
+  \centering
+  \fbox{
+    \includegraphics[height=\textheight,
+    keepaspectratio=true,
+    width=\textwidth,
+    ]{figures/15-web-view-good-submission-chart.png}
+  }
+  \caption[Submission Results A Chart]{Example A submission FTS chart. Useful for identifying large changes.}
+  \label{fig:results-a-submission-chart}
+\end{figure}
+
+\newpage
+
+\autoref{tbl:results-a-submission-changes} shows the large changes for this example submission. The size of a large change was defined as 91 in this case (the default is 200). This can be changed by setting the \texttt{large\_change\_size} URL GET parameter. The content in the \textbf{OldString} and \textbf{NewString} columns have been removed. This content is not particularly interesting in this case. Not that each letter used denotes a unique piece of code. For example, all cells with \textit{A} represent the same piece of code.
+
+Let's start with the first two rows. Row 0 shows us that \textit{A} was removed and in row 1 it was pasted in a different location. As the \textbf{NewString} cell of row 0 is empty we can identify that it was removed. We know \textit{A} was then pasted in a different location due to the row 1 \textbf{Source} being CLIPBOARD and the row 1 \textbf{Offset} being different to that of row 0. Also note that the time difference between rows 0 and 1 is around 1 second. The same scenario occurs for rows 2 and 3.
+
+The next four pairs of rows, all share a similar scenario too. Firstly, the time difference between each pair is approximately 1ms. This indicates that this is most likely from an automatic refactoring or reformatting process. We can also see that the \textbf{NewString} content is immediately removed from another location showing that it was most likely moved.
+
+After analysing the metrics, FTS chart, and large changes, this submission seems to have no identifiable acts of plagiarism.
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|r|l|r|l|r|r|l|l|}
+\hline
+\textbf{Id} & \textbf{Path} & \multicolumn{1}{l|}{\textbf{Timestamp}} & \textbf{Source} & \multicolumn{1}{l|}{\textbf{Size}} & \multicolumn{1}{l|}{\textbf{Offset}} & \textbf{OldString} & \textbf{NewString} \\ \hline
+0 & src/BingoCaller.java & 7.069433 & OTHER & 104 & 825 & \textit{A} &  \\ \hline
+1 & src/BingoCaller.java & 7.087116 & CLIPBOARD & 104 & 717 &  & \textit{A} \\ \hline
+2 & src/BingoCaller.java & 7.112766 & OTHER & 91 & 605 & \textit{B} &  \\ \hline
+3 & src/BingoCaller.java & 7.147666 & CLIPBOARD & 91 & 838 &  & \textit{B} \\ \hline
+4 & src/BingoCaller.java & 8.508266 & OTHER & 835 & 1090 &  & \textit{C} \\ \hline
+5 & src/BingoCaller.java & 8.508283 & OTHER & 835 & 254 & \textit{C} &  \\ \hline
+6 & src/BingoCaller.java & 8.508283 & OTHER & 100 & 254 &  & \textit{D} \\ \hline
+7 & src/BingoCaller.java & 8.508300 & OTHER & 100 & 1190 & \textit{D} &  \\ \hline
+8 & src/BingoCaller.java & 8.514716 & OTHER & 835 & 1191 &  & \textit{E} \\ \hline
+9 & src/BingoCaller.java & 8.514733 & OTHER & 835 & 355 & \textit{E} &  \\ \hline
+10 & src/BingoCaller.java & 8.514733 & OTHER & 207 & 355 &  & \textit{F} \\ \hline
+11 & src/BingoCaller.java & 8.514750 & OTHER & 207 & 1398 & \textit{F} &  \\ \hline
+\end{tabular}
+\end{center}
+\caption[Submission Results A Changes]{Example A submission large changes. Useful for identifying possible cases of plagiarism. \textit{Note: The code samples in the \textbf{Old String} and \textbf{New String} columns have been replaced with symbols. The content in these is not of particular use.}}
+\label{tbl:results-a-submission-changes}
+\end{table}
+
+\newpage
+
+\section{Example B}
+Similar to Example A, we will look at the submission data, FTS chart, and large changes. \autoref{fig:results-b-submission-data} already shows a major red flag with the \texttt{P value} being 134.15. Looking more closely at the other values, it is easy to see why the \texttt{P value} is so high. 90.55\% of the code was copy/paste and it was completed in 19 seconds. The FTS chart shown in \autoref{fig:results-b-submission-chart} also backs this up. The chart shows a massive spike where code was pasted.
+
+\begin{figure}[H]
+  \centering
+  \fbox{
+    \includegraphics[height=.4\textheight,
+    keepaspectratio=true,
+    width=.4\textwidth,
+    ]{figures/11-web-view-bad-submission-data.png}
+  }
+  \caption[Submission Results B Data]{Example B submission metrics}
+  \label{fig:results-b-submission-data}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \fbox{
-    \includegraphics[height=.75\textheight,
+    \includegraphics[height=.8\textheight,
     keepaspectratio=true,
-    width=.75\textwidth,
-    ]{figures/burndown-chart.png}
+    width=.8\textwidth,
+    ]{figures/12-web-view-bad-submission-chart.png}
   }
-  \caption[Burndown chart]{Burndown for all iterations}
-  \label{fig:burndown-chart}
+  \caption[Submission Results B Chart]{Example B submission FTS chart. Useful for identifying large changes.}
+  \label{fig:results-b-submission-chart}
 \end{figure}
+
+Below the \textbf{Old String} and \textbf{New String} values are shown for the CLIPBOARD change. \autoref{cde:old-string} shows the original class with an empty public class statement. In \autoref{cde:new-string} the pasted contents are displayed. The bulk of the pasted contents are not displayed as it is not valuable to this analysis. However, the pasted contents accounts for 90\% of the project and completes the class. This provides clear evidence of plagiarism.
+
+%TC:ignore
+\begin{code}
+\begin{minted}[breaklines,
+               linenos,
+               frame=lines]{java}
+public class BingoCaller {
+}
+\end{minted}
+\caption[Submission Results B Old String]{Example B Change Old String}
+\label{cde:old-string}
+\end{code}
+%TC:endignore
+
+%TC:ignore
+\begin{code}
+\begin{minted}[breaklines,
+               linenos,
+               frame=lines]{java}
+import java.security.SecureRandom;
+import java.util.*;
+
+public class BingoCaller {
+
+    // Lots of copy and pasted code here
+    // Removed it as it is unnecessary
+    
+}
+\end{minted}
+\caption[Submission Results B New String]{Example B Change New String}
+\label{cde:new-string}
+\end{code}
+%TC:endignore

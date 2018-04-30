@@ -46,7 +46,31 @@ For MongoDB, the PyMongo library was used to interface with the database connect
 \subsection{Using Flask to Deliver Web Content}
 The back-end server must provide a service to staff and students. Enter, Flask. Flask provides a micro web framework. Flask uses function decorators to specify URL routes. The return value of the function is then displayed when requested. Flask uses a templating language known as Jinja2. Jinja2 allows HTML templates to be dynamically rendered for each request. Pairing the templates with Bootstrap and JQuery allows to present beautiful dynamic web pages for end users. The front-end web application doesn't do much currently. The end users must be able to login using their Aberystwyth University credentials. To combine LDAP server authentication with Flask seamlessly, we need another library; Flask-Login.
 
-Flask-Login provides user session management for Flask. Using the Bootstrap sign-in template\cite{BootstrapSignInTemplate} and Flask-Login, the authentication system worked perfectly. A single route was used for the index. The index renders the sign-in template when using the GET request. However, when a POST request is sent, authentication is performed using the posted form values (username and password). The username and password are used for binding a new LDAP connection. Upon success, the user details are retrieved from the LDAP server and a new user model is created using the User class. The User class follows the model from Flask-Login providing the required methods. An additional method has been added to test if the user is staff. The user details are stored in the database. If the user already exists in the database, then an update is triggered instead. This will update and out-of-date details. The page is then redirect to the appropriate dashboard. Staff and students have separate dashboards. If authentication is unsuccessful then a flash message is displayed to the user and the sign-in page is displayed.
+Flask-Login provides user session management for Flask. Using the Bootstrap sign-in template\cite{BootstrapSignInTemplate} and Flask-Login, the authentication system worked perfectly. A single route was used for the index. The index renders the sign-in template when using the GET request. This is shown in \autoref{fig:web-sign-in}. However, when a POST request is sent, authentication is performed using the posted form values (username and password). The username and password are used for binding a new LDAP connection. Upon success, the user details are retrieved from the LDAP server and a new user model is created using the User class. The User class follows the model from Flask-Login providing the required methods. An additional method has been added to test if the user is staff. The user details are stored in the database. If the user already exists in the database, then an update is triggered instead. This will update and out-of-date details. The page is then redirect to the appropriate dashboard. Staff and students have separate dashboards. If authentication is unsuccessful then a flash message is displayed to the user and the sign-in page is displayed. This is shown in \autoref{fig:web-sign-in-invalid}
+
+\begin{figure}[H]
+  \centering
+  \fbox{
+    \includegraphics[height=.6\textheight,
+    keepaspectratio=true,
+    width=.6\textwidth,
+    ]{figures/05-web-sign-in.png}
+  }
+  \caption[Web Sign-in Page]{The index page of the web-application. This is where users sign-in.}
+  \label{fig:web-sign-in}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \fbox{
+    \includegraphics[height=\textheight,
+    keepaspectratio=true,
+    width=\textwidth,
+    ]{figures/06-web-sign-in-invalid.png}
+  }
+  \caption[Web Invalid Sign-in Flash]{An error flash message is displayed when a user enters incorrect credentials on the sign-in form.}
+  \label{fig:web-sign-in-invalid}
+\end{figure}
 
 \subsection{Dockerising the Server}
 Docker is a software technology providing containers. Docker provides base images or operating systems, such as Ubuntu which can be downloaded and run out of the box. Docker also allows images to be built in layers, meaning that developers can build on top of these base images and distribute their images (which can then be used as base images for others to download). A Dockerfile is a text file which contains commands to build an image. This allows for seamless automation of building Docker images and running Docker containers. A \texttt{Dockerfile} was created for the back-end server. This will install all of the required python packages using pip. The base image used is \texttt{python:3.6.4-slim}. This provides the basic Python infrastructure. All of the required files are added to the container upon running the container by mounting the directory to a volume in the container. Another \texttt{Dockerfile} was written for the MongoDB instance. The \texttt{docker-compose.yml} file is used by Docker Compose to run multiple-container applications. This allows deployment of the containers (back-end server, and MongoDB) with one command; \texttt{docker-compose up} to start, and \texttt{docker-compose down} to stop.
