@@ -31,7 +31,7 @@ The following pages show diagrams to aid with discussing the final design of the
 \newpage
 
 \section{Student Plugin Interaction Sequence Diagram}
-\autoref{fig:sequence-diagram-student-plugin} shows a typical students' interaction with the plugin. Initially, when a student opens a project, the tracked files are checked for external changes. This is done by comparing each files last known contents (which is stored as a base 64 encoded value) with its current file contents. The difference is added to the list of changes for each file. A DocumentListener is then added to the project for listening to file changes. Each file change is identified and then added to the list of changes for that file. After every new change that is added, the files last known contents is updated (for checking external changes). The recorded data is saved any time a file is saved. File change tracking stops when the project is closed (or if the plugin is disabled or uninstalled).
+\autoref{fig:sequence-diagram-student-plugin} shows a typical students' interaction with the plugin. Initially, when a student opens a project, the tracked files are checked for external changes. This is done by comparing each files last known contents (which is stored as a base 64 encoded value) with its current file contents. The difference is added to the list of changes for each file. A \texttt{DocumentListener} is then added to the project for listening to file changes. Each file change is identified and then added to the list of changes for that file. After every new change that is added, the files last known contents is updated (for checking external changes). The recorded data is saved any time a file is saved. File change tracking stops when the project is closed (or if the plugin is disabled or uninstalled).
 
 \vspace*{\fill}
 
@@ -115,7 +115,7 @@ The main class that provides all the tracking is the \texttt{ProjectDocumentList
 \newpage
 
 \section{Front-end Web Application}
-The approach used for designing the front-end web application was based off bootstrap templates. The sign-in page is very simple, containing a simple form to enter credentials.
+The approach used for designing the front-end web application was based off of bootstrap templates. The sign-in page is very simple, containing a simple form to enter credentials.
 
 \begin{figure}[H]
   \centering
@@ -129,7 +129,7 @@ The approach used for designing the front-end web application was based off boot
   \label{fig:web-sign-in-page}
 \end{figure}
 
-After successful authentication, the user is redirected to the appropriate dashboard. Staff and students have separate dashboards. This is to display different data to each. Students will only see their previous submissions and be able to post new submissions as shown in \autoref{fig:web-student-dashboard}. Staff will be able to view all students submissions and more in-depth details as shown in \autoref{fig:web-staff-dashboard}. The staff submissions table contains three extra columns. The student name, details link, and P value. The student name is to identify the owner of the submission. The details link is to view further details of the submission. The P value is the calculated plagiarism value.
+After successful authentication, the user is redirected to the appropriate dashboard. Staff and students have separate dashboards. This is to display different data to each. Students will only see their previous submissions and be able to post new submissions as shown in \autoref{fig:web-student-dashboard}. Staff will be able to view all students submissions and more in-depth details as shown in \autoref{fig:web-staff-dashboard}. The staff submissions table contains three extra columns. The student name, details hyperlink, and P value. The student name is to identify the owner of the submission. The details link is to view further details of the submission. The P value is the calculated plagiarism value with its associated colour to ease with identification of possible plagiarism cases.
 
 \begin{figure}[H]
   \centering
@@ -155,7 +155,7 @@ After successful authentication, the user is redirected to the appropriate dashb
   \label{fig:web-staff-dashboard}
 \end{figure}
 
-Staff users are able to view submission details. This includes individual metrics from the post-processor, user and submission details, FTS chart, and large changes. \autoref{fig:web-submission-details-data}, \autoref{fig:web-submission-details-chart}, and \autoref{fig:web-submission-details-changes} show the submission details information displayed on the page. All of this data can be used to help with identifying plagiarism. This is discussed more in-depth in \autoref{chp:results}.
+Staff users are able to view submission details. This includes individual metrics from the post-processor, student submission details, FTS chart, and large changes. \autoref{fig:web-submission-details-data}, \autoref{fig:web-submission-details-chart}, and \autoref{fig:web-submission-details-changes} show the submission details information displayed on the page. All of this data can be used to help with identifying plagiarism. This is discussed more in-depth in \autoref{chp:results}.
 
 \begin{figure}[H]
   \centering
@@ -196,7 +196,7 @@ Staff users are able to view submission details. This includes individual metric
 \newpage
 
 \section{Docker Containers}
-The back-end server and post-processor were both written with Docker in mind. Docker containers were used to easily deploy each of the server components. These components are the back-end server, post-processor, and database. Each of these have an individual \texttt{Dockerfile}. Docker Compose is used to seamlessly deploy all of these applications as separate containers with simple commands. See \autoref{cde:docker-compose} for the \texttt{docker-compose.yml} file. The mongodb service is built and deployed as a container first. This is because both the post-processor and server services depend on it. The local \texttt{data/db} directory is mounted to provide persistence for the database across deployments. This allows the container to stop and the data to remain on disk. The post-processor and server past through the \texttt{PDP\_DEBUG} environment variable. This is used by both of the components to enable debug logging when the value is present. The server service mounts the local server directory to the container. This allows Flask to hot-reload when files are changed locally. This removes the need to restart all containers when small changes are made to the server code. Both the mongodb and server services open ports for the containers. This is required for mongodb so that other containers can connect to it. The server opens the port so users can access the web service.
+The back-end server and post-processor were both written with Docker in mind. Docker containers were used to easily deploy each of the server components. These components are the back-end server, post-processor, and database. Each of these have an individual \texttt{Dockerfile}. Docker Compose is used to seamlessly deploy all of these applications as separate containers with simple commands. See \autoref{cde:docker-compose} for the \texttt{docker-compose.yml} file. The mongodb service is built and deployed as a container first. This is because both the post-processor and server services depend on it. The local \texttt{data/db} directory is mounted to provide persistence for the database across deployments. This allows the container to stop and the data to remain on disk. The post-processor and server pass through the \texttt{PDP\_DEBUG} environment variable. This is used by both of the components to enable debug logging when the value is present. The server service mounts the local server directory to the container. This allows Flask to hot-reload when files are changed locally. This removes the need to restart all containers when small changes are made to the server code. Both the mongodb and server services open ports for the containers. This is required for mongodb so that other containers can connect to it. The server opens the port so users can access the web service.
 
 %TC:ignore
 \begin{code}
@@ -234,7 +234,7 @@ services:
 \end{code}
 %TC:endignore
 
-\autoref{cde:dockerfile-server} shows the Dockerfile for the back-end server. The Dockerfile uses the python base image. This provides the basic Python infrastructure, including the Python interpreter and pip (both version 3). The working directory is configured and system requirements are installed (not pip requirements). The entrypoint script is added. The entrypoint script is executed when the container is created as it is defined as the entrypoint on L22. The requirements file is added and pip is used to install the requirements. L17 is used to add the current local directory to the working directory in the container. This will add the server files to the container. The unit tests are executed using nose. If any tests fail then the container will fail to build and will not run.
+\autoref{cde:dockerfile-server} shows the Dockerfile for the back-end server. The Dockerfile uses the Python base image. This provides the basic Python infrastructure, including the Python interpreter and pip (both version 3). The working directory is configured and system requirements are installed (not pip requirements). The entrypoint script is added. The entrypoint script is executed when the container is created as it is defined as the entrypoint on L22. The requirements file is added and pip is used to install the requirements. L17 is used to add the current local directory to the working directory in the container. This will add the server files to the container. The unit tests are executed using nose. If any tests fail then the container will fail to build and will not run.
 
 %TC:ignore
 \begin{code}

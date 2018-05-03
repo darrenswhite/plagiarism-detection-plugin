@@ -3,7 +3,7 @@
 In the following sections, the results produced from the post-processor will be discussed. The results include the submission data, FTS chart (Frequency vs. Time including Source), and large changes. Two different submissions will be used as examples.
 
 \section{Example A}
-The submission data is shown below in \autoref{fig:results-a-submission-data}. This shows seven metrics which can be used to quickly identify potential submissions which contain plagiarism or UAC. The \texttt{P value} is calculated from the other six values using the algorithm described in \autoref{sec:the-plagiarism-value-metric} of \autoref{it:8}. A linear scale is used for the \texttt{P value} and has an associated colour to help with quick identifications. The colour ranges from green to red, which red being a higher chance of plagiarism. This example has a value of 3.77 which is quite low. However, it does contain some copy/paste code, as indicated by the \texttt{Clipboard frequency} which is at 12.89\%.
+The submission data is shown below in \autoref{fig:results-a-submission-data}. This shows several metrics which can be used to quickly identify potential submissions which contain plagiarism or UAC. The \texttt{P value} is calculated from the other six values using the algorithm described in \autoref{sec:the-plagiarism-value-metric} of \autoref{it:8}. A linear scale is used for the \textbf{P value} and has an associated colour to help with quick identifications. The colour ranges from green to red, with red being a higher chance of plagiarism. This example has a value of 3.77 which is quite low. However, it does contain some copy/paste code, as indicated by the \textbf{Clipboard frequency} which is at 12.89\%.
 
 \begin{figure}[H]
   \centering
@@ -35,7 +35,7 @@ The submission data is shown below in \autoref{fig:results-a-submission-data}. T
 
 \newpage
 
-\autoref{tbl:results-a-submission-changes} shows the large changes for this example submission. The size of a large change was defined as 91 in this case (the default is 200). This can be changed by setting the \texttt{large\_change\_size} URL GET parameter. The content in the \textbf{OldString} and \textbf{NewString} columns have been removed. This content is not particularly interesting in this case. Not that each letter used denotes a unique piece of code. For example, all cells with \textit{A} represent the same piece of code.
+\autoref{tbl:results-a-submission-changes} shows the large changes for this example submission. The size of a large change was defined as 91 in this case (the default is 200). This can be changed by setting the \texttt{large\_change\_size} URL GET parameter. The content in the \textbf{OldString} and \textbf{NewString} columns have been replaced with letters. The content is not particularly interesting in this case. Note that each letter used denotes a unique piece of code. For example, all cells with \textit{A} represent the same piece of code.
 
 Let's start with the first two rows. Row 0 shows us that \textit{A} was removed and in row 1 it was pasted in a different location. As the \textbf{NewString} cell of row 0 is empty we can identify that it was removed. We know \textit{A} was then pasted in a different location due to the row 1 \textbf{Source} being CLIPBOARD and the row 1 \textbf{Offset} being different to that of row 0. Also note that the time difference between rows 0 and 1 is around 1 second. The same scenario occurs for rows 2 and 3.
 
@@ -69,7 +69,7 @@ After analysing the metrics, FTS chart, and large changes, this submission seems
 \newpage
 
 \section{Example B}
-Similar to Example A, we will look at the submission data, FTS chart, and large changes. \autoref{fig:results-b-submission-data} already shows a major red flag with the \texttt{P value} being 134.15. Looking more closely at the other values, it is easy to see why the \texttt{P value} is so high. 90.55\% of the code was copy/paste and it was completed in 19 seconds. The FTS chart shown in \autoref{fig:results-b-submission-chart} also backs this up. The chart shows a massive spike where code was pasted.
+Similar to Example A, we will look at the submission data, FTS chart, and large changes. \autoref{fig:results-b-submission-data} already shows a major red flag with the \textbf{P value} being 134.15. Looking more closely at the other values, it is easy to see why the \textbf{P value} is so high. 90.55\% of the code was copy/paste and it was completed in 19 seconds. The FTS chart shown in \autoref{fig:results-b-submission-chart} also backs this up. The chart shows a massive spike where code was pasted. The chart also shows that no code was deleted from the project at all.
 
 \begin{figure}[H]
   \centering
@@ -95,7 +95,7 @@ Similar to Example A, we will look at the submission data, FTS chart, and large 
   \label{fig:results-b-submission-chart}
 \end{figure}
 
-Below the \textbf{Old String} and \textbf{New String} values are shown for the CLIPBOARD change. \autoref{cde:old-string} shows the original class with an empty public class statement. In \autoref{cde:new-string} the pasted contents are displayed. The bulk of the pasted contents are not displayed as it is not valuable to this analysis. However, the pasted contents accounts for 90\% of the project and completes the class. This provides clear evidence of plagiarism.
+Below the \textbf{Old String} and \textbf{New String} values are shown for the CLIPBOARD change. \autoref{cde:old-string} shows the original file with an empty public class statement. In \autoref{cde:new-string} the pasted contents are displayed. The bulk of the pasted contents are not displayed as it is not valuable to this analysis. However, the pasted contents accounts for 90\% of the project and completes the file. This provides clear evidence of plagiarism.
 
 %TC:ignore
 \begin{code}

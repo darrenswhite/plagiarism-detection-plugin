@@ -1,6 +1,6 @@
 \chapter{Iteration 2}
 \section{Planning}
-This iteration goal was to allow students to post new submissions and view all previous submissions. Aberystwyth authentication for staff (and potentially students) will be a major stepping stone for this sprint. Below is the list of stories and their assigned story points. The list is displayed in completion order.
+This iteration goal was to allow students to post new submissions and view all previous submissions. Below is the list of stories and their assigned story points. The list is displayed in completion order.
 
 \begin{itemize}
 \item Add form to upload submission in student dashboard: 2 points
@@ -9,7 +9,7 @@ This iteration goal was to allow students to post new submissions and view all p
 
 \section{Implementation}
 \subsection{Adding the Student Upload Form}
-A new route and template were created. This new page contains a form to upload a new submission as shown below in \autoref{fig:web-new-submission}. Only students can post new submissions, so this page is not accessible by staff. A title, module, and XML file are required. Uploading the XML file was a little more difficult due to the requirements. Following an online tutorial was sufficient enough to overcome this\cite{FlaskUploadingFiles}. The file that is submitted must be an XML file. This is checked in the HTML form, and in the Flask route function. The submitted XML file is parsed and the submission is inserted into the student submissions array in the database. A flash message is displayed upon success or failure as shown below in \autoref{fig:web-new-submission-success}.
+A new route and template were created. This new page contained a form to upload a new submission as shown below in \autoref{fig:web-new-submission}. Only students can post new submissions, so this page is not accessible by staff. A title, module, and XML file are required. Uploading the XML file was a little more difficult due to the requirements. Following an online tutorial was sufficient enough to overcome this\cite{FlaskUploadingFiles}. The file that is submitted must be an XML file. This was checked in the HTML form, and in the Flask route function. The submitted XML file was parsed and the submission is inserted into the student submissions array in the database. A flash message was displayed upon success or failure as shown below in \autoref{fig:web-new-submission-success}.
 
 \begin{figure}[H]
   \centering
@@ -36,7 +36,7 @@ A new route and template were created. This new page contains a form to upload a
 \end{figure}
 
 \subsection{Displaying Previous Student Submissions}
-The dashboard has been separated into two individual templates. One for staff and one for students. With functionality in place to post new submissions, these can now be displayed to the user. Querying the database by filtering \texttt{uid}, the current students' submissions can be retrieved. The submissions array is passed to the template to render. The template displays the submissions in a table as shown below in \autoref{fig:web-student-submissions}. The submissions are iterated, and each submission is added as a new table row. The submission title and module are displayed in the columns. More data for each submission may be added in future.
+The dashboard has been separated into two individual templates. One for staff and one for students. With functionality in place to post new submissions, these were now displayed to the user. Querying the database by filtering \texttt{uid}, the current students' submissions were retrieved. The submissions array was passed to the template to render. The template displays the submissions in a table as shown below in \autoref{fig:web-student-submissions}. The submissions were iterated, and each submission was added as a new table row. The submission title and module were displayed in the columns. More data for each submission may be added in future.
 
 \begin{figure}[H]
   \centering

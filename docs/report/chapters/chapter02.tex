@@ -1,17 +1,17 @@
 \chapter{Background}
 \label{chp:background}
 % What was your background preparation for the project? What similar systems did you assess? What was your motivation and interest in this project?
-This project introduces two problems. Tracking the work as it is being written, and identifying when plagiarism has occurred. Tracking code being written will be accomplished by developing a plugin for IntelliJ IDEA. IntelliJ IDEA is a Java IDE (Integrated Development Environment) for software development. IntelliJ has to capability to add and develop plugins. These plugins are developed using the IntelliJ Platform\cite{IntelliJPlatform}. Eclipse  Identifying plagiarism is the second major task for this project. Due to this system operating differently to existing systems, it will be difficult to determine how to accurately detect plagiarism. Alternatively, Eclipse could have been used to develop the plugin. Eclipse is also a Java IDE for developing Java software. Similar to IntelliJ, Eclipse has the ability to add and develop plugins.
+This project introduces two problems. Tracking the work as it is being written, and identifying when plagiarism has occurred. Tracking code being written will be accomplished by developing a plugin for IntelliJ IDEA. IntelliJ IDEA is a Java IDE (Integrated Development Environment) for software development. IntelliJ has the capability to add and develop plugins. These plugins are developed using the IntelliJ Platform\cite{IntelliJPlatform}. Identifying plagiarism is the second major task for this project. Due to this system operating differently to existing systems, it will be difficult to determine how to accurately detect plagiarism. Alternatively, Eclipse could have been used to develop the plugin. Eclipse is also a Java IDE for developing Java software. Similar to IntelliJ, Eclipse has the ability to add and develop plugins.
 
-``Plagiarism detection usually is based on comparison of two or more documents''\cite{Lukashenko2007}. This is what makes this project stand out for me. It's not simply reinventing the wheel, but finding new ways to solve problems which still exist in academia. 
+``Plagiarism detection usually is based on comparison of two or more documents''\cite{Lukashenko2007}. This is what makes this project stand out. It's not simply reinventing the wheel, but finding new ways to solve problems which still exist in academia.
 
 \section{Existing Systems}
 \label{sec:existing-systems}
 % Discuss existing systems such as MOSS and Turnitin
 % Discuss different methods for detecting plagiarism (intrinsic and extrinsic)
-The most popular existing systems are Turnitin, MOSS, JPlag, and YAP3, amongst many others. For this system, MOSS and JPlag are worth looking into as they both check source code, whereas Turnitin only checks plain text\cite{Lukashenko2007}. Although these tools can automatically identify plagiarism, they still require human verification.
+The most popular existing systems are Turnitin, MOSS, JPlag, and YAP3, amongst many others. For this system, MOSS, JPlag, and YAP3 are worth looking into as they all check source code, whereas Turnitin only checks plain text\cite{Lukashenko2007}. Although these tools can automatically identify plagiarism, they still require human verification.
 
-MOSS relies on the Winnowing detection algorithm. It works by creating fingerprints or hashes for documents\cite{Schleimer2003}. Creating single hashes for each document allows for exact document comparisons. Single hashes are useful for checking if a document is correct and non-corrupt. Instead, Winnowing, uses multiple k-grams for each document. K-grams all for partial document comparisons between multiple documents. Comparing between multiple sources does however require a large set of documents beforehand.
+MOSS relies on the Winnowing detection algorithm\cite{Schleimer2003}. It works by creating fingerprints or hashes for documents. Creating single hashes for each document allows for exact document comparisons. Single hashes are useful for checking if a document is correct and non-corrupt. Instead, Winnowing, uses multiple k-grams for each document. K-grams allow for partial document comparisons between multiple documents. Comparing between multiple sources does however require a large set of documents beforehand.
 
 JPlag provides an online user interface where documents can be submitted and the results can be viewed. JPlag parses each document into token strings and these tokens are compared in pairs between documents. The percentage of tokens that match is referred to as the similarity factor\cite{Prechelt2003}. 
 
@@ -21,15 +21,15 @@ Plagiarism detection tools can use either extrinsic or intrinsic detection algor
 
 \section{IntelliJ Plugin SDK}
 % Discuss my research into using/learning the SDK, looking at existing plugins, tutorials, etc.
-IntelliJ is being used as it was a supervisor requirement. Being unfamiliar with the IntelliJ Plugin SDK, I delved deep into the online tutorials provided by JetBrains\cite{IntelliJGettingStarted}. IntelliJ comes bundled with the IntelliJ Platform Plugin SDK so setting up the development environment should be no issue. The IntelliJ Community Edition is open source and contains many plugins\cite{IntelliJGitHub}. This repository is very useful. Looking at existing plugins is sometimes more useful than reading tutorials.
+IntelliJ is being used as it is a supervisor requirement. Being unfamiliar with the IntelliJ Plugin SDK, the online tutorials provided by JetBrains\cite{IntelliJGettingStarted} are a great place to start. IntelliJ comes bundled with the IntelliJ Platform Plugin SDK so setting up the development environment should be no issue. The IntelliJ Community Edition is open source and contains many plugins\cite{IntelliJGitHub}. This repository is very useful. Looking at existing plugins is sometimes more useful than reading tutorials.
 
-One aspect of the plugin that would be needed is to track keyboard events. I set out to try and find what possible methods there were of doing this. This feature is not mentioned in the tutorial, so I went digging through the SDK in the Community Edition repository. TypedHandlerDelegate and TypedHandler are classes used to perform actions upon typing events in the editor of the IDE. Both of these classes could be very useful when starting development.
+One aspect of the plugin that's needed is to track keyboard events. This feature is not mentioned in the tutorial, so the Community Edition repository will be used to find any examples of this. \texttt{TypedHandlerDelegate} and \texttt{TypedHandler} are classes which perform actions upon typing events in the editor of the IDE. Both of these classes could be very useful when starting development.
 
-Saving data to disk is also another feature that would be used by the plugin. This feature is used widely by many plugins and was documented in the tutorial. Persistent state is stored to file using the XML format. The tutorial was understandable but I decided to take a look at an existing plugin for a real example, the GitHub plugin. GitHub saves settings to file and so this was helpful to my understanding.
+Saving data to disk is also another feature that would be required by the plugin. This feature is used widely by many plugins and was documented in the tutorial. Persistent state is stored to file using the XML format. The tutorial is understandable but looking at an existing plugin for a real example should provide clarity. The GitHub plugin saves settings to an XML file and so this was helpful to my understanding.
 
 \section{Back-end Server}
 % Discuss research into the back-end server. Possible languages and frameworks.
-The following is a list of the possible technologies that could be used for the back-end server. The requirements for the back-end server include being able to submit tracked data and storing it in a suitable database. Authentication will also be required. A front-end service will be used to display information about the tracked data to authenticated users. Having experience with both Python (Flask) and Ruby on Rails to develop web servers proposes a major decision. Bootstrap and jQuery can both supplement the front-end user experience.
+The following is a list of the possible technologies that could be used for the back-end server. The requirements for the back-end server include being able to submit tracked data and storing it in a suitable database. Authentication will also be required. A front-end web service will be used to display information about the tracked data to authenticated users. Having experience with both Python (Flask) and Ruby on Rails to develop web servers proposes a major decision. Bootstrap and jQuery can both supplement the front-end user experience.
 
 \begin{itemize}
   \item \textbf{Python / Flask} - Micro web framework for Python based on Werkzeug, and Jinja2.
@@ -41,13 +41,13 @@ The following is a list of the possible technologies that could be used for the 
 
 The server could work in various ways. Recorded data could be sent continuously or once. It could receive continuous data from the plugin which would allow the user to seamlessly use the plugin without having to interact with the server in anyway. This would require the user to input some identification in the plugin.
 
-Another way which the server could work is that the user could submit the recorded data in a form. This would reduce the bandwidth used by the server. But this introduces the issue that the user could modify the saved data before submitting. The would also make it easier to switch between projects and different computers.
+Another way which the server could work is that the user could submit the recorded data in a form using a web application. This would reduce the bandwidth used by the server. But this introduces the issue that the user could modify the saved data before submitting. This would also make it easier to switch between projects and different computers.
 
-A front-end application will also be required for staff and potentially students. Staff should be able to view students project submissions and the final plagiarism result. Both Rails and Flask support this and can be tied into the back-end module.
+A front-end application will also be required for staff and potentially students. Staff should be able to view students' project submissions and the final plagiarism results. Both Ruby on Rails and Python / Flask support this and can be tied into the back-end server module.
 
 \subsection{Post-processor}
 % Discuss research into the post-processor
-The post-processor would be a part of the server. Its functionality would be to process the data recorded from the plugin. The resulting data would be stored in the database, which the server can display when requested. There is also the possibility to add machine learning to the post-processor to improve detection results.
+The post-processor would be a part of the server. Its functionality would be to process the data recorded from the plugin using plagiarism detection algorithms. The resulting data would be stored in the database, which the server can display when requested. There is also the possibility to add machine learning to the post-processor to improve detection results.
 
 \section{Analysis}
 \label{sec:analysis}
@@ -61,11 +61,11 @@ The back-end server will be developed using Python 3 and Flask. I decided to use
 
 \subsection{Continuous back-end server}
 \label{sub:continuous-server}
-The student will only need to interact with the plugin in this scenario. The user will be required to enter the identification data upon project creation. This identity data will be sent to the server. All of the tracked data will be sent to the server along with some of the identity data to be stored in the database. To prevent malicious attacks, the connection between the plugin and the server should be encrypted. Once the project is complete the student will click an action which will notify the server of the completion to start post-processing of the data. The front-end application will allow staff to login and view their students submissions as well as the results from post-processor. This design does require a constant connection to the server, so a fail-safe would be needed for when no network is connected
+The student will only need to interact with the plugin in this scenario. The user will be required to enter the identification data upon project creation. This identity data will be sent to the server. All of the tracked data will be sent to the server along with some of the identity data to be stored in the database. To prevent malicious attacks, the connection between the plugin and the server should be encrypted. Once the project is complete the student will click an action which will notify the server of the completion to start post-processing of the data. The front-end application will allow staff to login and view their students' submissions as well as the results from post-processor. This design does require a constant connection to the server, so a fail-safe would be needed for when no network is connected.
 
 \subsection{Non-continuous back-end server}
 \label{sub:non-continuous-server}
-In this scenario, the user will interact with both the plugin and the front-end application. There are no prerequisites to setting up the plugin. Instead the plugin tracks file changes of the editor and saves them to an XML file. Once the student has finished their project, they will submit the XML file. This does present an authenticity issue. Having this stored to a plain XML file, means that the student may maliciously manipulate the data. This would provide the server with spurious data providing an incorrect plagiarism result. This problem could be solved by encrypting the file. Students should be able view their previously submitted projects. Staff however, should be able to view their students project submissions and the results from the post-processor. This design does not require a constant network connection.
+In this scenario, the user will interact with both the plugin and the front-end application. There are no prerequisites to setting up the plugin. Instead the plugin tracks file changes of the editor and saves them directly to an XML file. Once the student has finished their project, they will submit the XML file via the front-end web application. This does present an authenticity issue. Having this data stored in a plain XML file, means that the student may maliciously manipulate the data. This would provide the server with spurious data providing an incorrect plagiarism result. This problem could be solved by encrypting the file. Students should be able view their previously submitted projects. Staff however, should be able to view their students' project submissions and the results from the post-processor. This design does not require a constant network connection.
 
 \subsection{Requirements}
 % List of objectives/requirements (use Outline Project Specification as a start)
@@ -94,7 +94,7 @@ A list of key requirements are shown below. Using an agile process, these are th
       \item Settings GUI - for student identification information (only required for continuous server)
       \item Storing recorded data in a data structure 
       \item Storing recorded data to file (only required for non-continuous server)
-      \item Encrypt stored data (only required for non-continuous server)
+      \item Encrypt stored data
       \item Unit tests
     \end{itemize}
 
@@ -109,7 +109,7 @@ A list of key requirements are shown below. Using an agile process, these are th
 
     \item \textbf{Post-processor}
     \begin{itemize}
-      \item Watch for updates in the database - this would allow the post-processor to process new student submissions
+      \item Watch for updates in the database - this will allow the post-processor to process new student submissions
       \item Process recorded data and update the database with the result
       \item Unit tests
     \end{itemize}
@@ -129,7 +129,7 @@ A list of key requirements are shown below. Using an agile process, these are th
 \section{Process}
 \label{sec:process}
 % You need to describe briefly the life cycle model or research method that you used. You do not need to write about all of the different process models that you are aware of. Focus on the process model that you have used. It is possible that you needed to adapt an existing process model to suit your project; clearly identify what you used and how you adapted it for your needs.
-The approach chosen to use for this project was an agile methodology, scrum. Scrum was chosen to due having prior experience with this methodology. Scrum usually consists of multiple team members. This project was developed individually and this meant that a modified scrum was used. Scrum uses short iterations, each consisting of planning at the beginning, implementation, review, and then retrospective at the end. Alongside these iterations, short daily stand-up meetings are attended by the team. Daily stand-up is a short 10 or 15 minute meeting where the team discusses what they're working on and of any changes that need to be reviewed. Instead of daily stand-up, weekly meetings on Mondays with my supervisor were organised. These meetings consisted mostly of discussions of the previous and next sprints.
+The approach chosen to use for this project was an agile methodology, scrum. Scrum was chosen due to having prior experience with this methodology. Scrum usually consists of multiple team members. This project was developed individually and this meant that a modified scrum was used. Scrum uses short iterations, each consisting of planning at the beginning, implementation, review, and then retrospective at the end. Alongside these iterations, short daily stand-up meetings are attended by the team. Daily stand-up is a short 10 to 15 minute meeting where the team discusses what they're working on and of any changes that need to be reviewed. Instead of daily stand-up, weekly meetings on Mondays with my supervisor were organised. These meetings will consist of discussions of the previous and next sprints.
 
 Planning involves discussing and deciding which stories should be worked on during the sprint. A story is a piece of work that needs to be done. The intricate details of each story may not yet be known but they will develop over the course of the iteration. A story will have a time estimate associated with it. The golden ratio is used as a guideline, and the story points are described below.
 
@@ -141,10 +141,10 @@ Planning involves discussing and deciding which stories should be worked on duri
   \item \textbf{8} - Over a week, this story should be broken into smaller stories
 \end{itemize}
 
-Implementation and review take up most of the iteration time. This is spent designing, developing, and reviewing code that will end up in the code base. Once code has been reviewed for a story, it can be marked as done. 
+Implementation and review take up most of the iteration time. This is spent designing, developing, and reviewing code that will end up in the code base. Once the code has been reviewed for a story, it can be marked as done. 
 
 Retrospective is a reflective process. It is a discussion of what went well, what didn't go well, and what could change for the next sprint. The retrospective is aimed to improve the scrum process over time.
 
-To track each sprint and its stories, I used milestones and issues on GitHub\cite{GitHubMilestones}. During planning I would create a new milestone, assign issues to it (creating new issues if necessary), and set a goal. The goal would be a general aim for that sprint, which multiple stories would accomplish. During implementation and review, issues can easily be closed by referencing them in a commit message with specific keywords such as \texttt{Fixes \#IssueNum}\cite{GitHubCloseIssueCommit}. After the sprint is done, I would close the milestone. Any remaining issues in the milestone would remain in the backlog still marked as open.
+To track each sprint and its stories, milestones and issues will be used on GitHub\cite{GitHubMilestones}. During planning a new milestone will be created, issues assigned to it (creating new issues if necessary), and a goal will be set. The goal should be a general aim for that sprint, which multiple stories would accomplish. During implementation and review, issues can easily be closed by referencing them in a commit message with specific keywords such as \texttt{Fixes \#IssueNum}\cite{GitHubCloseIssueCommit}. After the sprint is done, the milestone will be closed. Any remaining issues in the milestone would remain in the backlog still marked as open.
 
 The structure of this report will continue with each iteration as a new chapter. The final design will be discussed in detail in \autoref{chp:design}. The testing approaches used for each of the project components will be discussed in \autoref{chp:testing}. The results produced from the post-processor will be reviewed in \autoref{chp:results}.

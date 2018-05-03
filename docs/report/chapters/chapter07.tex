@@ -1,6 +1,6 @@
 \chapter{Iteration 4}
 \section{Planning}
-The mid-project demonstration date is approaching. Below is the list of stories and their assigned story points. The list is displayed in completion order. Bugs are not assigned story points.
+The mid-project demonstration date was approaching. Below is the list of stories and their assigned story points. The list is displayed in completion order. Bugs are not assigned story points.
 
 \begin{itemize}
 \item Bug: Submissions disappear upon sign-in
@@ -13,13 +13,13 @@ The mid-project demonstration date is approaching. Below is the list of stories 
 
 \section{Implementation}
 \subsection{Squashing More Bugs}
-When a user signs in, a bug occurs which removes all of their previously posted submissions. This was a major bug which required immediate fixing. The code responsible for this was the sign-in database operations. Upon sign-in, the database is updated with the users latest details. But along with that information is the submissions array. A new array was being inserted, and overwriting any previous data. This was changed to only occur during the users' first sign-in.
+When a user signed in, a bug occurred which removed all of their previously posted submissions. This was a major bug which required immediate fixing. The code responsible for this was the sign-in database operations. Upon sign-in, the database was updated with the users latest details. But along with that information was the submissions array. A new array was being inserted and overwrote any previous data. This was changed to only occur during the users' first sign-in.
 
 \subsection{Planning for the Mid-Project Demo}
-For the mid-project demonstration, diagrams would be needed to aid with explaining the system (see \autoref{chp:design} for the final diagrams). The architecture diagram was developed to clearly show how the system components interact with one another. A large detailed sequence diagram was developed to show the interactions between the users and each of the components. The sequence diagram was later split into multiple smaller sequence diagrams. An overview or plan for the demo was also needed. This started as a markdown document containing notes, but later was converted into a Google Slides presentation.
+For the mid-project demonstration, diagrams were needed to aid with explaining the system (see \autoref{chp:design} for the final diagrams). The architecture diagram was developed to clearly show how the system components interact with one another. A large detailed sequence diagram was developed to show the interactions between the users and each of the components. The sequence diagram was split into multiple smaller sequence diagrams. An overview or plan for the demo was also needed. This started as a markdown document containing notes, but later was converted into a Google Slides presentation.
 
 \subsection{Adding User Tests for the Server}
-More unit tests were needed for the back-end server. The user model class is a core part of the authentication and session management system. These unit tests were not very complex and did not require mocking. The tests simple initialise new instances and ensure that the methods work correctly.
+More unit tests were added for the back-end server. The user model class is a core part of the authentication and session management system. These unit tests were not very complex and did not require mocking. The tests simple initialise new instances and ensure that the methods worked correctly.
 
 \section{Retrospective}
 This sprint was much better in comparison to the past two sprints. The velocity has increased to 10. Although not as high as the first two, it is definitely an improvement.
