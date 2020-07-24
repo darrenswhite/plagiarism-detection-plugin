@@ -20,6 +20,8 @@ Practice) for software related projects.
 To install the plugin using the .JAR file follow the instructions
 [here](https://www.jetbrains.com/help/idea/installing-plugin-from-disk.html).
 
+While the plugin is installed, each project is tracked for plagiarism and the result is stored in .idea/plagiarism_detection.xml. This XML file can be uploaded to the server to be processed.
+
 ### Server and post-processor
 
 To start both the server and post-processor use `./run.sh`. This will use
